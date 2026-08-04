@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from '../../shared/navbar/navbar';
 import { Sidebar } from '../../shared/sidebar/sidebar';
 import { Footer } from '../../shared/footer/footer';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { LayoutService } from '../../core/services/layout-service';
 
 @Component({
   selector: 'app-main-layout',
@@ -11,11 +13,14 @@ import { Footer } from '../../shared/footer/footer';
     RouterOutlet,
     Navbar,
     Sidebar,
-    Footer
-  ],
+    Footer,
+    MatSidenavModule
+],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css'
 })
 export class MainLayout {
 
+  layout = inject(LayoutService);
+  
 }

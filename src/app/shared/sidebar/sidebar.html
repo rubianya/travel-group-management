@@ -1,13 +1,13 @@
-<div class="sidebar">
+<div class="sidebar" [class.closed]="!layoutService.isSidebarOpen()">
 
-    <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
 
-    <a routerLink="/trips">Trips</a>
+        <a routerLink="/trips" routerLinkActive="active">Trips</a>
 
-    <a routerLink="/registrations">Registration</a>
+        <a routerLink="/registrations" routerLinkActive="active">Registration</a>
 
-    <a routerLink="/groups">Groups</a>
+        <a routerLink="/groups" routerLinkActive="active">Groups</a>
 
-    <a routerLink="/itinerary">Itinerary</a>
+        <a routerLink="/itinerary" routerLinkActive="active">Itinerary</a>
 
 </div>

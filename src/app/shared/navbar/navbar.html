@@ -1,19 +1,19 @@
-<nav class="navbar">
+<mat-toolbar color="primary">
 
-    <div class="logo">
+    <button mat-icon-button (click)="toggleSidebar()">
+        <mat-icon>menu</mat-icon>
+    </button>
 
-        Travel Group Management
+    <span class="logo">Travel Group Management</span>
 
-    </div>
+    <span class="spacer"></span>
 
-    <div class="profile">
+    <button mat-icon-button>
+        <mat-icon>notifications</mat-icon>
+    </button>
 
-        <span>Admin</span>
+    <button mat-icon-button>
+        <mat-icon>account_circle</mat-icon>
+    </button>
 
-        <div class="avatar">
-            A
-        </div>
-
-    </div>
-
-</nav>
+</mat-toolbar>

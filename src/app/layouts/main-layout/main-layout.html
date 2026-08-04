@@ -1,13 +1,18 @@
-<app-navbar></app-navbar>
+<mat-sidenav-container class="layout">
 
-<div class="app-layout">
+    <mat-sidenav
+        [mode]="layout.sidenavMode()"
+        [opened]="layout.isSidebarOpen()"
+    >
+        <app-sidebar></app-sidebar>
+    </mat-sidenav>
 
-    <app-sidebar></app-sidebar>
+    <mat-sidenav-content>
+        <app-navbar></app-navbar>
+        <div class="page">
+            <router-outlet></router-outlet>
+        </div>
+        <app-footer></app-footer>
+    </mat-sidenav-content>
 
-    <main class="content">
-
-        <router-outlet></router-outlet>
-
-    </main>
-
-</div>
+</mat-sidenav-container>

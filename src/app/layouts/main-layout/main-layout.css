@@ -8,3 +8,13 @@
     flex:1;
     padding:30px;
 }
+
+.layout{
+    height:100vh;
+}
+
+.page{
+    padding:24px;
+    background:#f8fafc;
+    min-height:calc(100vh - 64px);
+}
