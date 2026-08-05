@@ -1,1 +1,90 @@
-<p>trip-form works!</p>
+<div class="trip-form-container" style="padding: 24px; max-width: 800px; margin: 0 auto;">
+  
+  <mat-card>
+    <mat-card-header style="margin-bottom: 20px;">
+      <mat-card-title>
+        <h2>สร้างทริปท่องเที่ยวใหม่</h2>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="tripForm" (ngSubmit)="onSubmit()">
+        
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 12px;">
+          <mat-label>ชื่อทริป</mat-label>
+          <input matInput formControlName="name" placeholder="เช่น ทริปเชียงใหม่ สายคาเฟ่">
+          <mat-error *ngIf="tripForm.get('name')?.hasError('required')">กรุณากรอกชื่อทริป</mat-error>
+          <mat-error *ngIf="tripForm.get('name')?.hasError('minlength')">ชื่อทริปต้องมีความยาวอย่างน้อย 3 ตัวอักษร</mat-error>
+        </mat-form-field>
+
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 240px; margin-bottom: 12px;">
+            <mat-label>จังหวัด / สถานที่</mat-label>
+            <input matInput formControlName="location" placeholder="เช่น เชียงใหม่">
+            <mat-error *ngIf="tripForm.get('location')?.hasError('required')">กรุณากรอกสถานที่</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 240px; margin-bottom: 12px;">
+            <mat-label>ประเภททริป</mat-label>
+            <mat-select formControlName="category">
+              <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="tripForm.get('category')?.hasError('required')">กรุณาเลือกประเภททริป</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 240px; margin-bottom: 12px;">
+            <mat-label>วันเริ่มเดินทาง</mat-label>
+            <input matInput type="date" formControlName="startDate">
+            <mat-error *ngIf="tripForm.get('startDate')?.hasError('required')">กรุณาระบุวันเริ่มเดินทาง</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 240px; margin-bottom: 12px;">
+            <mat-label>วันสิ้นสุดเดินทาง</mat-label>
+            <input matInput type="date" formControlName="endDate">
+            <mat-error *ngIf="tripForm.get('endDate')?.hasError('required')">กรุณาระบุวันสิ้นสุดเดินทาง</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 180px; margin-bottom: 12px;">
+            <mat-label>จำนวนรับสมัครสูงสุด (คน)</mat-label>
+            <input matInput type="number" formControlName="maxParticipants">
+            <mat-error *ngIf="tripForm.get('maxParticipants')?.invalid">ระบุจำนวนคนอย่างน้อย 1 คน</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 180px; margin-bottom: 12px;">
+            <mat-label>จำนวนคนต่อกลุ่ม</mat-label>
+            <input matInput type="number" formControlName="groupSize">
+            <mat-error *ngIf="tripForm.get('groupSize')?.invalid">ระบุจำนวนคนอย่างน้อย 1 คน</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1; min-width: 180px; margin-bottom: 12px;">
+            <mat-label>งบประมาณ (บาท/คน)</mat-label>
+            <input matInput type="number" formControlName="budget">
+            <mat-error *ngIf="tripForm.get('budget')?.invalid">งบประมาณต้องไม่ติดลบ</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
+          <mat-label>สถานะทริป</mat-label>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let st of statuses" [value]="st.value">{{ st.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <button mat-stroke-button type="button" routerLink="/trips">
+            ยกเลิก
+          </button>
+          <button mat-flat-button color="primary" type="submit">
+            <mat-icon>save</mat-icon> บันทึกทริป
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+</div>

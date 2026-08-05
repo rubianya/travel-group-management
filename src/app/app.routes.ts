@@ -8,6 +8,8 @@ import { TripForm } from './features/trips/trip-form/trip-form';
 import { RegistrationList } from './features/registrations/registration-list/registration-list';
 import { GroupList } from './features/groups/group-list/group-list';
 import { ItineraryList } from './features/itinerary/itinerary-list/itinerary-list';
+import { RegistrationForm } from './features/registrations/registration-form/registration-form';
+
 
 export const routes: Routes = [
 
@@ -46,6 +48,10 @@ export const routes: Routes = [
             {
                 path: 'registrations',
                 component: RegistrationList
+            },
+            {
+                path: 'registrations/new',
+                component: RegistrationForm
             },
             {
                 path: 'groups',
