@@ -1,18 +1,24 @@
-<mat-sidenav-container class="layout">
+<div class="app-layout">
+    
+    <app-navbar></app-navbar>
 
-    <mat-sidenav
-        [mode]="layout.sidenavMode()"
-        [opened]="layout.isSidebarOpen()"
-    >
-        <app-sidebar></app-sidebar>
-    </mat-sidenav>
+    <mat-sidenav-container class="layout">
+        <mat-sidenav 
+            [mode]="isMobile ? 'over' : 'side'"
+            [opened]="isMobile ? layout.isSidebarOpen() : true"
+            [style.width]="layout.isSidebarOpen() ? '250px' : '70px'">
+            <app-sidebar></app-sidebar>
+        </mat-sidenav>
 
-    <mat-sidenav-content>
-        <app-navbar></app-navbar>
-        <div class="page">
-            <router-outlet></router-outlet>
-        </div>
-        <app-footer></app-footer>
-    </mat-sidenav-content>
+        <mat-sidenav-content
+            [class.is-open]="layout.isSidebarOpen()" 
+            [class.is-mini]="!layout.isSidebarOpen()">
 
-</mat-sidenav-container>
+            <div class="page">
+                <router-outlet></router-outlet>
+            </div>
+            <app-footer></app-footer>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+
+</div>

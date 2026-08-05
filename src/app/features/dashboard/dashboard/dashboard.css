@@ -1,0 +1,12 @@
+.dashboard-content {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard-content {
+    padding: 16px;
+  }
+}

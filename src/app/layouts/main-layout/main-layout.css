@@ -1,20 +1,39 @@
-.app-layout{
-    display:flex;
-    background:#f8fafc;
-    min-height:100vh;
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-.content{
-    flex:1;
-    padding:30px;
+.layout {
+    flex: 1; 
 }
 
-.layout{
-    height:100vh;
+.page {
+    padding: 24px;
+    background: #f8fafc;
 }
 
-.page{
-    padding:24px;
-    background:#f8fafc;
-    min-height:calc(100vh - 64px);
+mat-sidenav {
+    transition: width 0.3s ease !important;
+    overflow-x: hidden;
+}
+
+mat-sidenav-content {
+    transition: margin-left 0.3s ease !important;
+}
+
+mat-sidenav-content.is-open {
+    margin-left: 250px !important;
+}
+
+mat-sidenav-content.is-mini {
+    margin-left: 70px !important;
+}
+
+@media screen and (max-width: 768px) {
+    mat-sidenav-content.is-open,
+    mat-sidenav-content.is-mini {
+        margin-left: 0 !important;
+        transition: none !important;
+    }
 }
