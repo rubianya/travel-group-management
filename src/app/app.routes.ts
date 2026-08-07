@@ -1,4 +1,4 @@
-import { authGuard } from './core/guards/auth.guard';
+import { AuthGuard } from './core/guards/auth.guard';
 import { Routes } from '@angular/router';
 import { Login } from './features/auth/login/login';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
@@ -13,28 +13,17 @@ import { RegistrationForm } from './features/registrations/registration-form/reg
 
 
 export const routes: Routes = [
-
-    {
-        path: '',
-        component: AuthLayout,
-        children: [
-            {
-                path: '',
-                redirectTo: 'login',
-                pathMatch: 'full'
-            },
-            {
-                path: 'login',
-                component: Login
-            }
-        ]
-    },
-
+    
     {
         path: '',
         component: MainLayout,
-        canActivate: [authGuard],
+        canActivate: [AuthGuard],
         children: [
+            {
+                path: '',
+                redirectTo: 'dashboard',
+                pathMatch: 'full'
+            },
             {
                 path: 'dashboard',
                 component: Dashboard
@@ -67,8 +56,18 @@ export const routes: Routes = [
     },
 
     {
+        path: '',
+        component: AuthLayout,
+        children: [
+            {
+                path: 'login',
+                component: Login
+            }
+        ]
+    },
+    
+    {
         path: '**',
-        redirectTo: ''
+        redirectTo: 'dashboard'
     }
-
 ];

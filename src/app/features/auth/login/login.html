@@ -1,49 +1,35 @@
-<!-- คลุมทั้งหน้าและจัดให้อยู่กึ่งกลางหน้าจอ -->
-<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f5f8fb;">
-  
-  <mat-card style="width: 100%; max-width: 400px; padding: 32px 24px; border-radius: 16px; box-shadow: 0 12px 32px rgba(16, 42, 67, 0.10);">
-    
-    <!-- โลโก้และหัวข้อ -->
-    <div style="text-align: center; margin-bottom: 32px;">
-      <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #1f6feb, #0f766e); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-        <mat-icon style="color: white; font-size: 32px; width: 32px; height: 32px;">flight</mat-icon>
-      </div>
-      <h2 style="margin: 0; color: #102a43; font-size: 24px;">Travel Group</h2>
-      <p style="margin: 6px 0 0; color: #627d98;">เข้าสู่ระบบเพื่อจัดการทริป</p>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="brand-mark">✈</div>
+      <h2>เข้าสู่ระบบ</h2>
+      <p>Travel Group Management System</p>
     </div>
 
-    <!-- ฟอร์มเข้าสู่ระบบ -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      
-      <!-- แสดงข้อความ Error (ถ้ามี) -->
-      <div *ngIf="errorMessage" style="background: #fff8e8; color: #b42318; padding: 12px; border-left: 4px solid #b42318; border-radius: 4px; margin-bottom: 20px; font-size: 14px;">
+      <div class="form-group">
+        <label for="email">อีเมล</label>
+        <input type="email" id="email" formControlName="email" placeholder="example@mail.com" class="form-control">
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-danger">
+          กรุณากรอกอีเมลให้ถูกต้อง
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">รหัสผ่าน</label>
+        <input type="password" id="password" formControlName="password" placeholder="••••••••" class="form-control">
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger">
+          กรุณากรอกรหัสผ่าน
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
 
-      <!-- ช่องกรอกอีเมล -->
-      <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 12px;">
-        <mat-label>อีเมล</mat-label>
-        <input matInput formControlName="email" type="email" placeholder="admin@travel.com">
-        <mat-icon matPrefix style="margin-right: 8px; color: #627d98;">email</mat-icon>
-        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">กรุณากรอกอีเมล</mat-error>
-        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">รูปแบบอีเมลไม่ถูกต้อง</mat-error>
-      </mat-form-field>
-
-      <!-- ช่องกรอกรหัสผ่าน -->
-      <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 24px;">
-        <mat-label>รหัสผ่าน</mat-label>
-        <input matInput formControlName="password" type="password">
-        <mat-icon matPrefix style="margin-right: 8px; color: #627d98;">lock</mat-icon>
-        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">กรุณากรอกรหัสผ่าน</mat-error>
-      </mat-form-field>
-
-      <!-- ปุ่ม Submit -->
-      <button mat-flat-button color="primary" type="submit" [disabled]="isLoading" style="width: 100%; padding: 24px 0; font-size: 16px; border-radius: 8px;">
-        <span *ngIf="!isLoading">เข้าสู่ระบบ</span>
-        <mat-spinner *ngIf="isLoading" diameter="24" style="margin: 0 auto;"></mat-spinner>
+      <button type="submit" class="btn-login" [disabled]="loginForm.invalid || isLoading">
+        {{ isLoading ? 'กำลังตรวจสอบ...' : 'เข้าสู่ระบบ' }}
       </button>
-
     </form>
-  </mat-card>
-
+  </div>
 </div>

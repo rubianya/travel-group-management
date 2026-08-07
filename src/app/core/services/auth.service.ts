@@ -1,25 +1,40 @@
-import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
+import { isPlatformBrowser } from '@angular/common'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private platformId = inject(PLATFORM_ID);
-  // จำลองการ Login
-  login(email: string, password: string): Observable<boolean> {
-    // กำหนด Mock Username/Password
-    if (email === 'admin@gmail.com' && password === 'password123') {
-      // เช็คว่าทำงานบน Browser ถึงจะบันทึก Token
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem('token', 'mock-jwt-token-12345');
-      }
-      return of(true).pipe(delay(1000));
+  // 1. นำเอา hasToken() มาใช้ตอนเซ็ตค่าเริ่มต้นเลยครับ
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
+  public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  // 2. ใช้ฟังก์ชัน hasToken ตัวนี้ครับ
+  private hasToken(): boolean {
+    // ต้องเช็คว่าเป็นเบราว์เซอร์ก่อนเสมอ เพราะถ้าไม่มีเช็คตัวนี้ จะทำให้พังเหมือนเดิม
+    if (isPlatformBrowser(this.platformId)) {
+      return !!localStorage.getItem('token');
     }
-    // ถ้าพิมพ์ผิดให้ส่ง Error กลับไป
-    return throwError(() => new Error('อีเมลหรือรหัสผ่านไม่ถูกต้อง'));
+    return false; 
+  }
+
+  // ฟังก์ชันจำลองการเข้าสู่ระบบ
+  login(email: string, password: string): Observable<any> {
+    return of({ token: 'mock-jwt-token-12345', user: { email, role: 'Organizer' } }).pipe(
+      delay(800), 
+      tap(response => {
+        if (email && password) {
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('token', response.token);
+          }
+          this.isAuthenticatedSubject.next(true);
+        }
+      })
+    );
   }
 
   // ฟังก์ชันออกจากระบบ
@@ -27,13 +42,10 @@ export class AuthService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('token');
     }
+    this.isAuthenticatedSubject.next(false);
   }
 
-  // เช็คว่าเข้าสู่ระบบอยู่หรือไม่
   isLoggedIn(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
-      return !!localStorage.getItem('token');
-    }
-    return false;
+    return this.hasToken();
   }
 }
