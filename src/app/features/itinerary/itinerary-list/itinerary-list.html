@@ -1,1 +1,58 @@
-<p>itinerary-list works!</p>
+<div class="itinerary-list-container" style="padding: 24px; max-width: 800px; margin: 0 auto;">
+  
+  <!-- ส่วนหัวข้อและปุ่มเพิ่มกิจกรรม -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+    <h2 style="margin: 0; color: #102a43;">กำหนดการเดินทาง (Trip #{{currentTripId}})</h2>
+    
+    <button mat-flat-button color="primary">
+      <mat-icon>add</mat-icon> เพิ่มกิจกรรม
+    </button>
+  </div>
+
+  <!-- การ์ดแสดงรายการกำหนดการ -->
+  <mat-card style="border-radius: 12px; box-shadow: 0 4px 12px rgba(16,42,67,0.05); overflow: hidden;">
+    <mat-card-content style="padding: 0;">
+      
+      <!-- วนลูปข้อมูลทั้งหมดที่เรียงลำดับมาแล้ว -->
+      <div *ngFor="let item of itineraries; let i = index">
+        
+        <!-- แถบหัวข้อแสดง วันที่ (แสดงเฉพาะกิจกรรมแรกของวันนั้นๆ) -->
+        <div *ngIf="i === 0 || itineraries[i-1].dayNo !== item.dayNo" 
+             style="background: #eaf4ff; padding: 12px 20px; font-weight: 800; color: #1f6feb; border-bottom: 1px solid #d9e2ec;"
+             [style.border-top]="i === 0 ? 'none' : '1px solid #d9e2ec'">
+          วันที่ {{ item.dayNo }}
+        </div>
+
+        <!-- รายละเอียดกิจกรรม -->
+        <div style="display: flex; padding: 16px 20px; align-items: flex-start; gap: 16px;">
+          <!-- เวลา -->
+          <div style="font-weight: 700; color: #102a43; min-width: 60px; padding-top: 2px;">
+            {{ item.time }}
+          </div>
+          
+          <!-- ชื่อกิจกรรมและสถานที่ -->
+          <div style="flex: 1;">
+            <div style="font-weight: 600; color: #243b53; margin-bottom: 4px;">{{ item.title }}</div>
+            <div style="font-size: 13px; color: #627d98; display: flex; align-items: center;">
+              <mat-icon style="font-size: 16px; width: 16px; height: 16px; margin-right: 4px;">location_on</mat-icon>
+              {{ item.location }}
+            </div>
+          </div>
+          
+          <!-- ปุ่มแก้ไข/ลบ (รอพัฒนาต่อ) -->
+          <div>
+            <button mat-icon-button color="primary" title="แก้ไขกิจกรรม">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- เส้นแบ่งระหว่างกิจกรรมในวันเดียวกัน -->
+        <mat-divider *ngIf="i !== itineraries.length - 1 && itineraries[i+1].dayNo === item.dayNo"></mat-divider>
+        
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>

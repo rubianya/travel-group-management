@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { Registration } from '../../../core/models/registration.model';
 import { RegistrationService } from '../../../core/services/registration.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-registration-list',
@@ -15,7 +16,8 @@ import { RegistrationService } from '../../../core/services/registration.service
     MatTableModule, 
     MatButtonModule, 
     MatIconModule, 
-    MatChipsModule
+    MatChipsModule,
+    RouterLink
   ],
   templateUrl: './registration-list.html',
   styleUrl: './registration-list.css',

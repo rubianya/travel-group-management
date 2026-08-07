@@ -5,7 +5,7 @@ import { Navbar } from '../../shared/navbar/navbar';
 import { Sidebar } from '../../shared/sidebar/sidebar';
 import { Footer } from '../../shared/footer/footer';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { LayoutService } from '../../core/services/layout-service';
+import { LayoutService } from '../../core/services/layout.service';
 
 @Component({
   selector: 'app-main-layout',

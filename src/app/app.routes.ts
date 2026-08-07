@@ -1,3 +1,4 @@
+import { authGuard } from './core/guards/auth.guard';
 import { Routes } from '@angular/router';
 import { Login } from './features/auth/login/login';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
@@ -32,6 +33,7 @@ export const routes: Routes = [
     {
         path: '',
         component: MainLayout,
+        canActivate: [authGuard],
         children: [
             {
                 path: 'dashboard',
@@ -66,7 +68,7 @@ export const routes: Routes = [
 
     {
         path: '**',
-        redirectTo: 'login'
+        redirectTo: ''
     }
 
 ];
