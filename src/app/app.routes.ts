@@ -1,22 +1,17 @@
 import { AuthGuard } from './core/guards/auth-guard';
 import { Routes } from '@angular/router';
-import { Login } from './features/auth/login/login';
-import { AuthLayout } from './layouts/auth-layout/auth-layout';
-import { MainLayout } from './layouts/main-layout/main-layout';
-import { Dashboard } from './features/dashboard/dashboard/dashboard';
-import { TripList } from './features/trips/trip-list/trip-list';
-import { TripForm } from './features/trips/trip-form/trip-form';
-import { RegistrationList } from './features/registrations/registration-list/registration-list';
-import { GroupList } from './features/groups/group-list/group-list';
-import { ItineraryList } from './features/itinerary/itinerary-list/itinerary-list';
-import { RegistrationForm } from './features/registrations/registration-form/registration-form';
-
 
 export const routes: Routes = [
-    
+    {
+        path: '', redirectTo: 'login', pathMatch: 'full'
+    },
+    {
+        path: 'login',
+        loadComponent: () => import('./features/auth/login/login').then(m => m.Login)
+    },
     {
         path: '',
-        component: MainLayout,
+        loadComponent: () => import('./layouts/main-layout/main-layout').then(m => m.MainLayout),
         canActivate: [AuthGuard],
         children: [
             {
@@ -26,48 +21,32 @@ export const routes: Routes = [
             },
             {
                 path: 'dashboard',
-                component: Dashboard
+                loadComponent: () => import('./features/dashboard/dashboard/dashboard').then(m => m.Dashboard)
             },
             {
                 path: 'trips',
-                component: TripList
+                loadComponent: () => import('./features/trips/trip-list/trip-list').then(m => m.TripList)
             },
             {
                 path: 'trips/new',
-                component: TripForm
+                loadComponent: () => import('./features/trips/trip-form/trip-form').then(m => m.TripForm)
             },
             {
                 path: 'registrations',
-                component: RegistrationList
+                loadComponent: () => import('./features/registrations/registration-list/registration-list').then(m => m.RegistrationList)
             },
             {
                 path: 'registrations/new',
-                component: RegistrationForm
+                loadComponent: () => import('./features/registrations/registration-form/registration-form').then(m => m.RegistrationForm)
             },
             {
                 path: 'groups',
-                component: GroupList
+                loadComponent: () => import('./features/groups/group-list/group-list').then(m => m.GroupList)
             },
             {
                 path: 'itinerary',
-                component: ItineraryList
+                loadComponent: () => import('./features/itinerary/itinerary-list/itinerary-list').then(m => m.ItineraryList)
             }
         ]
-    },
-
-    {
-        path: '',
-        component: AuthLayout,
-        children: [
-            {
-                path: 'login',
-                component: Login
-            }
-        ]
-    },
-    
-    {
-        path: '**',
-        redirectTo: 'dashboard'
     }
 ];
