@@ -1,4 +1,4 @@
-import { AuthGuard } from './core/guards/auth.guard';
+import { AuthGuard } from './core/guards/auth-guard';
 import { Routes } from '@angular/router';
 import { Login } from './features/auth/login/login';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';

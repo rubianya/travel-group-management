@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,8 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
 import { AuthService } from '../../../core/services/auth.service';
+import { LoginResponse } from '../../../core/models/auth.model';
 
 @Component({
   selector: 'app-login',
@@ -27,42 +27,57 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-export class Login implements OnInit {
+export class Login {
 
-  loginForm!: FormGroup;
+  loginForm = new FormGroup({
+    email: new FormControl('example@email.com', [Validators.required, Validators.email]),
+    password: new FormControl('example', [Validators.required])
+  });
+
   isLoading = false;
   errorMessage = '';
 
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  constructor(
+    private router: Router, 
+    private authService: AuthService
+  ) {}
 
-  ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      email: ['admin@gmail.com', [Validators.required, Validators.email]],
-      password: ['password123', Validators.required]
-    });
-  }
-
-  onSubmit(): void {
+  login() {
     if (this.loginForm.valid) {
-
-      this.isLoading = true;
+      localStorage.removeItem('token'); 
       this.errorMessage = '';
       
-      const { email, password } = this.loginForm.value;
+      const payload = this.loginForm.value;
 
-      this.authService.login(email, password).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.router.navigate(['/dashboard']);
+      this.authService.login(payload).subscribe({
+        next: (response: LoginResponse) => {
+          if (response && response.success && response.data) {
+              const userData = response.data;
+
+              if (userData.status === 'A') {
+                console.log('Login สำเร็จ', response);
+                localStorage.setItem('token', userData.token);
+                this.isLoading = false;
+                this.router.navigate(['/dashboard']);
+              } else {
+                alert('บัญชีผู้ใช้ของคุณยังไม่ได้รับการอนุมัติ');
+              }
+            }
         },
-        error: (err) => {
-          this.isLoading = false;
-          this.errorMessage = err.message;
+        error: (error) => {
+          console.error('Login ล้มเหลว', error);
+          if (error.status === 403) {
+              alert('เซสชันหมดอายุ หรือไม่มีสิทธิ์เข้าถึง กรุณาล็อกอินใหม่');
+          } else {
+              this.isLoading = false;
+              this.errorMessage = error.message || 'โปรดกรอกอีเมลและรหัสผ่านให้ถูกต้อง';
+              alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+          }
         }
       });
+
     } else {
+      alert('กรุณากรอกอีเมลและรหัสผ่านให้ครบถ้วน!');
       this.loginForm.markAllAsTouched();
     }
   }

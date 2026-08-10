@@ -6,10 +6,10 @@
       <p>Travel Group Management System</p>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
       <div class="form-group">
         <label for="email">อีเมล</label>
-        <input type="email" id="email" formControlName="email" placeholder="example@mail.com" class="form-control">
+        <input type="email" id="email" formControlName="email" placeholder="กรอกอีเมล" class="form-control">
         <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-danger">
           กรุณากรอกอีเมลให้ถูกต้อง
         </div>
@@ -17,7 +17,7 @@
 
       <div class="form-group">
         <label for="password">รหัสผ่าน</label>
-        <input type="password" id="password" formControlName="password" placeholder="••••••••" class="form-control">
+        <input type="password" id="password" formControlName="password" placeholder="กรอกรหัสผ่าน" class="form-control">
         <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger">
           กรุณากรอกรหัสผ่าน
         </div>
