@@ -1,0 +1,97 @@
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading">
+  <mat-spinner diameter="50" color="primary"></mat-spinner>
+  <p>กำลังโหลดข้อมูลทริป...</p>
+</div>
+
+<!-- Content State -->
+<div class="trip-detail-container" *ngIf="!isLoading && trip">
+  <div class="header-actions">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2 class="page-title">รายละเอียดทริป: {{ trip.tripName }}</h2>
+    <span class="status-badge status-{{ trip.status.toLowerCase() }}">
+      {{ trip.status }}
+    </span>
+  </div>
+
+  <div class="cards-grid">
+    <!-- Trip Info Card -->
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-card-title>ข้อมูลทั่วไป</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>รายละเอียด:</strong> {{ trip.description }}</p>
+        <p><strong>สถานที่:</strong> {{ trip.location }}</p>
+        <p><strong>ประเภททริป:</strong> {{ trip.tripType }}</p>
+        <p><strong>วันที่:</strong> {{ trip.startDate }} - {{ trip.endDate }}</p>
+        <p><strong>งบประมาณโดยประมาณ:</strong> {{ trip.budget | number }} บาท</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Participants Info Card -->
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-card-title>สถิติผู้สมัคร</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-container">
+          <div class="stat-item">
+            <span class="stat-value">{{ registrations.length }} / {{ trip.maxParticipants }}</span>
+            <span class="stat-label">จำนวนผู้สมัคร</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ trip.groupSize }}</span>
+            <span class="stat-label">ขนาดกลุ่มที่แนะนำ</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Groups Section -->
+  <mat-card class="groups-card">
+    <mat-card-header>
+      <mat-card-title>การจัดกลุ่ม ({{ groups.length }} กลุ่ม)</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngIf="groups.length === 0" class="no-data">
+        <p>ยังไม่มีการจัดกลุ่มสำหรับทริปนี้</p>
+      </div>
+
+      <div class="groups-grid" *ngIf="groups.length > 0">
+        <mat-card class="group-item-card" *ngFor="let group of groups">
+          <mat-card-header>
+            <mat-card-title>{{ group.groupName }}</mat-card-title>
+            <mat-card-subtitle>จำนวนสมาชิก: {{ group.members.length || 0 }} คน</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list>
+              <mat-list-item *ngFor="let member of group.members">
+                <mat-icon matListItemIcon>person</mat-icon>
+                <div matListItemTitle>{{ member.travelerName }}</div>
+                <div matListItemLine>
+                  <mat-chip-set>
+                    <mat-chip *ngFor="let interest of member.interests" color="primary" selected>
+                      {{ interest }}
+                    </mat-chip>
+                  </mat-chip-set>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+<div *ngIf="!isLoading && !trip" class="error-container">
+  <mat-icon color="warn">error</mat-icon>
+  <p>ไม่พบข้อมูลทริป</p>
+  <button mat-flat-button color="primary" (click)="goBack()">กลับไปหน้ารายการ</button>
+</div>

@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@fontsource/roboto/300.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import 'styles/_variables.css';
+@import 'styles/_shared.css';
+
+/* Components */
+@import 'styles/_login.css';
+@import 'styles/_dashboard.css';
+@import 'styles/_main-layout.css';
+@import 'styles/_navbar.css';
+@import 'styles/_sidebar.css';
+@import 'styles/_trip-list.css';
+@import 'styles/_trip-form.css';
+@import 'styles/_registration-list.css';
+@import 'styles/_registration-form.css';
+@import 'styles/_itinerary-list.css';
+@import 'styles/_group-list.css';

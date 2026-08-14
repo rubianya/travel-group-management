@@ -25,53 +25,54 @@ import { LoginResponse } from '../../../core/models/auth.model';
     MatProgressSpinnerModule
   ],
   templateUrl: './login.html',
-  styleUrls: ['./login.css']
 })
 export class Login {
 
   loginForm = new FormGroup({
-    email: new FormControl('example@email.com', [Validators.required, Validators.email]),
-    password: new FormControl('example', [Validators.required])
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required])
   });
 
   isLoading = false;
   errorMessage = '';
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private authService: AuthService
-  ) {}
+  ) { }
 
   login() {
     if (this.loginForm.valid) {
-      localStorage.removeItem('token'); 
+      localStorage.removeItem('token');
       this.errorMessage = '';
-      
+      this.isLoading = true;
+
       const payload = this.loginForm.value;
 
       this.authService.login(payload).subscribe({
         next: (response: LoginResponse) => {
           if (response && response.success && response.data) {
-              const userData = response.data;
+            const userData = response.data;
 
-              if (userData.status === 'A') {
-                console.log('Login สำเร็จ', response);
-                localStorage.setItem('token', userData.token);
-                this.isLoading = false;
-                this.router.navigate(['/dashboard']);
-              } else {
-                alert('บัญชีผู้ใช้ของคุณยังไม่ได้รับการอนุมัติ');
-              }
+            if (userData.status === 'A') {
+              console.log('Login สำเร็จ', response);
+              localStorage.setItem('token', userData.token);
+              this.isLoading = false;
+              this.router.navigate(['/dashboard']);
+            } else {
+              this.isLoading = false;
+              alert('บัญชีผู้ใช้ของคุณยังไม่ได้รับการอนุมัติ');
             }
+          }
         },
         error: (error) => {
           console.error('Login ล้มเหลว', error);
           if (error.status === 403) {
-              alert('เซสชันหมดอายุ หรือไม่มีสิทธิ์เข้าถึง กรุณาล็อกอินใหม่');
+            alert('เซสชันหมดอายุ หรือไม่มีสิทธิ์เข้าถึง กรุณาล็อกอินใหม่');
           } else {
-              this.isLoading = false;
-              this.errorMessage = error.message || 'โปรดกรอกอีเมลและรหัสผ่านให้ถูกต้อง';
-              alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+            this.isLoading = false;
+            this.errorMessage = error.message || 'โปรดกรอกอีเมลและรหัสผ่านให้ถูกต้อง';
+            alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
           }
         }
       });

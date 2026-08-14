@@ -1,24 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterLink, 
-    MatCardModule, 
-    MatIconModule, 
+    CommonModule,
+    RouterLink,
+    MatCardModule,
+    MatIconModule,
     MatButtonModule,
-    MatDividerModule
+    MatDividerModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
   // จำลองข้อมูลสรุปภาพรวม (Summary)
@@ -38,8 +39,15 @@ export class Dashboard implements OnInit {
     { id: 3, name: 'ไหว้พระอยุธยา', startDate: '2024-10-25', participants: 15, status: 'CLOSED' }
   ];
 
+  isLoading = true;
+  cdr = inject(ChangeDetectorRef);
+
   ngOnInit(): void {
     // ในอนาคตเมื่อต่อ Backend จะต้องเรียก API: GET /api/dashboard/summary ที่นี่
+    setTimeout(() => {
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    }, 800);
   }
 
 }

@@ -1,0 +1,43 @@
+.registration-form-container {
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.registration-form-header {
+  margin-bottom: 20px;
+}
+
+.registration-form-full-width {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.registration-form-full-width-last {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.registration-form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.registration-form-field-200 {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: 12px;
+}
+
+.registration-form-field-250 {
+  flex: 2;
+  min-width: 250px;
+  margin-bottom: 12px;
+}
+
+.registration-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

@@ -1,0 +1,26 @@
+.trip-list-container {
+  padding: 24px;
+}
+
+.trip-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.trip-list-title {
+  margin: 0;
+}
+
+.table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.full-width-table {
+  width: 100%;
+}
+

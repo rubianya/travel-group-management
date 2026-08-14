@@ -1,0 +1,74 @@
+/* Shared Components & Utilities */
+
+/* Base Badge Style */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Trip Status Classes */
+.status-draft {
+  background-color: var(--status-gray-bg);
+  color: var(--status-gray-text);
+}
+
+.status-open {
+  background-color: var(--status-green-bg);
+  color: var(--status-green-text);
+}
+
+.status-closed {
+  background-color: var(--status-red-bg);
+  color: var(--status-red-text);
+}
+
+.status-grouping {
+  background-color: var(--status-blue-bg);
+  color: var(--status-blue-text);
+}
+
+.status-confirmed {
+  background-color: var(--status-yellow-bg);
+  color: var(--status-yellow-text);
+}
+
+.status-cancelled {
+  background-color: var(--status-red-bg);
+  color: var(--status-red-text);
+}
+
+.status-completed {
+  background-color: var(--status-green-bg);
+  color: var(--status-green-text);
+}
+
+/* User Role Classes */
+.status-admin {
+  background-color: var(--status-blue-bg);
+  color: var(--status-blue-text);
+}
+
+.status-organizer {
+  background-color: var(--status-green-bg);
+  color: var(--status-green-text);
+}
+
+.status-traveler {
+  background-color: var(--status-yellow-bg);
+  color: var(--status-yellow-text);
+}
+
+/* User Status Classes */
+.status-a {
+  background-color: var(--status-green-bg);
+  color: var(--status-green-text);
+}
+
+.status-i {
+  background-color: var(--status-gray-bg);
+  color: var(--status-gray-text);
+}

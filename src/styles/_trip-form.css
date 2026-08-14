@@ -1,0 +1,43 @@
+.trip-form-container {
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.trip-form-header {
+  margin-bottom: 20px;
+}
+
+.trip-form-full-width {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.trip-form-full-width-last {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.trip-form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.trip-form-field-240 {
+  flex: 1;
+  min-width: 240px;
+  margin-bottom: 12px;
+}
+
+.trip-form-field-180 {
+  flex: 1;
+  min-width: 180px;
+  margin-bottom: 12px;
+}
+
+.trip-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

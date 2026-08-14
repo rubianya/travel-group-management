@@ -1,0 +1,54 @@
+.navbar {
+    background-color: #d8d8df;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.logo {
+    margin-left: 16px;
+    font-weight: 600;
+}
+
+.profile-button {
+    font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 8px;
+    padding: 4px 16px 4px 12px;
+
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+    color: #2c3e50;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    outline: none;
+}
+
+.profile-button:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    color: #3f51b5;
+}
+
+.profile-button mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: inherit;
+}
+
+@media screen and (max-width: 768px) {
+    ::ng-deep .custom-profile-menu {
+        min-width: 240px !important;
+    }
+}

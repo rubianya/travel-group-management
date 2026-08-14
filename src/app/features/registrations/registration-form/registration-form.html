@@ -1,7 +1,7 @@
-<div class="registration-form-container" style="padding: 24px; max-width: 800px; margin: 0 auto;">
+<div class="registration-form-container">
   
   <mat-card>
-    <mat-card-header style="margin-bottom: 20px;">
+    <mat-card-header class="registration-form-header">
       <mat-card-title>
         <h2>ฟอร์มสมัครเข้าร่วมทริป</h2>
       </mat-card-title>
@@ -10,7 +10,7 @@
     <mat-card-content>
       <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
 
-        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 12px;">
+        <mat-form-field appearance="outline" class="registration-form-full-width">
           <mat-label>เลือกทริปที่ต้องการเข้าร่วม</mat-label>
           <mat-select formControlName="tripId">
             <mat-option *ngFor="let trip of mockTrips" [value]="trip.id">
@@ -20,20 +20,20 @@
           <mat-error *ngIf="registrationForm.get('tripId')?.hasError('required')">กรุณาเลือกทริป</mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 12px;">
+        <mat-form-field appearance="outline" class="registration-form-full-width">
           <mat-label>ชื่อ-นามสกุล (ผู้สมัคร)</mat-label>
           <input matInput formControlName="travelerName" placeholder="ระบุชื่อของคุณ">
           <mat-error *ngIf="registrationForm.get('travelerName')?.hasError('required')">กรุณาระบุชื่อผู้สมัคร</mat-error>
         </mat-form-field>
 
-        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-          <mat-form-field appearance="outline" style="flex: 1; min-width: 200px; margin-bottom: 12px;">
+        <div class="registration-form-row">
+          <mat-form-field appearance="outline" class="registration-form-field-200">
             <mat-label>งบประมาณที่รับได้ (บาท)</mat-label>
             <input matInput type="number" formControlName="budget">
             <mat-error *ngIf="registrationForm.get('budget')?.invalid">งบประมาณต้องไม่ติดลบ</mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" style="flex: 2; min-width: 250px; margin-bottom: 12px;">
+          <mat-form-field appearance="outline" class="registration-form-field-250">
             <mat-label>ความสนใจในการท่องเที่ยว</mat-label>
             <mat-select formControlName="interests" multiple>
               <mat-option *ngFor="let interest of availableInterests" [value]="interest">
@@ -44,12 +44,12 @@
           </mat-form-field>
         </div>
 
-        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
+        <mat-form-field appearance="outline" class="registration-form-full-width-last">
           <mat-label>หมายเหตุเพิ่มเติม (เช่น ข้อจำกัดด้านอาหาร, โรคประจำตัว)</mat-label>
           <textarea matInput formControlName="remark" rows="3" placeholder="ระบุหมายเหตุ... (ถ้ามี)"></textarea>
         </mat-form-field>
 
-        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+        <div class="registration-form-actions">
           <button mat-stroke-button type="button" routerLink="/registrations">
             ยกเลิก
           </button>

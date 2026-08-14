@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" class="navbar">
 
-    <button mat-icon-button (click)="toggleSidebar()">
+    <button mat-icon-button type="button" (click)="toggleSidebar()">
         <mat-icon>menu</mat-icon>
     </button>
 
@@ -8,12 +8,13 @@
 
     <span class="spacer"></span>
 
-    <button mat-icon-button>
-        <mat-icon>notifications</mat-icon>
+    <button class="profile-button" type="button">
+        <mat-icon>account_circle</mat-icon>
+        <span class="profile-name">{{ fullName || 'Loading...'}}</span>
     </button>
 
-    <button mat-icon-button>
-        <mat-icon>account_circle</mat-icon>
+    <button mat-icon-button type="button" (click)="logout()">
+        <mat-icon>logout</mat-icon>
     </button>
 
 </mat-toolbar>

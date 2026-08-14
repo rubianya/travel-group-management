@@ -1,0 +1,32 @@
+.registration-list-container {
+  padding: 24px;
+}
+
+.registration-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.registration-list-title {
+  margin: 0;
+}
+
+.registration-list-table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.registration-list-table {
+  width: 100%;
+}
+
+.registration-list-chip {
+  background-color: #fff8e8;
+  color: #b45309;
+  font-size: 12px;
+}
+

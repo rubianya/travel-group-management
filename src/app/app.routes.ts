@@ -32,6 +32,14 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/trips/trip-form/trip-form').then(m => m.TripForm)
             },
             {
+                path: 'trips/:id',
+                loadComponent: () => import('./features/trips/trip-form/trip-form').then(m => m.TripForm)
+            },
+            {
+                path: 'trips/:id/detail',
+                loadComponent: () => import('./features/trips/trip-detail/trip-detail').then(m => m.TripDetail)
+            },
+            {
                 path: 'registrations',
                 loadComponent: () => import('./features/registrations/registration-list/registration-list').then(m => m.RegistrationList)
             },
@@ -46,6 +54,22 @@ export const routes: Routes = [
             {
                 path: 'itinerary',
                 loadComponent: () => import('./features/itinerary/itinerary-list/itinerary-list').then(m => m.ItineraryList)
+            },
+            {
+                path: 'users',
+                loadComponent: () => import('./features/users/user-list/user-list').then(m => m.UserList)
+            },
+            {
+                path: 'users/new',
+                loadComponent: () => import('./features/users/user-form/user-form').then(m => m.UserForm)
+            },
+            {
+                path: 'users/:id',
+                loadComponent: () => import('./features/users/user-form/user-form').then(m => m.UserForm)
+            },
+            {
+                path: 'users/:id/detail',
+                loadComponent: () => import('./features/users/user-detail/user-detail').then(m => m.UserDetail)
             }
         ]
     }

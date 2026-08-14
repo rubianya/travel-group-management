@@ -20,7 +20,6 @@ import { Group } from '../../../core/models/group.model';
     MatProgressSpinnerModule
   ],
   templateUrl: './group-list.html',
-  styleUrl: './group-list.css',
 })
 export class GroupList implements OnInit {
 

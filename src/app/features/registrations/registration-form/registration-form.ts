@@ -26,7 +26,6 @@ import { Router } from '@angular/router';
     MatIconModule
   ],
   templateUrl: './registration-form.html',
-  styleUrl: './registration-form.css',
 })
 export class RegistrationForm implements OnInit {
 

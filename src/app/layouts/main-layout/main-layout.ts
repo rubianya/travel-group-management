@@ -18,7 +18,6 @@ import { LayoutService } from '../../core/services/layout.service';
     MatSidenavModule
 ],
   templateUrl: './main-layout.html',
-  styleUrl: './main-layout.css'
 })
 export class MainLayout {
 

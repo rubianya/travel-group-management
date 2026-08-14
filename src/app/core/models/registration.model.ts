@@ -4,6 +4,6 @@ export interface Registration {
   travelerName: string;
   budget: number;
   interests: string[];
-  status: 'REGISTERED' | 'WAITING_PAYMENT' | 'PAID' | 'CONFIRMED' | 'CANCELLED'; 
+  status: string;
   remark?: string;
 }
