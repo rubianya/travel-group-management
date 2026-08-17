@@ -29,8 +29,13 @@ export class TripService {
   }
 
   // สร้างทริปใหม่
-  createTrip(trip: Trip): Observable<Trip> {
-    return this.http.post<Trip>(this.apiUrl, trip);
+  createTrip(trip: Trip, file?: File | null): Observable<Trip> {
+    const formData = new FormData();
+    formData.append('trip', new Blob([JSON.stringify(trip)], { type: 'application/json' }));
+    if (file) {
+      formData.append('file', file);
+    }
+    return this.http.post<Trip>(this.apiUrl, formData);
   }
 
   // แก้ไขทริป

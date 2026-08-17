@@ -13,10 +13,10 @@ import { RouterLink } from '@angular/router';
   selector: 'app-registration-list',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatTableModule, 
-    MatButtonModule, 
-    MatIconModule, 
+    CommonModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
     MatChipsModule,
     MatProgressSpinnerModule,
     RouterLink
@@ -39,7 +39,7 @@ export class RegistrationList implements OnInit {
   // ฟังก์ชันดึงข้อมูลจาก Mock Data
   loadRegistrations(): void {
     this.isLoading = true;
-    this.registrationService.getRegistrations().subscribe({
+    this.registrationService.getAllRegistrations().subscribe({
       next: (data) => {
         this.dataSource = data;
         this.isLoading = false;

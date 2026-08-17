@@ -10,6 +10,26 @@
     <mat-card-content>
       <form [formGroup]="tripForm" (ngSubmit)="onSubmit()">
 
+        <div class="trip-form-image-section">
+          <div class="image-upload-wrapper" (click)="fileInput.click()">
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none;">
+
+            <ng-container *ngIf="!imagePreview; else preview">
+              <div class="upload-placeholder">
+                <mat-icon class="upload-icon">add_a_photo</mat-icon>
+                <span>อัปโหลดรูปภาพหน้าปกทริป (แนะนำรูปแนวนอน)</span>
+              </div>
+            </ng-container>
+
+            <ng-template #preview>
+              <img [src]="imagePreview" alt="Trip Image Preview" class="preview-img">
+              <button type="button" class="remove-btn-container" (click)="removeImage($event)" matTooltip="ลบรูปภาพ">
+                <mat-icon class="close-icon">close</mat-icon>
+              </button>
+            </ng-template>
+          </div>
+        </div>
+
         <mat-form-field appearance="outline" class="trip-form-full-width">
           <mat-label>ชื่อทริป</mat-label>
           <input matInput formControlName="tripName" placeholder="เช่น ทริปเดินป่า กาญจนบุรี" autocomplete="off">

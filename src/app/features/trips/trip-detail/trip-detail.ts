@@ -55,7 +55,7 @@ export class TripDetail implements OnInit {
 
       setTimeout(() => {
         this.loadTripData(tripId);
-      }, 800);
+      }, 500);
     } else {
       this.isLoading = false;
       this.cdr.detectChanges();
@@ -76,13 +76,13 @@ export class TripDetail implements OnInit {
     });
   }
 
-  loadRegistrationsAndGroups(tripId: number): void {
-    this.registrationService.getRegistrations().subscribe({
+  loadRegistrationsAndGroups(trip: number): void {
+    this.registrationService.getRegistrationsByTripId(trip).subscribe({
       next: (regs) => {
         const allRegs: Registration[] = (regs as any).data || regs;
-        this.registrations = allRegs.filter(r => r.tripId === tripId);
+        this.registrations = allRegs;
 
-        this.groupService.getGroupsByTripId(tripId).subscribe({
+        this.groupService.getGroupsByTripId(trip).subscribe({
           next: (groupResponse) => {
             this.groups = (groupResponse as any).data || groupResponse;
             this.isLoading = false;

@@ -1,10 +1,41 @@
 <div class="trip-list-container">
 
   <div class="trip-list-header">
-    <h2 class="trip-list-title">จัดการข้อมูลผู้ใช้งาน (User Management)</h2>
-    <button mat-flat-button color="primary" routerLink="/users/new">
+    <h2 class="trip-list-title">จัดการข้อมูลผู้ใช้งาน</h2>
+    <button mat-flat-button color="primary" routerLink="/users/new" class="add-button">
       <mat-icon>person_add</mat-icon> เพิ่มผู้ใช้ใหม่
     </button>
+  </div>
+
+  <div class="card-container filter-card" *ngIf="!isLoading">
+    <div class="filter-section">
+    <mat-form-field appearance="outline" class="filter-input search-input">
+      <mat-label>ค้นหา (ID, ชื่อ-นามสกุล)</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" placeholder="พิมพ์คำค้นหา...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-input">
+      <mat-label>บทบาท (Role)</mat-label>
+      <mat-select [(ngModel)]="selectedRole" (ngModelChange)="applyFilter()">
+        <mat-option value="">ทั้งหมด</mat-option>
+        <mat-option *ngFor="let role of availableRoles" [value]="role">{{ role }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-input">
+      <mat-label>สถานะ (Status)</mat-label>
+      <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilter()">
+        <mat-option value="">ทั้งหมด</mat-option>
+        <mat-option value="A">Active</mat-option>
+        <mat-option value="I">Inactive</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+      <button mat-stroked-button color="warn" class="clear-btn" (click)="clearFilters()">
+        <mat-icon>clear_all</mat-icon> ล้างค่าค้นหา
+      </button>
+    </div>
   </div>
 
   <div class="loading-container" *ngIf="isLoading">
@@ -12,8 +43,9 @@
     <p>กำลังโหลดข้อมูล...</p>
   </div>
 
-  <div class="table-container" *ngIf="!isLoading">
-    <table mat-table [dataSource]="users" class="full-width-table">
+  <div class="card-container table-card" *ngIf="!isLoading">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="paginatedUsers" class="full-width-table">
 
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef> ID </th>
@@ -42,9 +74,7 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> สถานะ </th>
         <td mat-cell *matCellDef="let element">
-          <mat-slide-toggle
-            [checked]="element.status === 'A'"
-            (change)="toggleStatus(element.id, element.status)"
+          <mat-slide-toggle [checked]="element.status === 'A'" (change)="toggleStatus(element.id, element.status)"
             color="primary">
             <span class="status-badge status-{{ element.status?.toLowerCase() }}">
               {{element.status === 'A' ? 'Active' : (element.status === 'I' ? 'Inactive' : element.status)}}
@@ -75,6 +105,22 @@
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell text-center p-4" colspan="6">ไม่พบข้อมูลผู้ใช้งาน</td>
       </tr>
-    </table>
+      </table>
+    </div>
+    
+    <div class="pagination-container" *ngIf="filteredUsers.length > 0">
+      <div class="pagination-info">
+        แสดง {{ startIndex }} ถึง {{ endIndex }} จากทั้งหมด {{ filteredUsers.length }} รายการ
+      </div>
+      <div class="pagination-controls">
+        <button mat-icon-button (click)="prevPage()" [disabled]="currentPage === 1" color="primary">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="page-number">หน้า {{ currentPage }} / {{ totalPages }}</span>
+        <button mat-icon-button (click)="nextPage()" [disabled]="currentPage === totalPages" color="primary">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
   </div>
 </div>

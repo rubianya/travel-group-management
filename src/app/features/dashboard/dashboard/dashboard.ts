@@ -47,7 +47,7 @@ export class Dashboard implements OnInit {
     setTimeout(() => {
       this.isLoading = false;
       this.cdr.detectChanges();
-    }, 800);
+    }, 500);
   }
 
 }

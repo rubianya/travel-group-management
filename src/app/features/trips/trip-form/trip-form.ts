@@ -36,6 +36,7 @@ export class TripForm implements OnInit {
   isLoading = false;
 
   tripType: string[] = ['ธรรมชาติ', 'คาเฟ่', 'วัฒนธรรม', 'อาหารท้องถิ่น', 'เดินป่า', 'ทะเล', 'ถ่ายรูป', 'ช้อปปิ้ง'];
+  imagePreview: string | ArrayBuffer | null = null;
 
   statuses = [
     { value: 'DRAFT', label: 'ฉบับร่าง (DRAFT)' },
@@ -60,7 +61,7 @@ export class TripForm implements OnInit {
         this.loadTripData(this.tripId);
       } else {
         this.isLoading = true;
-        of(null).pipe(delay(800)).subscribe(() => {
+        of(null).pipe(delay(500)).subscribe(() => {
           this.isLoading = false;
           this.cdr.detectChanges();
         });
@@ -70,7 +71,7 @@ export class TripForm implements OnInit {
 
   private loadTripData(id: number): void {
     this.isLoading = true;
-    this.tripService.getTripById(id).pipe(delay(800)).subscribe({
+    this.tripService.getTripById(id).pipe(delay(500)).subscribe({
       next: (response: any) => {
         if (response && response.data) {
           const trip = response.data;
@@ -109,16 +110,18 @@ export class TripForm implements OnInit {
       groupSize: [5, [Validators.required, Validators.min(1)]],
       budget: [0, [Validators.required, Validators.min(0)]],
       tripType: ['', Validators.required],
-      status: ['DRAFT', Validators.required]
+      status: ['DRAFT', Validators.required],
+      image: [null]
     });
   }
 
   onSubmit(): void {
     if (this.tripForm.valid) {
       const formValue = this.tripForm.value;
+      const { image, ...tripData } = formValue;
 
       const payload = {
-        ...formValue,
+        ...tripData,
         budget: Number(formValue.budget),
         groupSize: Number(formValue.groupSize),
         maxParticipants: Number(formValue.maxParticipants)
@@ -140,7 +143,7 @@ export class TripForm implements OnInit {
           }
         });
       } else {
-        this.tripService.createTrip(payload).subscribe({
+        this.tripService.createTrip(payload, image).subscribe({
           next: (response) => {
             alert('บันทึกข้อมูลทริปสำเร็จ!');
             this.cdr.detectChanges();
@@ -157,4 +160,29 @@ export class TripForm implements OnInit {
       this.tripForm.markAllAsTouched();
     }
   }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.tripForm.patchValue({ image: file });
+      this.tripForm.get('image')?.updateValueAndValidity();
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
+    this.cdr.detectChanges();
+  }
+
+  removeImage(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.imagePreview = null;
+    this.tripForm.patchValue({ image: null });
+  }
+
 }

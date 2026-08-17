@@ -19,6 +19,8 @@
   <div class="cards-grid">
     <!-- Trip Info Card -->
     <mat-card class="detail-card">
+      <img *ngIf="trip.imageUrl" mat-card-image [src]="'http://localhost:8080' + trip.imageUrl" [alt]="trip.tripName"
+        class="trip-cover-image">
       <mat-card-header>
         <mat-card-title>ข้อมูลทั่วไป</mat-card-title>
       </mat-card-header>

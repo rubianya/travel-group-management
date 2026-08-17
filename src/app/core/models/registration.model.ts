@@ -1,9 +1,8 @@
 export interface Registration {
   id?: number;
-  tripId: number;
-  travelerName: string;
+  trip: number;
+  user: number;
   budget: number;
-  interests: string[];
   status: string;
   remark?: string;
 }

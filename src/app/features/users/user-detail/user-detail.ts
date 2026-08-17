@@ -43,7 +43,7 @@ export class UserDetail implements OnInit {
 
   private loadUserData(id: number): void {
     this.isLoading = true;
-    this.userService.getUserById(id).pipe(delay(800)).subscribe({
+    this.userService.getUserById(id).pipe(delay(500)).subscribe({
       next: (response: any) => {
         this.user = response.data || response;
         this.isLoading = false;

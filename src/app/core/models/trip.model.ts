@@ -9,6 +9,7 @@ export interface Trip {
     groupSize: number;
     budget: number;
     tripType: string;
+    imageUrl: string;
     status: string;
-    createdBy: string;
+    createdById: number;
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { delay, of } from 'rxjs';
@@ -44,13 +44,23 @@ export class UserForm implements OnInit {
     { value: 'I', label: 'Inactive' },
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private userService: UserService,
-    private cdr: ChangeDetectorRef
-  ) { }
+  attentions = [
+    { value: 'ธรรมชาติ', label: 'ธรรมชาติ' },
+    { value: 'คาเฟ่', label: 'คาเฟ่' },
+    { value: 'วัฒนธรรม', label: 'วัฒนธรรม' },
+    { value: 'อาหารท้องถิ่น', label: 'อาหารท้องถิ่น' },
+    { value: 'เดินป่า', label: 'เดินป่า' },
+    { value: 'ทะเล', label: 'ทะเล' },
+    { value: 'ถ่ายรูป', label: 'ถ่ายรูป' },
+    { value: 'ช้อปปิ้ง', label: 'ช้อปปิ้ง' }
+  ];
+
+  private fb = inject(FormBuilder)
+  private router = inject(Router)
+  private route = inject(ActivatedRoute)
+  private userService = inject(UserService)
+  private cdr = inject(ChangeDetectorRef)
+
 
   ngOnInit(): void {
     this.initForm();
@@ -61,7 +71,7 @@ export class UserForm implements OnInit {
         this.loadUserData(this.userId);
       } else {
         this.isLoading = true;
-        of(null).pipe(delay(800)).subscribe(() => {
+        of(null).pipe(delay(500)).subscribe(() => {
           this.isLoading = false;
           this.cdr.detectChanges();
         });
@@ -71,7 +81,7 @@ export class UserForm implements OnInit {
 
   private loadUserData(id: number): void {
     this.isLoading = true;
-    this.userService.getUserById(id).pipe(delay(800)).subscribe({
+    this.userService.getUserById(id).pipe(delay(500)).subscribe({
       next: (response: any) => {
         const user = response.data || response;
         if (user) {

@@ -28,15 +28,17 @@
             <mat-label>รหัสผ่าน (Password)</mat-label>
             <input matInput type="password" formControlName="password" placeholder="ระบุรหัสผ่าน">
             <mat-error *ngIf="userForm.get('password')?.hasError('required')">กรุณาระบุรหัสผ่าน</mat-error>
-            <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร</mat-error>
+            <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">รหัสผ่านต้องมีความยาวอย่างน้อย 6
+              ตัวอักษร</mat-error>
           </mat-form-field>
         </div>
-        
+
         <div class="trip-form-row" *ngIf="userId">
           <mat-form-field appearance="outline" class="trip-form-field-240">
             <mat-label>รหัสผ่านใหม่ (ปล่อยว่างถ้าไม่ต้องการเปลี่ยน)</mat-label>
             <input matInput type="password" formControlName="password" placeholder="ระบุรหัสผ่านใหม่">
-            <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร</mat-error>
+            <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">รหัสผ่านต้องมีความยาวอย่างน้อย 6
+              ตัวอักษร</mat-error>
           </mat-form-field>
         </div>
 
@@ -62,9 +64,14 @@
           </mat-form-field>
         </div>
 
-        <mat-form-field appearance="outline" class="trip-form-full-width-last">
-          <mat-label>ความสนใจ / หมายเหตุ (Attention)</mat-label>
-          <textarea matInput formControlName="attention" rows="3" placeholder="ระบุข้อมูลเพิ่มเติม..."></textarea>
+        <mat-form-field appearance="outline" class="trip-form-full-width">
+          <mat-label>ความสนใจ (Attention)</mat-label>
+          <mat-select formControlName="attention">
+            <mat-option *ngFor="let a of attentions" [value]="a.value">
+              {{ a.value }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="userForm.get('attention')?.hasError('required')">กรุณาเลือกความสนใจ</mat-error>
         </mat-form-field>
 
         <div class="trip-form-actions">
@@ -81,7 +88,8 @@
   </mat-card>
 
   <ng-template #loading>
-    <div class="text-center p-5" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
+    <div class="text-center p-5"
+      style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
