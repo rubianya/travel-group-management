@@ -4,11 +4,13 @@ import { LayoutService } from '../../core/services/layout.service';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   imports: [
+    CommonModule,
     RouterLink,
     RouterLinkActive,
     MatListModule,
@@ -20,5 +22,5 @@ import { MatButtonModule } from '@angular/material/button';
 export class Sidebar {
 
   layoutService = inject(LayoutService);
-  
+
 }

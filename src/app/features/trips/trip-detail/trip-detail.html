@@ -46,7 +46,11 @@
           </div>
           <div class="stat-item">
             <span class="stat-value">{{ trip.groupSize }}</span>
-            <span class="stat-label">ขนาดกลุ่มที่แนะนำ</span>
+            <span class="stat-label">จำนวนคนต่อกลุ่ม</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ registrations.length / trip.groupSize }}</span>
+            <span class="stat-label">จำนวนกลุ่มทั้งหมด</span>
           </div>
         </div>
       </mat-card-content>

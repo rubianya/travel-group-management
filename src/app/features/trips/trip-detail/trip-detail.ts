@@ -52,10 +52,7 @@ export class TripDetail implements OnInit {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const tripId = Number(idParam);
-
-      setTimeout(() => {
-        this.loadTripData(tripId);
-      }, 500);
+      this.loadTripData(tripId);
     } else {
       this.isLoading = false;
       this.cdr.detectChanges();

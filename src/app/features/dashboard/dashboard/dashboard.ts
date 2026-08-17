@@ -1,5 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterLink,
     MatCardModule,
     MatIconModule,
@@ -22,6 +24,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {
+  // จำลอง Role ปัจจุบันเพื่อใช้ทดสอบ UI
+  currentRole: 'ADMIN' | 'ORGANIZER' | 'TRAVELER' = 'ADMIN';
+
   // จำลองข้อมูลสรุปภาพรวม (Summary)
   summary = {
     totalTrips: 12,
@@ -30,6 +35,13 @@ export class Dashboard implements OnInit {
     confirmedRegistrations: 85,
     totalGroups: 18,
     ungroupedMembers: 5
+  };
+
+  // จำลองข้อมูลสรุปสำหรับ Traveler
+  travelerSummary = {
+    registeredTrips: 4,
+    confirmedTrips: 2,
+    pendingPayments: 1
   };
 
   // จำลองข้อมูลทริปที่ใกล้ถึงวันเดินทาง

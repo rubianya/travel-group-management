@@ -60,34 +60,35 @@ export class TripForm implements OnInit {
         this.tripId = +id;
         this.loadTripData(this.tripId);
       } else {
-        this.isLoading = true;
-        of(null).pipe(delay(500)).subscribe(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        });
+        this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
   private loadTripData(id: number): void {
     this.isLoading = true;
-    this.tripService.getTripById(id).pipe(delay(500)).subscribe({
+    this.tripService.getTripById(id).subscribe({
       next: (response: any) => {
         if (response && response.data) {
           const trip = response.data;
-          this.tripForm.patchValue({
-            tripName: trip.tripName,
-            description: trip.description,
-            location: trip.location,
-            startDate: trip.startDate,
-            endDate: trip.endDate,
-            maxParticipants: trip.maxParticipants,
-            groupSize: trip.groupSize,
-            budget: trip.budget,
-            tripType: trip.tripType,
-            status: trip.status
-          });
-        }
+            this.tripForm.patchValue({
+              tripName: trip.tripName,
+              description: trip.description,
+              location: trip.location,
+              startDate: trip.startDate,
+              endDate: trip.endDate,
+              maxParticipants: trip.maxParticipants,
+              groupSize: trip.groupSize,
+              budget: trip.budget,
+              tripType: trip.tripType,
+              status: trip.status
+            });
+
+            if (trip.imageUrl) {
+              this.imagePreview = `http://localhost:8080${trip.imageUrl}`;
+            }
+          }
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -130,7 +131,7 @@ export class TripForm implements OnInit {
       delete (payload as any).createdBy;
 
       if (this.tripId) {
-        this.tripService.updateTrip(this.tripId, payload).subscribe({
+        this.tripService.updateTrip(this.tripId, payload, image).subscribe({
           next: () => {
             alert('อัปเดตข้อมูลทริปสำเร็จ!');
             this.cdr.detectChanges();

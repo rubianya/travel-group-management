@@ -39,8 +39,13 @@ export class TripService {
   }
 
   // แก้ไขทริป
-  updateTrip(id: number, trip: Trip): Observable<Trip> {
-    return this.http.put<Trip>(`${this.apiUrl}/${id}`, trip);
+  updateTrip(id: number, trip: Trip, file?: File | null): Observable<Trip> {
+    const formData = new FormData();
+    formData.append('trip', new Blob([JSON.stringify(trip)], { type: 'application/json' }));
+    if (file) {
+      formData.append('file', file);
+    }
+    return this.http.put<Trip>(`${this.apiUrl}/${id}`, formData);
   }
 
   // ลบทริป **อันตรายลบข้อมูลจริง**

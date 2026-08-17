@@ -1,8 +1,22 @@
 <div class="dashboard-container">
 
   <div class="dashboard-header">
-    <h2 class="dashboard-title">ภาพรวมระบบ (Dashboard)</h2>
-    <p class="dashboard-subtitle">ยินดีต้อนรับ! นี่คือสรุปข้อมูลทริปและการจัดกลุ่มทั้งหมดของคุณ</p>
+    <div class="dashboard-title-row">
+      <div>
+        <h2 class="dashboard-title">ภาพรวมระบบ (Dashboard)</h2>
+        <p class="dashboard-subtitle">ยินดีต้อนรับ! ข้อมูลในหน้านี้จะแสดงตามสิทธิ์การใช้งานของคุณ</p>
+      </div>
+      
+      <!-- Role Switcher (For Demo Purposes) -->
+      <div class="role-switcher">
+        <label for="roleSelect">มุมมอง Role: </label>
+        <select id="roleSelect" [(ngModel)]="currentRole" class="role-select">
+          <option value="ADMIN">Admin (ผู้ดูแลระบบ)</option>
+          <option value="ORGANIZER">Organizer (ผู้จัดทริป)</option>
+          <option value="TRAVELER">Traveler (นักเดินทาง)</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <!-- Loading State -->
@@ -12,98 +26,204 @@
   </div>
 
   <div *ngIf="!isLoading">
-    <!-- ส่วนที่ 1: การ์ดสรุปตัวเลข (Summary Cards) ใช้ CSS Grid -->
-    <div class="dashboard-grid">
+    
+    <!-- ============================================== -->
+    <!-- มุมมองสำหรับ ADMIN และ ORGANIZER (แสดงเหมือนกันในตัวอย่างนี้ แต่อาจปรับให้ต่างกันในอนาคต) -->
+    <!-- ============================================== -->
+    <ng-container *ngIf="currentRole === 'ADMIN' || currentRole === 'ORGANIZER'">
+      
+      <!-- ส่วนที่ 1: การ์ดสรุปตัวเลข (Summary Cards) -->
+      <div class="dashboard-grid">
 
-      <!-- การ์ด 1: ข้อมูลทริป -->
-      <mat-card class="dashboard-card-primary">
-        <mat-card-content class="dashboard-card-content">
-          <div>
-            <p class="dashboard-card-label">ทริปเปิดรับสมัคร / ทั้งหมด</p>
-            <h3 class="dashboard-card-value-container">
-              <span class="dashboard-card-value-primary">{{ summary.openTrips }}</span> <span
-                class="dashboard-card-value-sub">/ {{ summary.totalTrips }}</span>
-            </h3>
-          </div>
-          <div class="dashboard-icon-bg-primary">
-            <mat-icon class="dashboard-icon-primary">flight_takeoff</mat-icon>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <!-- การ์ด 2: ข้อมูลผู้สมัคร -->
-      <mat-card class="dashboard-card-success">
-        <mat-card-content class="dashboard-card-content">
-          <div>
-            <p class="dashboard-card-label">ผู้สมัครที่ยืนยันแล้ว / ทั้งหมด</p>
-            <h3 class="dashboard-card-value-container">
-              <span class="dashboard-card-value-success">{{ summary.confirmedRegistrations }}</span> <span
-                class="dashboard-card-value-sub">/ {{ summary.totalRegistrations }}</span>
-            </h3>
-          </div>
-          <div class="dashboard-icon-bg-success">
-            <mat-icon class="dashboard-icon-success">how_to_reg</mat-icon>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <!-- การ์ด 3: ข้อมูลการจัดกลุ่ม -->
-      <mat-card class="dashboard-card-warning">
-        <mat-card-content class="dashboard-card-content">
-          <div>
-            <p class="dashboard-card-label">กลุ่มที่จัดแล้ว (รอจัดกลุ่ม)</p>
-            <h3 class="dashboard-card-value-container">
-              <span class="dashboard-card-value-warning">{{ summary.totalGroups }}</span> <span
-                class="dashboard-card-value-sub-warning">({{ summary.ungroupedMembers }} คน)</span>
-            </h3>
-          </div>
-          <div class="dashboard-icon-bg-warning">
-            <mat-icon class="dashboard-icon-warning">groups</mat-icon>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-    </div>
-
-    <!-- ส่วนที่ 2: ทริปที่ใกล้ถึงวันเดินทาง (Upcoming Trips) -->
-    <mat-card class="dashboard-upcoming-card">
-      <mat-card-header class="dashboard-upcoming-header">
-        <mat-card-title class="dashboard-upcoming-title">
-          <mat-icon class="dashboard-upcoming-icon">event</mat-icon> ทริปที่ใกล้ถึงวันเดินทาง
-        </mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content class="dashboard-upcoming-content">
-
-        <!-- วนลูปแสดงรายการทริป -->
-        <div *ngFor="let trip of upcomingTrips; let last = last">
-          <div class="dashboard-upcoming-item">
-
-            <div class="dashboard-upcoming-item-left">
-              <div class="dashboard-upcoming-date-box">
-                <span class="dashboard-upcoming-date-month">พ.ย.</span>
-                <span class="dashboard-upcoming-date-day">01</span>
-              </div>
-              <div>
-                <h4 class="dashboard-upcoming-item-title">{{ trip.name }}</h4>
-                <p class="dashboard-upcoming-item-desc">สมาชิก: {{ trip.participants }} คน | รหัสทริป: #{{ trip.id }}
-                </p>
-              </div>
-            </div>
-
+        <!-- การ์ด 1: ข้อมูลทริป -->
+        <mat-card class="dashboard-card-primary">
+          <mat-card-content class="dashboard-card-content">
             <div>
-              <button mat-stroked-button color="primary" routerLink="/groups">
-                จัดการกลุ่ม
-              </button>
+              <p class="dashboard-card-label">{{ currentRole === 'ADMIN' ? 'ทริปเปิดรับสมัคร / ทั้งหมด (ระบบ)' : 'ทริปที่เปิดรับสมัคร / ทั้งหมด (ของคุณ)' }}</p>
+              <h3 class="dashboard-card-value-container">
+                <span class="dashboard-card-value-primary">{{ summary.openTrips }}</span> <span
+                  class="dashboard-card-value-sub">/ {{ summary.totalTrips }}</span>
+              </h3>
             </div>
+            <div class="dashboard-icon-bg-primary">
+              <mat-icon class="dashboard-icon-primary">flight_takeoff</mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
 
+        <!-- การ์ด 2: ข้อมูลผู้สมัคร -->
+        <mat-card class="dashboard-card-success">
+          <mat-card-content class="dashboard-card-content">
+            <div>
+              <p class="dashboard-card-label">ผู้สมัครที่ยืนยันแล้ว / ทั้งหมด</p>
+              <h3 class="dashboard-card-value-container">
+                <span class="dashboard-card-value-success">{{ summary.confirmedRegistrations }}</span> <span
+                  class="dashboard-card-value-sub">/ {{ summary.totalRegistrations }}</span>
+              </h3>
+            </div>
+            <div class="dashboard-icon-bg-success">
+              <mat-icon class="dashboard-icon-success">how_to_reg</mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- การ์ด 3: ข้อมูลการจัดกลุ่ม -->
+        <mat-card class="dashboard-card-warning">
+          <mat-card-content class="dashboard-card-content">
+            <div>
+              <p class="dashboard-card-label">กลุ่มที่จัดแล้ว (รอจัดกลุ่ม)</p>
+              <h3 class="dashboard-card-value-container">
+                <span class="dashboard-card-value-warning">{{ summary.totalGroups }}</span> <span
+                  class="dashboard-card-value-sub-warning">({{ summary.ungroupedMembers }} คน)</span>
+              </h3>
+            </div>
+            <div class="dashboard-icon-bg-warning">
+              <mat-icon class="dashboard-icon-warning">groups</mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+      <!-- ส่วนที่ 2: ทริปที่ใกล้ถึงวันเดินทาง (Upcoming Trips) สำหรับ Admin/Organizer -->
+      <mat-card class="dashboard-upcoming-card">
+        <mat-card-header class="dashboard-upcoming-header">
+          <div class="dashboard-upcoming-title-container">
+             <mat-icon class="dashboard-upcoming-icon">event</mat-icon> 
+             <h3 class="dashboard-upcoming-title">ทริปที่ใกล้ถึงวันเดินทาง {{ currentRole === 'ORGANIZER' ? '(ของคุณ)' : '' }}</h3>
           </div>
-          <!-- เส้นแบ่งระหว่างรายการ (ไม่แสดงในรายการสุดท้าย) -->
-          <mat-divider *ngIf="!last"></mat-divider>
-        </div>
+          <button *ngIf="currentRole === 'ORGANIZER'" mat-flat-button color="primary" routerLink="/trips/new">
+            <mat-icon>add</mat-icon> สร้างทริปใหม่
+          </button>
+        </mat-card-header>
 
-      </mat-card-content>
-    </mat-card>
+        <mat-card-content class="dashboard-upcoming-content">
+          <div *ngFor="let trip of upcomingTrips; let last = last">
+            <div class="dashboard-upcoming-item">
+              <div class="dashboard-upcoming-item-left">
+                <div class="dashboard-upcoming-date-box">
+                  <span class="dashboard-upcoming-date-month">พ.ย.</span>
+                  <span class="dashboard-upcoming-date-day">01</span>
+                </div>
+                <div>
+                  <h4 class="dashboard-upcoming-item-title">{{ trip.name }}</h4>
+                  <p class="dashboard-upcoming-item-desc">สมาชิก: {{ trip.participants }} คน | รหัสทริป: #{{ trip.id }}</p>
+                </div>
+              </div>
+              <div class="dashboard-upcoming-actions">
+                <button *ngIf="currentRole === 'ADMIN'" mat-button color="primary" routerLink="/trips/{{trip.id}}">
+                  ดูรายละเอียด
+                </button>
+                <button *ngIf="currentRole === 'ORGANIZER'" mat-stroked-button color="primary" routerLink="/groups">
+                  จัดการกลุ่ม
+                </button>
+              </div>
+            </div>
+            <mat-divider *ngIf="!last"></mat-divider>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </ng-container>
+
+    <!-- ============================================== -->
+    <!-- มุมมองสำหรับ TRAVELER -->
+    <!-- ============================================== -->
+    <ng-container *ngIf="currentRole === 'TRAVELER'">
+      
+      <!-- ส่วนที่ 1: การ์ดสรุปสำหรับ Traveler -->
+      <div class="dashboard-grid">
+
+        <mat-card class="dashboard-card-primary">
+          <mat-card-content class="dashboard-card-content">
+            <div>
+              <p class="dashboard-card-label">ทริปที่สมัครทั้งหมด</p>
+              <h3 class="dashboard-card-value-container">
+                <span class="dashboard-card-value-primary">{{ travelerSummary.registeredTrips }}</span> ทริป
+              </h3>
+            </div>
+            <div class="dashboard-icon-bg-primary">
+              <mat-icon class="dashboard-icon-primary">luggage</mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="dashboard-card-success">
+          <mat-card-content class="dashboard-card-content">
+            <div>
+              <p class="dashboard-card-label">ทริปที่ยืนยันแล้ว</p>
+              <h3 class="dashboard-card-value-container">
+                <span class="dashboard-card-value-success">{{ travelerSummary.confirmedTrips }}</span> ทริป
+              </h3>
+            </div>
+            <div class="dashboard-icon-bg-success">
+              <mat-icon class="dashboard-icon-success">check_circle</mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="dashboard-card-warning">
+          <mat-card-content class="dashboard-card-content">
+            <div>
+              <p class="dashboard-card-label">รอชำระเงิน / รอยืนยัน</p>
+              <h3 class="dashboard-card-value-container">
+                <span class="dashboard-card-value-warning">{{ travelerSummary.pendingPayments }}</span> รายการ
+              </h3>
+            </div>
+            <div class="dashboard-icon-bg-warning">
+              <mat-icon class="dashboard-icon-warning">pending_actions</mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+      <!-- ส่วนที่ 2: ทริปที่กำลังจะไป (My Upcoming Trips) -->
+      <mat-card class="dashboard-upcoming-card">
+        <mat-card-header class="dashboard-upcoming-header">
+          <div class="dashboard-upcoming-title-container">
+             <mat-icon class="dashboard-upcoming-icon">explore</mat-icon> 
+             <h3 class="dashboard-upcoming-title">ทริปของคุณที่กำลังจะมาถึง</h3>
+          </div>
+          <button mat-flat-button color="primary" routerLink="/trips">
+            <mat-icon>search</mat-icon> ค้นหาทริปใหม่
+          </button>
+        </mat-card-header>
+
+        <mat-card-content class="dashboard-upcoming-content">
+          <!-- แสดงเฉพาะทริปที่มีสถานะ OPEN เป็นตัวอย่าง -->
+          <div *ngFor="let trip of upcomingTrips; let i = index; let last = last">
+            <ng-container *ngIf="i < 2">
+              <div class="dashboard-upcoming-item">
+                <div class="dashboard-upcoming-item-left">
+                  <div class="dashboard-upcoming-date-box">
+                    <span class="dashboard-upcoming-date-month">พ.ย.</span>
+                    <span class="dashboard-upcoming-date-day">01</span>
+                  </div>
+                  <div>
+                    <h4 class="dashboard-upcoming-item-title">{{ trip.name }}</h4>
+                    <p class="dashboard-upcoming-item-desc">
+                      <span class="status-badge status-confirmed">ยืนยันแล้ว</span> | เดินทาง {{ trip.startDate }}
+                    </p>
+                  </div>
+                </div>
+                <div class="dashboard-upcoming-actions">
+                  <button mat-stroked-button color="primary" routerLink="/trips/{{trip.id}}">
+                    ดูรายละเอียด
+                  </button>
+                  <button mat-button color="primary" routerLink="/groups/my-group">
+                    กลุ่มของฉัน
+                  </button>
+                </div>
+              </div>
+              <mat-divider *ngIf="!last && i < 1"></mat-divider>
+            </ng-container>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </ng-container>
+
   </div>
 
 </div>

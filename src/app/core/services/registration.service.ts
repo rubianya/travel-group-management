@@ -29,12 +29,12 @@ export class RegistrationService {
 
     // ดึงรายการลงทะเบียนตาม Trip ID
     getRegistrationsByTripId(trip: number): Observable<Registration[]> {
-        return this.http.get<Registration[]>(this.apiUrl + "/" + trip + "/registrations");
+        return this.http.get<Registration[]>(this.apiUrl + "/trip/" + trip);
     }
 
     // ดึงรายการลงทะเบียนตาม User ID
     getRegistrationsByUserId(user: number): Observable<Registration[]> {
-        return this.http.get<Registration[]>(this.apiUrl + "/" + user + "/registrations");
+        return this.http.get<Registration[]>(this.apiUrl + "/user/" + user);
     }
 
     // อัปเดตใบสมัคร

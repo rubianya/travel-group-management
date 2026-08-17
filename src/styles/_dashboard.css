@@ -221,8 +221,97 @@
   color: #627d98;
 }
 
+/* Role Switcher */
+.dashboard-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.role-switcher {
+  background: #f5f8fb;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #d9e2ec;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.role-switcher label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #102a43;
+}
+
+.role-select {
+  padding: 6px 12px;
+  border: 1px solid #d9e2ec;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  color: #102a43;
+  outline: none;
+  cursor: pointer;
+}
+
+.role-select:focus {
+  border-color: #1f6feb;
+}
+
+/* Upcoming Actions and Layout */
+.dashboard-upcoming-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 0;
+}
+
+.dashboard-upcoming-title-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-upcoming-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-confirmed {
+  background: #edfdf3;
+  color: #0f766e;
+}
+
 @media screen and (max-width: 768px) {
   .dashboard-container {
     padding: 16px;
+  }
+  
+  .dashboard-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .dashboard-upcoming-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .dashboard-upcoming-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
 }
