@@ -70,6 +70,18 @@ export const routes: Routes = [
             {
                 path: 'users/:id/detail',
                 loadComponent: () => import('./features/users/user-detail/user-detail').then(m => m.UserDetail)
+            },
+            {
+                path: 'interests',
+                loadComponent: () => import('./features/interests/interest-list/interest-list').then(m => m.InterestList)
+            },
+            {
+                path: 'my-registrations',
+                loadComponent: () => import('./features/registrations/my-registrations/my-registrations').then(m => m.MyRegistrations)
+            },
+            {
+                path: 'my-group',
+                loadComponent: () => import('./features/groups/my-group/my-group').then(m => m.MyGroup)
             }
         ]
     }

@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-registrations-form',
   imports: [],
   templateUrl: './registrations-form.html',
-  styleUrl: './registrations-form.css',
+  styleUrl: '../../../styles/_registration-form.css',
 })
 export class RegistrationsForm {}

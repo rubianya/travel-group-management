@@ -1,0 +1,24 @@
+<h2 mat-dialog-title class="dialog-header">{{ isEditMode ? 'แก้ไขประเภทความสนใจ' : 'สร้างประเภทใหม่' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="interestForm" class="dialog-content">
+    <mat-form-field appearance="outline">
+      <mat-label>ชื่อประเภท</mat-label>
+      <input matInput formControlName="interestName" placeholder="เช่น ธรรมชาติ, คาเฟ่">
+      <mat-error *ngIf="interestForm.get('interestName')?.hasError('required')">
+        กรุณากรอกชื่อประเภท
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>สถานะ</mat-label>
+      <mat-select formControlName="active">
+        <mat-option value="A">เปิดใช้งาน</mat-option>
+        <mat-option value="I">ปิดใช้งาน</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">ยกเลิก</button>
+  <button mat-flat-button color="primary" [disabled]="interestForm.invalid" (click)="onSubmit()">ยืนยัน</button>
+</mat-dialog-actions>

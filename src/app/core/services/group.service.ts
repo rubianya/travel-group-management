@@ -23,6 +23,11 @@ export class GroupService {
     return of(groups);
   }
 
+  getGroupsByUserId(userId: number): Observable<Group[]> {
+    // For mock purposes, just return all groups or filter by a dummy condition
+    return of(this.mockGroups);
+  }
+
   // จำลองการเรียก API ไปยัง Backend เพื่อทำการจัดกลุ่มอัตโนมัติ
   generateAutoGroups(tripId: number): Observable<Group[]> {
     console.log(`[Mock API] กำลังประมวลผลจัดกลุ่มอัตโนมัติสำหรับ Trip ID: ${tripId}...`);

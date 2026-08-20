@@ -1,0 +1,100 @@
+.my-group-container {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.my-group-header {
+  margin-bottom: 24px;
+}
+
+.my-group-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.my-group-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px;
+  color: #6b7280;
+}
+
+.my-group-empty {
+  text-align: center;
+  padding: 64px 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  color: #6b7280;
+}
+
+.my-group-empty-icon {
+  font-size: 64px;
+  height: 64px;
+  width: 64px;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.my-group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.my-group-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.my-group-card-header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 16px;
+}
+
+.my-group-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.my-group-card-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  color: #6b7280;
+}
+
+.my-group-member-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.my-group-member-item:last-child {
+  border-bottom: none;
+}
+
+.my-group-member-name {
+  font-weight: 500;
+  color: #374151;
+}
+
+.my-group-chip {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}

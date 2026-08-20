@@ -58,7 +58,7 @@ export class UserList implements OnInit {
 
   getAllUsers(): void {
     this.isLoading = true;
-    this.userService.getAllUsers().pipe(delay(500)).subscribe({
+    this.userService.getAllUsers().pipe(delay(300)).subscribe({
       next: (response: any) => {
         this.users = response?.data || response || [];
         this.availableRoles = [...new Set(this.users.map(u => u.role).filter(r => !!r))];

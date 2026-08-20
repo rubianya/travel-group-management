@@ -1,51 +1,109 @@
-<div class="registration-list-container">
+<div class="registration-list-wrapper">
 
-    <div class="registration-list-header">
-        <h2 class="registration-list-title">รายชื่อผู้สมัครเข้าร่วมทริป</h2>
-
-        <button mat-flat-button color="primary" routerLink="/registrations/new">
-            <mat-icon>person_add</mat-icon> สร้างใบสมัคร
-        </button>
+    <div class="registration-list-header glass-card">
+        <div class="header-content">
+            <div class="header-icon-wrapper">
+                <mat-icon class="header-icon">group</mat-icon>
+            </div>
+            <div>
+                <h2 class="registration-list-title gradient-text" *ngIf="currentRole === 'Organizer'">
+                    จัดการรายชื่อผู้สมัครทริป</h2>
+                <p class="registration-list-subtitle" *ngIf="currentRole === 'Organizer'">
+                    ตรวจสอบและอัปเดตสถานะผู้สมัครทริปทั้งหมดของคุณ</p>
+            </div>
+        </div>
     </div>
 
     <!-- Loading State -->
-    <div class="loading-container" *ngIf="isLoading">
-        <mat-spinner diameter="50" color="primary"></mat-spinner>
+    <div class="loading-container glass-card" *ngIf="isLoading">
+        <mat-spinner diameter="40" color="primary"></mat-spinner>
         <p>กำลังโหลดข้อมูลผู้สมัคร...</p>
     </div>
 
-    <div class="registration-list-table-container" *ngIf="!isLoading">
-        <table mat-table [dataSource]="dataSource" class="registration-list-table">
-            <ng-container matColumnDef="travelerName">
+    <!-- Dashboard Summary -->
+    <div class="dashboard-summary fade-in-container" *ngIf="!isLoading && currentRole === 'Organizer'">
+        <mat-card class="summary-card total-card">
+            <mat-icon>people</mat-icon>
+            <div class="summary-info">
+                <h3>ผู้สมัครทั้งหมด</h3>
+                <h2>{{ totalRegistrations }}</h2>
+            </div>
+        </mat-card>
+        <mat-card class="summary-card warning-card">
+            <mat-icon>hourglass_empty</mat-icon>
+            <div class="summary-info">
+                <h3>รออนุมัติ</h3>
+                <h2>{{ waitingApprovalCount }}</h2>
+            </div>
+        </mat-card>
+        <mat-card class="summary-card success-card">
+            <mat-icon>payment</mat-icon>
+            <div class="summary-info">
+                <h3>รอตรวจสอบชำระเงิน</h3>
+                <h2>{{ actionRequiredCount }}</h2>
+            </div>
+        </mat-card>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-section glass-card fade-in-container" *ngIf="!isLoading && currentRole === 'Organizer'">
+        <mat-form-field appearance="outline" class="search-input">
+            <mat-label>ค้นหาชื่อ หรือ ทริป</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" placeholder="พิมพ์คำค้นหา...">
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="status-filter">
+            <mat-label>สถานะ</mat-label>
+            <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilter()">
+                <mat-option value="">ทั้งหมด</mat-option>
+                <mat-option *ngFor="let status of availableStatuses" [value]="status">{{ status }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <button mat-stroked-button color="warn" class="clear-btn" (click)="clearFilters()">
+            <mat-icon>clear_all</mat-icon> ล้างการค้นหา
+        </button>
+    </div>
+
+    <div class="registration-list-table-container glass-card fade-in-container" *ngIf="!isLoading">
+        <table mat-table [dataSource]="paginatedData" class="registration-list-table">
+            <ng-container matColumnDef="userName">
                 <th mat-header-cell *matHeaderCellDef> ชื่อผู้สมัคร </th>
-                <td mat-cell *matCellDef="let element"> <strong>{{element.travelerName}}</strong> </td>
+                <td mat-cell *matCellDef="let element">
+                    <div class="user-info-cell">
+                        <div class="user-avatar">
+                            <mat-icon>person</mat-icon>
+                        </div>
+                        <strong>{{element.userName}}</strong>
+                    </div>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="tripId">
-                <th mat-header-cell *matHeaderCellDef> รหัสทริป </th>
-                <td mat-cell *matCellDef="let element"> ทริป #{{element.tripId}} </td>
+                <th mat-header-cell *matHeaderCellDef> ทริปที่สมัคร </th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="trip-info-cell">
+                        <mat-icon class="trip-icon">flight_takeoff</mat-icon>
+                        <span>{{element.tripName || element.tripId}}</span>
+                    </div>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="budget">
                 <th mat-header-cell *matHeaderCellDef> งบประมาณ (บาท) </th>
-                <td mat-cell *matCellDef="let element"> {{element.budget | number}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="interests">
-                <th mat-header-cell *matHeaderCellDef> ความสนใจ </th>
                 <td mat-cell *matCellDef="let element">
-                    <mat-chip-set>
-                        <mat-chip *ngFor="let interest of element.interests" class="registration-list-chip">
-                            {{interest}}
-                        </mat-chip>
-                    </mat-chip-set>
+                    <div class="budget-cell">
+                        <mat-icon class="budget-icon">account_balance_wallet</mat-icon>
+                        <span>{{element.budget | number}}</span>
+                    </div>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef> สถานะ </th>
                 <td mat-cell *matCellDef="let element">
-                    <span class="status-badge status-{{ element.status?.toLowerCase() }}">
+                    <span class="status-badge status-{{ element.status.toLowerCase() }}">
                         {{element.status}}
                     </span>
                 </td>
@@ -54,14 +112,49 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef> จัดการ </th>
                 <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button color="primary" title="ดูรายละเอียด/เปลี่ยนสถานะ">
+                    <button mat-icon-button class="action-menu-btn" [matMenuTriggerFor]="statusMenu"
+                        title="เปลี่ยนสถานะ" *ngIf="getAvailableStatuses(element.status).length > 0">
                         <mat-icon>edit</mat-icon>
                     </button>
+                    <mat-menu #statusMenu="matMenu" class="custom-mat-menu">
+                        <button mat-menu-item *ngFor="let status of getAvailableStatuses(element.status)"
+                            (click)="changeStatus(element, status)">
+                            <mat-icon [ngClass]="'status-icon-' + status.toLowerCase()">radio_button_checked</mat-icon>
+                            <span>{{ status }}</span>
+                        </button>
+                    </mat-menu>
                 </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="modern-row"></tr>
+
+            <!-- Empty State -->
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell empty-state-cell" colspan="5">
+                    <div class="empty-state">
+                        <mat-icon class="empty-icon">search_off</mat-icon>
+                        <h3>ไม่พบข้อมูลผู้สมัคร</h3>
+                        <p>ลองปรับเปลี่ยนเงื่อนไขการค้นหา หรือยังไม่มีผู้สมัครในขณะนี้</p>
+                    </div>
+                </td>
+            </tr>
         </table>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="filteredData.length > 0">
+            <div class="pagination-info">
+                แสดง {{ startIndex }} ถึง {{ endIndex }} จากทั้งหมด {{ filteredData.length }} รายการ
+            </div>
+            <div class="pagination-controls">
+                <button mat-icon-button (click)="prevPage()" [disabled]="currentPage === 1" color="primary">
+                    <mat-icon>chevron_left</mat-icon>
+                </button>
+                <span class="page-number">หน้า {{ currentPage }} / {{ totalPages }}</span>
+                <button mat-icon-button (click)="nextPage()" [disabled]="currentPage === totalPages" color="primary">
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
+            </div>
+        </div>
     </div>
 </div>

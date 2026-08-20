@@ -14,6 +14,10 @@
     <span class="status-badge status-{{ trip.status.toLowerCase() }}">
       {{ trip.status }}
     </span>
+    <div class="flex-spacer"></div>
+    <button *ngIf="currentRole === 'Traveler'" mat-flat-button color="accent" routerLink="/registrations/new" [queryParams]="{ tripId: trip.id }">
+      <mat-icon>person_add</mat-icon> สมัครเข้าร่วมทริป
+    </button>
   </div>
 
   <div class="cards-grid">
@@ -25,7 +29,6 @@
         <mat-card-title>ข้อมูลทั่วไป</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p><strong>รายละเอียด:</strong> {{ trip.description }}</p>
         <p><strong>สถานที่:</strong> {{ trip.location }}</p>
         <p><strong>ประเภททริป:</strong> {{ trip.tripType }}</p>
         <p><strong>วันที่:</strong> {{ trip.startDate }} - {{ trip.endDate }}</p>
@@ -49,7 +52,7 @@
             <span class="stat-label">จำนวนคนต่อกลุ่ม</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value">{{ registrations.length / trip.groupSize }}</span>
+            <span class="stat-value">{{ trip.maxParticipants / trip.groupSize }}</span>
             <span class="stat-label">จำนวนกลุ่มทั้งหมด</span>
           </div>
         </div>

@@ -1,65 +1,49 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
+import { Component, OnInit, ChangeDetectorRef, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UserService } from '../../../core/services/user.service';
+
+import { AdminDashboard } from '../admin-dashboard/admin-dashboard';
+import { OrganizerDashboard } from '../organizer-dashboard/organizer-dashboard';
+import { TravelerDashboard } from '../traveler-dashboard/traveler-dashboard';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    RouterLink,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    AdminDashboard,
+    OrganizerDashboard,
+    TravelerDashboard
   ],
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {
-  // จำลอง Role ปัจจุบันเพื่อใช้ทดสอบ UI
-  currentRole: 'ADMIN' | 'ORGANIZER' | 'TRAVELER' = 'ADMIN';
-
-  // จำลองข้อมูลสรุปภาพรวม (Summary)
-  summary = {
-    totalTrips: 12,
-    openTrips: 3,
-    totalRegistrations: 145,
-    confirmedRegistrations: 85,
-    totalGroups: 18,
-    ungroupedMembers: 5
-  };
-
-  // จำลองข้อมูลสรุปสำหรับ Traveler
-  travelerSummary = {
-    registeredTrips: 4,
-    confirmedTrips: 2,
-    pendingPayments: 1
-  };
-
-  // จำลองข้อมูลทริปที่ใกล้ถึงวันเดินทาง
-  upcomingTrips = [
-    { id: 1, name: 'ทริปเชียงใหม่ สายคาเฟ่', startDate: '2024-12-01', participants: 10, status: 'OPEN' },
-    { id: 2, name: 'ดำน้ำดูปะการัง เกาะเต่า', startDate: '2024-11-25', participants: 18, status: 'OPEN' },
-    { id: 3, name: 'ไหว้พระอยุธยา', startDate: '2024-10-25', participants: 15, status: 'CLOSED' }
-  ];
-
+  currentRole: string = 'ADMIN';
   isLoading = true;
+
   cdr = inject(ChangeDetectorRef);
+  userService = inject(UserService);
+  platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
-    // ในอนาคตเมื่อต่อ Backend จะต้องเรียก API: GET /api/dashboard/summary ที่นี่
-    setTimeout(() => {
+    if (isPlatformBrowser(this.platformId)) {
+      this.userService.getCurrentProfile().subscribe({
+        next: (response: any) => {
+          const user = response.data ? response.data : response;
+          this.currentRole = user?.role ? user.role.toUpperCase() : 'ADMIN';
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error loading role', err);
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
       this.isLoading = false;
-      this.cdr.detectChanges();
-    }, 500);
+    }
   }
-
 }

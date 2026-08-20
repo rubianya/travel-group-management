@@ -1,5 +1,6 @@
 .group-list-container {
   padding: 24px;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .group-list-header {
@@ -60,8 +61,13 @@
 }
 
 .group-list-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(16, 42, 67, 0.05);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: box-shadow 0.3s ease;
+  overflow: hidden;
 }
 
 .group-list-card-header {

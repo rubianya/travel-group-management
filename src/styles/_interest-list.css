@@ -1,0 +1,136 @@
+.interest-list-container {
+    padding: 32px 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: 'Inter', 'Prompt', sans-serif;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.interest-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.interest-list-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: -0.5px;
+}
+
+.card-container {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border-radius: 16px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.03);
+    padding: 0;
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.full-width-table {
+    width: 100%;
+    background: transparent;
+}
+
+/* Material Table Overrides for Modern Look */
+::ng-deep .mat-mdc-table {
+    background: transparent !important;
+}
+
+::ng-deep .mat-mdc-header-row {
+    background-color: rgba(241, 245, 249, 0.7) !important;
+}
+
+::ng-deep .mat-mdc-header-cell {
+    color: #475569 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    font-size: 13px !important;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e2e8f0 !important;
+    padding: 16px !important;
+}
+
+::ng-deep .mat-mdc-row {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::ng-deep .mat-mdc-row:hover {
+    background-color: #f8fafc !important;
+    transform: scale(1.005);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    position: relative;
+    z-index: 1;
+    border-radius: 8px;
+}
+
+::ng-deep .mat-mdc-cell {
+    color: #334155 !important;
+    font-size: 15px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 16px !important;
+}
+
+/* Loading container */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.loading-container p {
+    margin-top: 24px;
+    color: #475569;
+    font-size: 18px;
+    font-weight: 500;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
+/* Empty State */
+.text-center {
+    text-align: center;
+    color: #64748b;
+    font-style: italic;
+}
+
+.p-4 {
+    padding: 3rem !important;
+}

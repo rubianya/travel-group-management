@@ -10,8 +10,12 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
 import { Trip } from '../../../core/models/trip.model';
 import { TripService } from '../../../core/services/trip.service';
+import { UserService } from '../../../core/services/user.service';
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-trip-list',
@@ -26,7 +30,8 @@ import { TripService } from '../../../core/services/trip.service';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatMenuModule
   ],
   templateUrl: './trip-list.html',
   styleUrl: '../../../../styles/_trip-list.css'
@@ -44,20 +49,42 @@ export class TripList implements OnInit {
 
   currentPage: number = 1;
   itemsPerPage: number = 10;
+  currentRole: string = '';
 
   tripService = inject(TripService);
+  userService = inject(UserService);
   cdr = inject(ChangeDetectorRef);
   router = inject(Router);
+  platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
-    this.loadTrips();
+    if (isPlatformBrowser(this.platformId)) {
+      this.userService.getCurrentProfile().subscribe({
+        next: (response: any) => {
+          const user = response.data ? response.data : response;
+          this.currentRole = user?.role || '';
+          this.loadTrips();
+        },
+        error: (err) => {
+          console.error('Error loading role', err);
+          this.loadTrips();
+        }
+      });
+    } else {
+      this.loadTrips();
+    }
   }
 
   loadTrips(): void {
     this.isLoading = true;
-    this.tripService.getAllTrips().pipe(delay(500)).subscribe({
+    const request$ = this.currentRole === 'Admin' || this.currentRole === 'Traveler' ? this.tripService.getAllTrips() : this.tripService.getMyTrips();
+    request$.pipe(delay(300)).subscribe({
       next: (response: any) => {
-        this.dataTrips = response?.data || response || [];
+        let trips = response?.data || response || [];
+        if (this.currentRole === 'Traveler') {
+          trips = trips.filter((t: any) => t.status === 'OPEN');
+        }
+        this.dataTrips = trips;
         this.availableStatuses = [...new Set(this.dataTrips.map(t => t.status).filter(s => !!s))];
         this.applyFilter();
         this.isLoading = false;
@@ -144,6 +171,32 @@ export class TripList implements OnInit {
         error: (err) => {
           console.error('เกิดข้อผิดพลาดในการลบทริป:', err);
         }
+      });
+    }
+  }
+
+  getAvailableTripStatuses(currentStatus: string): string[] {
+    if (this.currentRole !== 'Organizer') return [];
+
+    switch(currentStatus) {
+      case 'DRAFT': return ['OPEN', 'CANCELLED'];
+      case 'OPEN': return ['CLOSED', 'CANCELLED'];
+      case 'CLOSED': return ['GROUPING', 'CONFIRMED', 'CANCELLED'];
+      case 'GROUPING': return ['CONFIRMED', 'CANCELLED'];
+      case 'CONFIRMED': return ['COMPLETED', 'CANCELLED'];
+      default: return [];
+    }
+  }
+
+  changeTripStatus(trip: Trip, newStatus: string): void {
+    if (trip.id) {
+      this.tripService.updateTripStatus(trip.id, newStatus).subscribe({
+        next: () => {
+          trip.status = newStatus;
+          alert(`เปลี่ยนสถานะทริปเป็น ${newStatus} สำเร็จ`);
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Error updating trip status', err)
       });
     }
   }

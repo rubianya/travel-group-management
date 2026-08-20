@@ -1,0 +1,145 @@
+<div class="my-registrations-wrapper">
+  
+  <div class="my-registrations-header glass-card">
+    <div class="header-content">
+      <div class="header-icon-wrapper">
+        <mat-icon class="header-icon">airplane_ticket</mat-icon>
+      </div>
+      <div>
+        <h2 class="my-registrations-title gradient-text">การสมัครของฉัน</h2>
+        <p class="my-registrations-subtitle">ทริปที่คุณกำลังจะเดินทางและความทรงจำที่กำลังจะเกิดขึ้น</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-container glass-card fade-in-container" *ngIf="isLoading">
+    <mat-spinner diameter="40" color="primary"></mat-spinner>
+    <p>กำลังดึงข้อมูลทริปของคุณ...</p>
+  </div>
+
+  <!-- Dashboard Summary -->
+  <div class="dashboard-summary fade-in-container" *ngIf="!isLoading && registrations.length > 0">
+    <mat-card class="summary-card total-card">
+      <mat-icon>flight_takeoff</mat-icon>
+      <div class="summary-info">
+        <h3>ทริปที่กำลังดำเนินการ</h3>
+        <h2>{{ upcomingCount }}</h2>
+      </div>
+    </mat-card>
+    <mat-card class="summary-card warning-card">
+      <mat-icon>payment</mat-icon>
+      <div class="summary-info">
+        <h3>รอชำระเงิน</h3>
+        <h2>{{ actionRequiredCount }}</h2>
+      </div>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!isLoading && registrations.length === 0" class="my-registrations-empty glass-card fade-in-container">
+    <div class="empty-state-icon-wrapper">
+      <mat-icon class="empty-icon">explore</mat-icon>
+    </div>
+    <h3 class="empty-title">พร้อมสำหรับการผจญภัยครั้งใหม่หรือยัง?</h3>
+    <p class="empty-subtitle">ดูเหมือนว่าคุณยังไม่มีทริปที่ลงทะเบียนไว้เลย เริ่มต้นค้นหาทริปที่ถูกใจแล้วออกเดินทางกันเถอะ</p>
+    <button mat-flat-button color="primary" class="explore-btn" routerLink="/trips">
+      <mat-icon>search</mat-icon>
+      ค้นหาทริปที่น่าสนใจ
+    </button>
+  </div>
+
+  <div class="tabs-container fade-in-container" *ngIf="!isLoading && registrations.length > 0">
+    <mat-tab-group animationDuration="0ms" class="custom-tabs">
+      
+      <!-- Active Trips Tab -->
+      <mat-tab label="ทริปที่กำลังดำเนินการ ({{ activeRegistrations.length }})">
+        <div class="my-registrations-grid tab-content">
+          <div *ngIf="activeRegistrations.length === 0" class="no-data-msg">
+            ไม่มีทริปที่กำลังดำเนินการ
+          </div>
+          <mat-card *ngFor="let reg of activeRegistrations" class="registration-card glass-card" [ngClass]="{'highlight-card': reg.status === 'WAITING_PAYMENT'}">
+            <mat-card-header class="custom-card-header">
+              <div mat-card-avatar class="card-avatar">
+                <mat-icon>landscape</mat-icon>
+              </div>
+              <mat-card-title class="card-title">{{ reg.tripName || 'รหัสทริป: ' + reg.tripId }}</mat-card-title>
+              <mat-card-subtitle>
+                <span class="status-badge status-{{ reg.status.toLowerCase() }}">{{ reg.status }}</span>
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content class="custom-card-content">
+              <div class="info-row">
+                <mat-icon class="info-icon">account_balance_wallet</mat-icon>
+                <div class="info-text">
+                  <span class="info-label">งบประมาณ</span>
+                  <span class="info-value">{{ reg.budget | number }} บาท</span>
+                </div>
+              </div>
+              
+              <!-- Status Hint Messages -->
+              <div class="status-message info-msg" *ngIf="reg.status === 'REGISTERED'">
+                <mat-icon>hourglass_empty</mat-icon> กำลังรอผู้จัดอนุมัติการสมัคร
+              </div>
+              <div class="status-message warn-msg" *ngIf="reg.status === 'WAITING_PAYMENT'">
+                <mat-icon>error_outline</mat-icon> กรุณาชำระเงินเพื่อยืนยันสิทธิ์ของคุณ
+              </div>
+              <div class="status-message success-msg" *ngIf="reg.status === 'PAID'">
+                <mat-icon>check_circle_outline</mat-icon> รอผู้จัดตรวจสอบการชำระเงิน
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions class="registration-actions">
+              <button mat-flat-button class="action-btn confirm-btn pay-btn" *ngIf="reg.status === 'WAITING_PAYMENT'" (click)="submitPayment(reg)">
+                <mat-icon>payment</mat-icon> แจ้งชำระเงิน
+              </button>
+              <button mat-stroked-button color="warn" class="action-btn cancel-btn" *ngIf="reg.status !== 'CONFIRMED'" (click)="cancelParticipation(reg)">
+                <mat-icon>cancel</mat-icon> ยกเลิก
+              </button>
+              <button mat-button class="action-btn detail-btn" routerLink="/trips/{{ reg.tripId }}/detail">
+                <mat-icon>info</mat-icon> รายละเอียด
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- History Tab -->
+      <mat-tab label="ประวัติการสมัคร ({{ historyRegistrations.length }})">
+        <div class="my-registrations-grid tab-content">
+          <div *ngIf="historyRegistrations.length === 0" class="no-data-msg">
+            ไม่มีประวัติการสมัครทริป
+          </div>
+          <mat-card *ngFor="let reg of historyRegistrations" class="registration-card glass-card history-card">
+            <mat-card-header class="custom-card-header">
+              <div mat-card-avatar class="card-avatar">
+                <mat-icon>history</mat-icon>
+              </div>
+              <mat-card-title class="card-title">{{ reg.tripName || 'รหัสทริป: ' + reg.tripId }}</mat-card-title>
+              <mat-card-subtitle>
+                <span class="status-badge status-{{ reg.status.toLowerCase() }}">{{ reg.status }}</span>
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content class="custom-card-content">
+              <div class="info-row">
+                <mat-icon class="info-icon">account_balance_wallet</mat-icon>
+                <div class="info-text">
+                  <span class="info-label">งบประมาณที่เคยระบุไว้</span>
+                  <span class="info-value">{{ reg.budget | number }} บาท</span>
+                </div>
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions class="registration-actions">
+              <button mat-button class="action-btn detail-btn" routerLink="/trips/{{ reg.tripId }}/detail">
+                <mat-icon>info</mat-icon> ดูรายละเอียดทริป
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+
+</div>

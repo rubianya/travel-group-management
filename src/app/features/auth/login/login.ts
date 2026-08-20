@@ -55,7 +55,7 @@ export class Login {
             const userData = response.data;
 
             if (userData.status === 'A') {
-              console.log('Login สำเร็จ', response);
+              console.log('Login สำเร็จ');
               localStorage.setItem('token', userData.token);
               this.isLoading = false;
               this.router.navigate(['/dashboard']);

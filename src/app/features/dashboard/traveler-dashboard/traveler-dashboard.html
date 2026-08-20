@@ -1,0 +1,112 @@
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading">
+  <mat-spinner diameter="50" color="primary"></mat-spinner>
+  <p>กำลังโหลดข้อมูลการเดินทางของคุณ...</p>
+</div>
+
+<div *ngIf="!isLoading">
+  <!-- ส่วนที่ 1: การ์ดสรุปสำหรับ Traveler -->
+  <div class="dashboard-grid">
+    <mat-card class="dashboard-card-primary">
+      <mat-card-content class="dashboard-card-content">
+        <div>
+          <p class="dashboard-card-label">ทริปที่สมัครทั้งหมด</p>
+          <h3 class="dashboard-card-value-container">
+            <span class="dashboard-card-value-primary">{{ travelerSummary.registeredTrips }}</span> ทริป
+          </h3>
+        </div>
+        <div class="dashboard-icon-bg-primary">
+          <mat-icon class="dashboard-icon-primary">luggage</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="dashboard-card-success">
+      <mat-card-content class="dashboard-card-content">
+        <div>
+          <p class="dashboard-card-label">ทริปที่ยืนยันแล้ว</p>
+          <h3 class="dashboard-card-value-container">
+            <span class="dashboard-card-value-success">{{ travelerSummary.confirmedTrips }}</span> ทริป
+          </h3>
+        </div>
+        <div class="dashboard-icon-bg-success">
+          <mat-icon class="dashboard-icon-success">check_circle</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="dashboard-card-warning">
+      <mat-card-content class="dashboard-card-content">
+        <div>
+          <p class="dashboard-card-label">รอชำระเงิน / รอยืนยัน</p>
+          <h3 class="dashboard-card-value-container">
+            <span class="dashboard-card-value-warning">{{ travelerSummary.pendingPayments }}</span> รายการ
+          </h3>
+        </div>
+        <div class="dashboard-icon-bg-warning">
+          <mat-icon class="dashboard-icon-warning">pending_actions</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- ส่วนที่ 2: ทริปที่กำลังจะไป (My Upcoming Trips) -->
+  <mat-card class="dashboard-upcoming-card">
+    <mat-card-header class="dashboard-upcoming-header">
+      <div class="dashboard-upcoming-title-container">
+        <mat-icon class="dashboard-upcoming-icon">explore</mat-icon>
+        <h3 class="dashboard-upcoming-title">ทริปของคุณที่กำลังจะมาถึง</h3>
+      </div>
+      <button mat-flat-button color="primary" routerLink="/trips">
+        <mat-icon>search</mat-icon> ค้นหาทริปใหม่
+      </button>
+    </mat-card-header>
+
+    <mat-card-content class="dashboard-upcoming-content">
+      <div *ngIf="upcomingTrips.length === 0" class="dashboard-empty-state" style="text-align: center; padding: 40px; color: #627d98;">
+        <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 16px;">flight_takeoff</mat-icon>
+        <h4>ยังไม่มีทริปที่กำลังจะเดินทาง</h4>
+        <p>เริ่มต้นค้นหาทริปที่ถูกใจแล้วออกเดินทางกันเถอะ</p>
+      </div>
+
+      <div *ngFor="let trip of upcomingTrips; let i = index; let last = last">
+        <ng-container *ngIf="i < 3">
+          <div class="dashboard-upcoming-item" style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
+            <div class="dashboard-upcoming-item-left" style="display: flex; align-items: center; gap: 16px;">
+              <div class="dashboard-upcoming-date-box" style="background: #f1f5f9; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center;">
+                <mat-icon style="color: #64748b; font-size: 32px; width: 32px; height: 32px;">landscape</mat-icon>
+              </div>
+              <div>
+                <h4 class="dashboard-upcoming-item-title" style="margin: 0 0 8px; font-size: 16px; font-weight: 700; color: #1e293b;">
+                  {{ trip.tripName || 'รหัสทริป: ' + trip.tripId }}
+                </h4>
+                <p class="dashboard-upcoming-item-desc" style="margin: 0; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                  <!-- Status Badges -->
+                  <span *ngIf="trip.status === 'CONFIRMED'" class="status-badge status-confirmed" style="background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 6px; font-weight: 600;">ยืนยันแล้ว</span>
+                  <span *ngIf="trip.status === 'WAITING_PAYMENT'" class="status-badge" style="background: #fef3c7; color: #d97706; padding: 4px 8px; border-radius: 6px; font-weight: 600;">รอชำระเงิน</span>
+                  <span *ngIf="trip.status === 'REGISTERED'" class="status-badge" style="background: #e0f2fe; color: #0284c7; padding: 4px 8px; border-radius: 6px; font-weight: 600;">รออนุมัติ</span>
+                  <span *ngIf="trip.status === 'PAID'" class="status-badge" style="background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 6px; font-weight: 600;">รอตรวจสอบชำระเงิน</span>
+                </p>
+              </div>
+            </div>
+            <div class="dashboard-upcoming-actions" style="display: flex; gap: 8px;">
+              <button mat-flat-button *ngIf="trip.status === 'WAITING_PAYMENT'" color="warn" style="background: #f59e0b; color: white;" routerLink="/registrations/my-registrations">
+                แจ้งชำระเงิน
+              </button>
+              <button mat-stroked-button color="primary" routerLink="/trips/{{trip.tripId}}/detail">
+                ดูรายละเอียด
+              </button>
+            </div>
+          </div>
+          <mat-divider *ngIf="!last && i < 2"></mat-divider>
+        </ng-container>
+      </div>
+      
+      <div *ngIf="upcomingTrips.length > 3" style="text-align: center; margin-top: 16px;">
+        <button mat-button color="primary" routerLink="/registrations/my-registrations">
+          ดูทริปทั้งหมด ({{ upcomingTrips.length }})
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

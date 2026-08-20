@@ -12,7 +12,7 @@
 
         <div class="trip-form-image-section">
           <div class="image-upload-wrapper" (click)="fileInput.click()">
-            <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none;">
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="d-none">
 
             <ng-container *ngIf="!imagePreview; else preview">
               <div class="upload-placeholder">
@@ -46,9 +46,13 @@
 
         <div class="trip-form-row">
           <mat-form-field appearance="outline" class="trip-form-field-240">
-            <mat-label>จังหวัด / สถานที่</mat-label>
-            <input matInput formControlName="location" placeholder="เช่น กาญจนบุรี" autocomplete="off">
-            <mat-error *ngIf="tripForm.get('location')?.hasError('required')">กรุณากรอกสถานที่</mat-error>
+            <mat-label>จังหวัด</mat-label>
+            <mat-select formControlName="location" placeholder="เลือกจังหวัด">
+              <mat-option *ngFor="let province of provinces" [value]="province">
+                {{ province }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="tripForm.get('location')?.hasError('required')">กรุณาเลือกจังหวัด</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="trip-form-field-240">

@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../../../core/services/user.service';
+import { InterestService } from '../../../core/services/interest.service';
 
 @Component({
   selector: 'app-user-form',
@@ -44,25 +45,26 @@ export class UserForm implements OnInit {
     { value: 'I', label: 'Inactive' },
   ];
 
-  attentions = [
-    { value: 'ธรรมชาติ', label: 'ธรรมชาติ' },
-    { value: 'คาเฟ่', label: 'คาเฟ่' },
-    { value: 'วัฒนธรรม', label: 'วัฒนธรรม' },
-    { value: 'อาหารท้องถิ่น', label: 'อาหารท้องถิ่น' },
-    { value: 'เดินป่า', label: 'เดินป่า' },
-    { value: 'ทะเล', label: 'ทะเล' },
-    { value: 'ถ่ายรูป', label: 'ถ่ายรูป' },
-    { value: 'ช้อปปิ้ง', label: 'ช้อปปิ้ง' }
-  ];
+  attentions: { value: string, label: string }[] = [];
 
   private fb = inject(FormBuilder)
   private router = inject(Router)
   private route = inject(ActivatedRoute)
   private userService = inject(UserService)
   private cdr = inject(ChangeDetectorRef)
-
+  private interestService = inject(InterestService)
 
   ngOnInit(): void {
+    this.interestService.getAllInterests().subscribe({
+      next: (res: any) => {
+        const interests = res?.data || res || [];
+        this.attentions = interests
+          .filter((i: any) => i.active === 'A')
+          .map((i: any) => ({ value: i.interestName, label: i.interestName }));
+        this.cdr.detectChanges();
+      }
+    });
+
     this.initForm();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
@@ -71,7 +73,7 @@ export class UserForm implements OnInit {
         this.loadUserData(this.userId);
       } else {
         this.isLoading = true;
-        of(null).pipe(delay(500)).subscribe(() => {
+        of(null).pipe(delay(300)).subscribe(() => {
           this.isLoading = false;
           this.cdr.detectChanges();
         });
@@ -81,7 +83,7 @@ export class UserForm implements OnInit {
 
   private loadUserData(id: number): void {
     this.isLoading = true;
-    this.userService.getUserById(id).pipe(delay(500)).subscribe({
+    this.userService.getUserById(id).pipe(delay(300)).subscribe({
       next: (response: any) => {
         const user = response.data || response;
         if (user) {

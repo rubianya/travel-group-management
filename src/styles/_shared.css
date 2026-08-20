@@ -72,3 +72,131 @@
   background-color: var(--status-gray-bg);
   color: var(--status-gray-text);
 }
+
+/* Layout Utilities */
+.flex-spacer {
+  flex: 1;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.loading-container-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+/* Glassmorphism Table & Card Global Styles */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border-radius: 16px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    overflow: hidden;
+}
+
+.fade-in-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Global Material Table Overrides for Modern Look */
+.mat-mdc-table {
+    background: transparent !important;
+}
+
+.mat-mdc-header-row {
+    background-color: rgba(241, 245, 249, 0.7) !important;
+}
+
+.mat-mdc-header-cell {
+    color: #475569 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    font-size: 13px !important;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e2e8f0 !important;
+    padding: 16px !important;
+}
+
+.mat-mdc-row {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mat-mdc-row:hover {
+    background-color: #f8fafc !important;
+    transform: scale(1.005);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    position: relative;
+    z-index: 1;
+    border-radius: 8px;
+}
+
+.mat-mdc-cell {
+    color: #334155 !important;
+    font-size: 15px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 16px !important;
+}
+
+/* Global Form Header and Dialog Surface */
+.gradient-header {
+    color: #1f2937;
+    font-weight: 700;
+    font-size: 24px;
+    padding-bottom: 8px;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 16px !important;
+    padding: 16px !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+/* Global Action Buttons */
+.mat-mdc-icon-button {
+    transition: color 0.2s ease, transform 0.2s ease !important;
+}
+
+.mat-mdc-icon-button[color="primary"]:hover {
+    color: #2563eb !important;
+    transform: scale(1.1);
+}
+
+.mat-mdc-icon-button[color="warn"]:hover {
+    color: #dc2626 !important;
+    transform: scale(1.1);
+}
+
+/* Global Primary Button */
+.mdc-button--unelevated:not(:disabled) {
+    border-radius: 12px !important;
+    padding: 0 24px !important;
+    height: 48px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
+    color: white !important;
+}
+
+.mdc-button--unelevated:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
+}

@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TripService } from '../../../core/services/trip.service';
 import { RegistrationService } from '../../../core/services/registration.service';
 import { GroupService } from '../../../core/services/group.service';
+import { UserService } from '../../../core/services/user.service';
 import { Trip } from '../../../core/models/trip.model';
 import { Registration } from '../../../core/models/registration.model';
 import { Group } from '../../../core/models/group.model';
@@ -29,7 +30,8 @@ import { Group } from '../../../core/models/group.model';
     MatListModule,
     MatProgressSpinnerModule,
     MatDividerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    RouterLink
   ],
   templateUrl: './trip-detail.html',
   styleUrls: ['../../../../styles/trip-detail.css']
@@ -41,14 +43,28 @@ export class TripDetail implements OnInit {
   tripService = inject(TripService);
   registrationService = inject(RegistrationService);
   groupService = inject(GroupService);
+  userService = inject(UserService);
   cdr = inject(ChangeDetectorRef);
+  platformId = inject(PLATFORM_ID);
 
   trip: Trip | undefined;
   registrations: Registration[] = [];
   groups: Group[] = [];
   isLoading = true;
+  currentRole = '';
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.userService.getCurrentProfile().subscribe({
+        next: (response: any) => {
+          const user = response.data ? response.data : response;
+          this.currentRole = user?.role || '';
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Error loading role', err)
+      });
+    }
+
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const tripId = Number(idParam);

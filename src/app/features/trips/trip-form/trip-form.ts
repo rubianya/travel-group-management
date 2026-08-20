@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TripService } from '../../../core/services/trip.service';
+import { InterestService } from '../../../core/services/interest.service';
 
 @Component({
   selector: 'app-trip-form',
@@ -35,7 +36,7 @@ export class TripForm implements OnInit {
   tripId?: number;
   isLoading = false;
 
-  tripType: string[] = ['ธรรมชาติ', 'คาเฟ่', 'วัฒนธรรม', 'อาหารท้องถิ่น', 'เดินป่า', 'ทะเล', 'ถ่ายรูป', 'ช้อปปิ้ง'];
+  tripType: string[] = [];
   imagePreview: string | ArrayBuffer | null = null;
 
   statuses = [
@@ -44,15 +45,45 @@ export class TripForm implements OnInit {
     { value: 'CLOSED', label: 'ปิดรับสมัคร (CLOSED)' }
   ];
 
+  provinces: string[] = [
+    'กรุงเทพมหานคร', 'กระบี่', 'กาญจนบุรี', 'กาฬสินธุ์', 'กำแพงเพชร',
+    'ขอนแก่น', 'จันทบุรี', 'ฉะเชิงเทรา', 'ชลบุรี', 'ชัยนาท',
+    'ชัยภูมิ', 'ชุมพร', 'เชียงราย', 'เชียงใหม่', 'ตรัง',
+    'ตราด', 'ตาก', 'นครนายก', 'นครปฐม', 'นครพนม',
+    'นครราชสีมา', 'นครศรีธรรมราช', 'นครสวรรค์', 'นนทบุรี', 'นราธิวาส',
+    'น่าน', 'บึงกาฬ', 'บุรีรัมย์', 'ปทุมธานี', 'ประจวบคีรีขันธ์',
+    'ปราจีนบุรี', 'ปัตตานี', 'พระนครศรีอยุธยา', 'พะเยา', 'พังงา',
+    'พัทลุง', 'พิจิตร', 'พิษณุโลก', 'เพชรบุรี', 'เพชรบูรณ์',
+    'แพร่', 'ภูเก็ต', 'มหาสารคาม', 'มุกดาหาร', 'แม่ฮ่องสอน',
+    'ยโสธร', 'ยะลา', 'ร้อยเอ็ด', 'ระนอง', 'ระยอง',
+    'ราชบุรี', 'ลพบุรี', 'ลำปาง', 'ลำพูน', 'เลย',
+    'ศรีสะเกษ', 'สกลนคร', 'สงขลา', 'สตูล', 'สมุทรปราการ',
+    'สมุทรสงคราม', 'สมุทรสาคร', 'สระแก้ว', 'สระบุรี', 'สิงห์บุรี',
+    'สุโขทัย', 'สุพรรณบุรี', 'สุราษฎร์ธานี', 'สุรินทร์', 'หนองคาย',
+    'หนองบัวลำภู', 'อ่างทอง', 'อำนาจเจริญ', 'อุดรธานี', 'อุตรดิตถ์',
+    'อุทัยธานี', 'อุบลราชธานี'
+  ];
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private tripService: TripService,
+    private interestService: InterestService,
     private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
+    this.interestService.getAllInterests().subscribe({
+      next: (res: any) => {
+        const interests = res?.data || res || [];
+        this.tripType = interests
+          .filter((i: any) => i.active === 'A')
+          .map((i: any) => i.interestName);
+        this.cdr.detectChanges();
+      }
+    });
+
     this.initForm();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');

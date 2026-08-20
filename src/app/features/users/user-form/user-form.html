@@ -65,7 +65,7 @@
         </div>
 
         <mat-form-field appearance="outline" class="trip-form-full-width">
-          <mat-label>ความสนใจ (Attention)</mat-label>
+          <mat-label>ความสนใจ (Interest)</mat-label>
           <mat-select formControlName="attention">
             <mat-option *ngFor="let a of attentions" [value]="a.value">
               {{ a.value }}
@@ -88,8 +88,7 @@
   </mat-card>
 
   <ng-template #loading>
-    <div class="text-center p-5"
-      style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
+    <div class="text-center p-5 loading-container-centered">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>

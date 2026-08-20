@@ -1,0 +1,136 @@
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading">
+  <mat-spinner diameter="50" color="primary"></mat-spinner>
+  <p>กำลังโหลดข้อมูลภาพรวมของระบบ...</p>
+</div>
+
+<div *ngIf="!isLoading">
+  <!-- ส่วนที่ 1: การ์ดสรุปตัวเลข (Summary Cards) -->
+  <div class="dashboard-grid">
+    <!-- การ์ด 1: ผู้ใช้งานทั้งหมด -->
+    <mat-card class="dashboard-card-primary">
+      <mat-card-content class="dashboard-card-content">
+        <div>
+          <p class="dashboard-card-label">ผู้ใช้งานในระบบ (Active / ทั้งหมด)</p>
+          <h3 class="dashboard-card-value-container">
+            <span class="dashboard-card-value-primary">{{ summary.activeUsers }}</span> <span
+              class="dashboard-card-value-sub">/ {{ summary.totalUsers }}</span>
+          </h3>
+        </div>
+        <div class="dashboard-icon-bg-primary">
+          <mat-icon class="dashboard-icon-primary">group</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- การ์ด 2: ผู้ใช้งานรอตรวจสอบ (Action Driven) -->
+    <mat-card class="dashboard-card-warning" style="border-left-color: #f59e0b;">
+      <mat-card-content class="dashboard-card-content">
+        <div>
+          <p class="dashboard-card-label">ผู้ใช้ที่รอตรวจสอบ (Pending)</p>
+          <h3 class="dashboard-card-value-container">
+            <span class="dashboard-card-value-warning" style="color: #f59e0b;">{{ summary.pendingUsers }}</span>
+            <span class="dashboard-card-value-sub" style="font-size: 14px; color: #b45309;">รายการ</span>
+          </h3>
+        </div>
+        <div class="dashboard-icon-bg-warning" style="background: #fffbeb;">
+          <mat-icon class="dashboard-icon-warning" style="color: #f59e0b;">how_to_reg</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- การ์ด 3: ข้อมูลทริป -->
+    <mat-card class="dashboard-card-success">
+      <mat-card-content class="dashboard-card-content">
+        <div>
+          <p class="dashboard-card-label">ทริปเปิดรับสมัคร / ทั้งหมด (ระบบ)</p>
+          <h3 class="dashboard-card-value-container">
+            <span class="dashboard-card-value-success">{{ summary.openTrips }}</span> <span
+              class="dashboard-card-value-sub">/ {{ summary.totalTrips }}</span>
+          </h3>
+        </div>
+        <div class="dashboard-icon-bg-success">
+          <mat-icon class="dashboard-icon-success">flight_takeoff</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- ส่วนที่ 1.5: ข้อมูลสถิติเพิ่มเติม (สำหรับ ADMIN) -->
+  <div class="dashboard-grid dashboard-grid-mt-24">
+    <!-- สถิติผู้ใช้ตาม Role -->
+    <mat-card class="dashboard-card-primary" style="display: flex; flex-direction: column;">
+      <mat-card-header style="padding-bottom: 0;">
+        <mat-icon mat-card-avatar color="primary">people</mat-icon>
+        <mat-card-title>สัดส่วนผู้ใช้ระบบตาม Role</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="dashboard-card-content-pt-16" style="flex-grow: 1;">
+        <div *ngFor="let stat of userStatsByRole" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 14px; font-weight: 600;">
+            <span>{{ stat.name }}</span>
+            <span>{{ stat.value }} คน ({{ stat.percent }}%)</span>
+          </div>
+          <div style="width: 100%; height: 8px; background-color: #e2e8f0; border-radius: 4px; overflow: hidden;">
+            <div [style.width.%]="stat.percent" style="height: 100%; background: linear-gradient(90deg, #3b82f6, #1d4ed8); border-radius: 4px;"></div>
+          </div>
+        </div>
+      </mat-card-content>
+      <div style="padding: 16px; border-top: 1px solid #f1f5f9; text-align: center;">
+        <button mat-stroked-button color="primary" routerLink="/users" style="width: 100%; padding: 8px 0; border-radius: 8px; font-weight: 600;">
+          <mat-icon style="margin-right: 8px;">manage_accounts</mat-icon>
+          จัดการผู้ใช้ทั้งหมด
+        </button>
+      </div>
+    </mat-card>
+
+    <!-- สถิติผู้ใช้ตาม Status -->
+    <mat-card class="dashboard-card-warning" style="display: flex; flex-direction: column;">
+      <mat-card-header style="padding-bottom: 0;">
+        <mat-icon mat-card-avatar style="color: #f59e0b;">how_to_reg</mat-icon>
+        <mat-card-title>สัดส่วนผู้ใช้ระบบตาม Status</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="dashboard-card-content-pt-16" style="flex-grow: 1;">
+        <div *ngFor="let stat of userStatsByStatus" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 14px; font-weight: 600;">
+            <span>{{ stat.name }}</span>
+            <span>{{ stat.value }} คน ({{ stat.percent }}%)</span>
+          </div>
+          <div style="width: 100%; height: 8px; background-color: #fef3c7; border-radius: 4px; overflow: hidden;">
+            <div [style.width.%]="stat.percent" style="height: 100%; background: linear-gradient(90deg, #f59e0b, #b45309); border-radius: 4px;"></div>
+          </div>
+        </div>
+      </mat-card-content>
+      <div style="padding: 16px; border-top: 1px solid #fffbeb; text-align: center;">
+        <button mat-flat-button style="width: 100%; padding: 8px 0; border-radius: 8px; font-weight: 600; background-color: #f59e0b; color: white; box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);" routerLink="/users">
+          <mat-icon style="margin-right: 8px;">fact_check</mat-icon>
+          ตรวจสอบผู้ใช้ใหม่
+        </button>
+      </div>
+    </mat-card>
+
+    <!-- สถิติทริปตาม Status -->
+    <mat-card class="dashboard-card-success" style="display: flex; flex-direction: column;">
+      <mat-card-header style="padding-bottom: 0;">
+        <mat-icon mat-card-avatar style="color: #10b981;">flight_takeoff</mat-icon>
+        <mat-card-title>สัดส่วนทริปตาม Status</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="dashboard-card-content-pt-16" style="flex-grow: 1;">
+        <div *ngFor="let stat of tripStatsByStatus" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 14px; font-weight: 600;">
+            <span>{{ stat.name }}</span>
+            <span>{{ stat.value }} ทริป ({{ stat.percent }}%)</span>
+          </div>
+          <div style="width: 100%; height: 8px; background-color: #dcfce7; border-radius: 4px; overflow: hidden;">
+            <div [style.width.%]="stat.percent" style="height: 100%; background: linear-gradient(90deg, #10b981, #047857); border-radius: 4px;"></div>
+          </div>
+        </div>
+      </mat-card-content>
+      <div style="padding: 16px; border-top: 1px solid #ecfdf5; text-align: center;">
+        <button mat-stroked-button style="width: 100%; padding: 8px 0; border-radius: 8px; font-weight: 600; color: #10b981; border-color: #10b981;" routerLink="/trips">
+          <mat-icon style="margin-right: 8px;">edit_location_alt</mat-icon>
+          จัดการทริปทั้งหมด
+        </button>
+      </div>
+    </mat-card>
+  </div>
+</div>
