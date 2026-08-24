@@ -1,7 +1,8 @@
 <div class="trip-list-container">
 
   <div class="trip-list-header">
-    <h2 class="trip-list-title">จัดการทริปท่องเที่ยว</h2>
+    <h2 class="trip-list-title" *ngIf="currentRole === 'Organizer'">จัดการทริปท่องเที่ยว</h2>
+    <h2 class="trip-list-title" *ngIf="currentRole === 'Admin'">ข้อมูลทริปทั้งหมด</h2>
     <button *ngIf="currentRole === 'Organizer' " mat-flat-button color="primary" routerLink="/trips/new"
       class="add-button">
       <mat-icon>add</mat-icon> สร้างทริปใหม่
@@ -79,12 +80,13 @@
               title="แก้ไข">
               <mat-icon>edit</mat-icon>
             </button>
-            <button *ngIf="currentRole === 'Organizer' && getAvailableTripStatuses(element.status).length > 0" 
+            <button *ngIf="currentRole === 'Organizer' && getAvailableTripStatuses(element.status).length > 0"
               mat-icon-button color="accent" [matMenuTriggerFor]="tripStatusMenu" title="เปลี่ยนสถานะทริป">
               <mat-icon>swap_horiz</mat-icon>
             </button>
             <mat-menu #tripStatusMenu="matMenu">
-              <button mat-menu-item *ngFor="let status of getAvailableTripStatuses(element.status)" (click)="changeTripStatus(element, status)">
+              <button mat-menu-item *ngFor="let status of getAvailableTripStatuses(element.status)"
+                (click)="changeTripStatus(element, status)">
                 <mat-icon>label</mat-icon>
                 <span>{{ status }}</span>
               </button>

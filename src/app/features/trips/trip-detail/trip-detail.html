@@ -20,81 +20,161 @@
     </button>
   </div>
 
-  <div class="cards-grid">
-    <!-- Trip Info Card -->
-    <mat-card class="detail-card">
-      <img *ngIf="trip.imageUrl" mat-card-image [src]="'http://localhost:8080' + trip.imageUrl" [alt]="trip.tripName"
-        class="trip-cover-image">
-      <mat-card-header>
-        <mat-card-title>ข้อมูลทั่วไป</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p><strong>สถานที่:</strong> {{ trip.location }}</p>
-        <p><strong>ประเภททริป:</strong> {{ trip.tripType }}</p>
-        <p><strong>วันที่:</strong> {{ trip.startDate }} - {{ trip.endDate }}</p>
-        <p><strong>งบประมาณโดยประมาณ:</strong> {{ trip.budget | number }} บาท</p>
-      </mat-card-content>
-    </mat-card>
+  <mat-tab-group class="custom-tab-group">
+    <!-- Tab 1: ข้อมูลทริป -->
+    <mat-tab label="ข้อมูลทริป">
+      <div class="tab-content">
+        <div class="cards-grid">
+          <!-- Trip Info Card -->
+          <mat-card class="detail-card">
+            <img *ngIf="trip.imageUrl" mat-card-image [src]="'http://localhost:8080' + trip.imageUrl" [alt]="trip.tripName"
+              class="trip-cover-image">
+            <mat-card-header>
+              <mat-card-title>ข้อมูลทั่วไป</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p><strong>สถานที่:</strong> {{ trip.location }}</p>
+              <p><strong>ประเภททริป:</strong> {{ trip.tripType }}</p>
+              <p><strong>วันที่:</strong> {{ trip.startDate }} - {{ trip.endDate }}</p>
+              <p><strong>งบประมาณโดยประมาณ:</strong> {{ trip.budget | number }} บาท</p>
+            </mat-card-content>
+          </mat-card>
 
-    <!-- Participants Info Card -->
-    <mat-card class="detail-card">
-      <mat-card-header>
-        <mat-card-title>สถิติผู้สมัคร</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="stats-container">
-          <div class="stat-item">
-            <span class="stat-value">{{ registrations.length }} / {{ trip.maxParticipants }}</span>
-            <span class="stat-label">จำนวนผู้สมัคร</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value">{{ trip.groupSize }}</span>
-            <span class="stat-label">จำนวนคนต่อกลุ่ม</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value">{{ trip.maxParticipants / trip.groupSize }}</span>
-            <span class="stat-label">จำนวนกลุ่มทั้งหมด</span>
+          <!-- Participants Info Card -->
+          <mat-card class="detail-card">
+            <mat-card-header>
+              <mat-card-title>สถิติผู้สมัคร</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="stats-container">
+                <div class="stat-item">
+                  <span class="stat-value">{{ registrations.length }} / {{ trip.maxParticipants }}</span>
+                  <span class="stat-label">จำนวนผู้สมัคร</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">{{ trip.groupSize }}</span>
+                  <span class="stat-label">จำนวนคนต่อกลุ่ม</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">{{ trip.maxParticipants / trip.groupSize }}</span>
+                  <span class="stat-label">จำนวนกลุ่มทั้งหมด</span>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 2: จัดการกลุ่ม (For Organizer) -->
+    <mat-tab label="จัดการกลุ่ม" *ngIf="currentRole !== 'Traveler'">
+      <div class="tab-content group-management-container">
+        
+        <div class="board-header">
+          <div class="auto-group-control">
+            <mat-form-field appearance="outline" class="size-input">
+              <mat-label>ขนาดกลุ่ม</mat-label>
+              <input matInput type="number" [(ngModel)]="groupSizeInput" min="2" max="20">
+            </mat-form-field>
+            <button mat-flat-button color="primary" (click)="autoGroup()" [disabled]="isLoading" class="auto-btn">
+              <mat-icon>auto_awesome</mat-icon> จัดกลุ่มอัตโนมัติ
+            </button>
+            <button mat-stroked-button color="primary" (click)="openCreateGroupDialog()" [disabled]="isLoading" class="auto-btn" style="background: white; color: #3b82f6; border-color: #3b82f6;">
+              <mat-icon>add</mat-icon> สร้างกลุ่มใหม่
+            </button>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
 
-  <!-- Groups Section -->
-  <mat-card class="groups-card">
-    <mat-card-header>
-      <mat-card-title>การจัดกลุ่ม ({{ groups.length }} กลุ่ม)</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div *ngIf="groups.length === 0" class="no-data">
-        <p>ยังไม่มีการจัดกลุ่มสำหรับทริปนี้</p>
-      </div>
+        <div class="kanban-board" cdkDropListGroup>
+          
+          <!-- Unassigned Members Column -->
+          <div class="kanban-column unassigned-column">
+            <div class="column-header unassigned-header">
+              <mat-icon>person_off</mat-icon>
+              <h3>รอจัดกลุ่ม</h3>
+              <span class="badge">{{unassignedMembers.length}}</span>
+            </div>
+            
+            <div
+              cdkDropList
+              id="unassignedList"
+              [cdkDropListData]="unassignedMembers"
+              class="member-list"
+              (cdkDropListDropped)="drop($event)">
+              
+              <div *ngIf="unassignedMembers.length === 0" class="empty-state">
+                <mat-icon>done_all</mat-icon>
+                <p>ไม่มีสมาชิกที่รอจัดกลุ่ม</p>
+              </div>
 
-      <div class="groups-grid" *ngIf="groups.length > 0">
-        <mat-card class="group-item-card" *ngFor="let group of groups">
-          <mat-card-header>
-            <mat-card-title>{{ group.groupName }}</mat-card-title>
-            <mat-card-subtitle>จำนวนสมาชิก: {{ group.members.length || 0 }} คน</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list>
-              <mat-list-item *ngFor="let member of group.members">
-                <mat-icon matListItemIcon>person</mat-icon>
-                <div matListItemTitle>{{ member.travelerName }}</div>
-                <div matListItemLine>
-                  <mat-chip-set>
-                    <mat-chip *ngFor="let interest of member.interests" color="primary" selected>
-                      {{ interest }}
-                    </mat-chip>
-                  </mat-chip-set>
+              <mat-card *ngFor="let member of unassignedMembers" cdkDrag class="member-card">
+                <div class="member-header">
+                  <mat-icon>person</mat-icon>
+                  <span class="member-name">{{ member.userName }}</span>
                 </div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
+              </mat-card>
+            </div>
+          </div>
+
+          <!-- Group Columns Wrapper -->
+          <div class="kanban-column-wrapper">
+            <div *ngFor="let group of groups" class="kanban-column group-column" [class.confirmed]="group.status === 'CONFIRMED'">
+              <div class="column-header group-header">
+                <div class="group-title-row">
+                  <div class="title-and-actions">
+                    <h3>{{ group.groupName }}</h3>
+                    <button mat-icon-button class="small-icon-btn" (click)="openEditGroupDialog(group)" matTooltip="แก้ไขกลุ่ม">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button class="small-icon-btn" color="warn" (click)="deleteGroup(group.id)" matTooltip="ลบกลุ่ม">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                  <span class="status-badge" [ngClass]="(group.status || 'draft').toLowerCase()">
+                    {{ group.status || 'DRAFT' }}
+                  </span>
+                </div>
+                <div class="group-meta">
+                  <span class="member-count"><mat-icon>group</mat-icon> {{ group.members.length }} คน</span>
+                  <span class="leader-info" *ngIf="group.leader">
+                    <mat-icon class="crown-icon">emoji_events</mat-icon> {{ group.leader.fullName }}
+                  </span>
+                </div>
+              </div>
+              
+              <div
+                cdkDropList
+                [id]="'groupList-' + group.id"
+                [cdkDropListData]="group.members"
+                class="member-list"
+                (cdkDropListDropped)="drop($event)">
+                
+                <div *ngIf="group.members.length === 0" class="empty-state">
+                  <mat-icon>move_to_inbox</mat-icon>
+                  <p>ลากสมาชิกมาวางที่นี่</p>
+                </div>
+
+                <mat-card *ngFor="let member of group.members" cdkDrag class="member-card">
+                  <div class="member-header">
+                    <mat-icon *ngIf="group.leader?.id === member.userId" class="crown-icon small">emoji_events</mat-icon>
+                    <mat-icon *ngIf="group.leader?.id !== member.userId">person</mat-icon>
+                    <span class="member-name">{{ member.userName || member.travelerName }}</span>
+                  </div>
+                </mat-card>
+              </div>
+
+              <div class="group-actions">
+                <button mat-stroked-button color="primary" class="full-width" (click)="confirmGroup(group.id)" 
+                        [disabled]="group.status === 'CONFIRMED' || group.members.length === 0">
+                  <mat-icon>check_circle</mat-icon> ยืนยันกลุ่ม
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </mat-tab>
+  </mat-tab-group>
 </div>
 
 

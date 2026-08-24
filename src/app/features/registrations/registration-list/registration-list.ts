@@ -92,14 +92,28 @@ export class RegistrationList implements OnInit {
           const tripsArray = (res.myTrips as any).data ? (res.myTrips as any).data : res.myTrips;
           const myTripIds = (tripsArray || []).map((t: any) => t.id);
           
-          const filteredRegs = (res.allRegs || []).filter((r: Registration) => myTripIds.includes(r.tripId));
+          const filteredRegs = (res.allRegs || []).filter((r: Registration) => myTripIds.includes(r.tripId)).map((r: Registration) => {
+             const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
+             return { ...r, organizerBudget: trip ? trip.budget : undefined };
+          });
           this.handleData(filteredRegs);
         },
         error: (err) => this.handleError(err)
       });
     } else {
-      this.registrationService.getAllRegistrations().subscribe({
-        next: (data) => this.handleData(data),
+      forkJoin({
+        allTrips: this.tripService.getAllTrips(),
+        allRegs: this.registrationService.getAllRegistrations()
+      }).subscribe({
+        next: (res) => {
+          const tripsArray = (res.allTrips as any).data ? (res.allTrips as any).data : res.allTrips;
+          const allRegs = (res.allRegs as any).data ? (res.allRegs as any).data : res.allRegs;
+          const mappedRegs = (allRegs || []).map((r: Registration) => {
+             const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
+             return { ...r, organizerBudget: trip ? trip.budget : undefined };
+          });
+          this.handleData(mappedRegs);
+        },
         error: (err) => this.handleError(err)
       });
     }

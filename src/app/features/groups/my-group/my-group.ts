@@ -18,15 +18,16 @@ import { Group } from '../../../core/models/group.model';
     MatProgressSpinnerModule
   ],
   templateUrl: './my-group.html',
-  styleUrls: ['../../../../styles/_my-group.css']
+  styleUrls: ['./my-group.scss']
 })
 export class MyGroup implements OnInit {
 
-  groups: Group[] = [];
+  myGroup: Group | null = null;
   isLoading = true;
-  
-  // Mock current user ID
-  currentUserId = 2;
+
+  // Mock current user ID and Trip ID for now
+  currentUserId = 1;
+  currentTripId = 1;
 
   private groupService = inject(GroupService);
 
@@ -36,9 +37,13 @@ export class MyGroup implements OnInit {
 
   loadMyGroup(): void {
     this.isLoading = true;
-    this.groupService.getGroupsByUserId(this.currentUserId).subscribe({
-      next: (data) => {
-        this.groups = data;
+    this.groupService.getGroupsByTripId(this.currentTripId).subscribe({
+      next: (groups) => {
+        // Find the group that contains this user
+        this.myGroup = groups.find(g => 
+          g.members.some(m => m.userId === this.currentUserId) ||
+          g.leader?.id === this.currentUserId
+        ) || null;
         this.isLoading = false;
       },
       error: (err) => {

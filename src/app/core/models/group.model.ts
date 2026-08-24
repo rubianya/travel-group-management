@@ -1,12 +1,18 @@
-export interface GroupMember {
-  registrationId: number;
-  travelerName: string;
-  interests: string[];
-}
+import { User } from './user.model';
+import { Registration } from './registration.model';
 
 export interface Group {
   id: number;
   tripId: number;
   groupName: string;
-  members: GroupMember[];
+  leader?: User;
+  members: Registration[];
+  status: 'DRAFT' | 'CONFIRMED' | string;
+  note?: string;
+}
+
+export interface TripGroupRequestDTO {
+  groupName: string;
+  leaderId?: number;
+  note?: string;
 }

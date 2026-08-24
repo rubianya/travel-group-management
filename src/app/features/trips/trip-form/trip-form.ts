@@ -3,13 +3,14 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { delay, of } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { TripService } from '../../../core/services/trip.service';
 import { InterestService } from '../../../core/services/interest.service';
 
@@ -26,7 +27,9 @@ import { InterestService } from '../../../core/services/interest.service';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   templateUrl: './trip-form.html',
 })
@@ -103,23 +106,23 @@ export class TripForm implements OnInit {
       next: (response: any) => {
         if (response && response.data) {
           const trip = response.data;
-            this.tripForm.patchValue({
-              tripName: trip.tripName,
-              description: trip.description,
-              location: trip.location,
-              startDate: trip.startDate,
-              endDate: trip.endDate,
-              maxParticipants: trip.maxParticipants,
-              groupSize: trip.groupSize,
-              budget: trip.budget,
-              tripType: trip.tripType,
-              status: trip.status
-            });
+          this.tripForm.patchValue({
+            tripName: trip.tripName,
+            description: trip.description,
+            location: trip.location,
+            startDate: trip.startDate,
+            endDate: trip.endDate,
+            maxParticipants: trip.maxParticipants,
+            groupSize: trip.groupSize,
+            budget: trip.budget,
+            tripType: trip.tripType,
+            status: trip.status
+          });
 
-            if (trip.imageUrl) {
-              this.imagePreview = `http://localhost:8080${trip.imageUrl}`;
-            }
+          if (trip.imageUrl) {
+            this.imagePreview = `http://localhost:8080${trip.imageUrl}`;
           }
+        }
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -152,8 +155,20 @@ export class TripForm implements OnInit {
       const formValue = this.tripForm.value;
       const { image, ...tripData } = formValue;
 
+      let { startDate, endDate } = tripData;
+      if (startDate instanceof Date) {
+        const offset = startDate.getTimezoneOffset() * 60000;
+        startDate = new Date(startDate.getTime() - offset).toISOString().split('T')[0];
+      }
+      if (endDate instanceof Date) {
+        const offset = endDate.getTimezoneOffset() * 60000;
+        endDate = new Date(endDate.getTime() - offset).toISOString().split('T')[0];
+      }
+
       const payload = {
         ...tripData,
+        startDate,
+        endDate,
         budget: Number(formValue.budget),
         groupSize: Number(formValue.groupSize),
         maxParticipants: Number(formValue.maxParticipants)

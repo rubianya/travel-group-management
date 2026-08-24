@@ -5,9 +5,12 @@ export interface Registration {
   userId: number;
   userEmail: string;
   userName: string;
+  travelerName?: string;
   budget: number;
+  organizerBudget?: number;
   status: string;
   remark?: string;
+  interests?: string[];
 }
 
 export interface RegistrationRequest {

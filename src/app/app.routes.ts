@@ -48,10 +48,6 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/registrations/registration-form/registration-form').then(m => m.RegistrationForm)
             },
             {
-                path: 'groups',
-                loadComponent: () => import('./features/groups/group-list/group-list').then(m => m.GroupList)
-            },
-            {
                 path: 'itinerary',
                 loadComponent: () => import('./features/itinerary/itinerary-list/itinerary-list').then(m => m.ItineraryList)
             },

@@ -93,9 +93,18 @@
             <ng-container matColumnDef="budget">
                 <th mat-header-cell *matHeaderCellDef> งบประมาณ (บาท) </th>
                 <td mat-cell *matCellDef="let element">
-                    <div class="budget-cell">
+                    <div class="budget-cell-comparison">
                         <mat-icon class="budget-icon">account_balance_wallet</mat-icon>
-                        <span>{{element.budget | number}}</span>
+                        <div class="budget-details">
+                            <div class="budget-item" [ngClass]="{'lower-budget': element.organizerBudget && element.budget < element.organizerBudget}">
+                                <span class="budget-label">ผู้สมัคร:</span>
+                                <span class="budget-value">{{element.budget | number}}</span>
+                            </div>
+                            <div class="budget-item organizer" *ngIf="element.organizerBudget !== undefined">
+                                <span class="budget-label">ตั้งต้น:</span>
+                                <span class="budget-value">{{element.organizerBudget | number}}</span>
+                            </div>
+                        </div>
                     </div>
                 </td>
             </ng-container>

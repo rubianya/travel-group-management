@@ -97,6 +97,48 @@
   color: #334155;
 }
 
+.budget-cell-comparison {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.budget-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.budget-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: #334155;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #f8fafc;
+}
+
+.budget-item.lower-budget {
+  color: #b91c1c;
+  background-color: #fef2f2;
+}
+
+.budget-item.organizer {
+  color: #0f766e;
+  background-color: #f0fdfa;
+}
+
+.budget-label {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.budget-value {
+  font-weight: 600;
+}
+
 .trip-icon, .budget-icon {
   font-size: 18px;
   width: 18px;
