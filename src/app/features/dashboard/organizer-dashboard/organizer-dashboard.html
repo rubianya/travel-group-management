@@ -6,8 +6,8 @@
 
 <div *ngIf="!isLoading">
 
-  <div style="margin-bottom: 24px;" *ngIf="myTrips.length > 0">
-    <mat-form-field appearance="outline" style="width: 100%; max-width: 400px;">
+  <div class="db-mb-24" *ngIf="myTrips.length > 0">
+    <mat-form-field appearance="outline" class="db-form-field">
       <mat-label>เลือกทริปที่ต้องการดูข้อมูล</mat-label>
       <mat-select [(ngModel)]="selectedTripId" (selectionChange)="onTripChange()">
         <mat-option *ngFor="let trip of myTrips" [value]="trip.id">
@@ -18,9 +18,9 @@
   </div>
 
   <div *ngIf="myTrips.length === 0" class="dashboard-empty-state"
-    style="text-align: center; padding: 40px; color: #627d98;">
+    class="db-empty-state">
     <mat-icon
-      style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 16px;">flight_takeoff</mat-icon>
+      class="db-empty-icon">flight_takeoff</mat-icon>
     <h4>คุณยังไม่ได้สร้างทริปใดๆ</h4>
     <p>กดสร้างทริปใหม่เพื่อเริ่มต้นเป็นผู้จัดทริป</p>
   </div>
@@ -35,7 +35,7 @@
           <p class="dashboard-card-label">ผู้สมัครทั้งหมด</p>
           <h3 class="dashboard-card-value-container">
             <span class="dashboard-card-value-primary">{{ applicantStats.totalApplicants }}</span>
-            <span class="dashboard-card-value-sub" style="font-size: 14px;"> คน</span>
+            <span class="dashboard-card-value-sub db-fs-14"> คน</span>
           </h3>
         </div>
         <div class="dashboard-icon-bg-primary">
@@ -45,18 +45,18 @@
     </mat-card>
 
     <!-- การ์ด 2: ข้อมูลผู้สมัคร (ยืนยัน/ยกเลิก) -->
-    <mat-card class="dashboard-card-success" style="border-left-color: #10b981;">
+    <mat-card class="dashboard-card-success db-border-success">
       <mat-card-content class="dashboard-card-content">
         <div>
           <p class="dashboard-card-label">ยืนยันแล้ว / ยกเลิก</p>
           <h3 class="dashboard-card-value-container">
-            <span class="dashboard-card-value-success" style="color: #10b981;">{{ applicantStats.confirmedApplicants
-              }}</span> <span class="dashboard-card-value-sub" style="color: #ef4444;">/ {{
+            <span class="dashboard-card-value-success db-text-success">{{ applicantStats.confirmedApplicants
+              }}</span> <span class="dashboard-card-value-sub db-text-danger">/ {{
               applicantStats.cancelledApplicants }}</span>
           </h3>
         </div>
-        <div class="dashboard-icon-bg-success" style="background: #ecfdf5;">
-          <mat-icon class="dashboard-icon-success" style="color: #10b981;">how_to_reg</mat-icon>
+        <div class="dashboard-icon-bg-success db-bg-success-light">
+          <mat-icon class="dashboard-icon-success db-icon-success">how_to_reg</mat-icon>
         </div>
       </mat-card-content>
     </mat-card>
@@ -94,34 +94,34 @@
     <mat-card-content class="dashboard-upcoming-content">
 
       <div *ngIf="upcomingTrips.length === 0" class="dashboard-empty-state"
-        style="text-align: center; padding: 40px; color: #627d98;">
+        class="db-empty-state">
         <mat-icon
-          style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 16px;">add_location</mat-icon>
+          class="db-empty-icon">add_location</mat-icon>
         <h4>คุณยังไม่มีทริปที่กำลังจะเดินทาง</h4>
         <p>เริ่มต้นสร้างทริปแรกของคุณ เพื่อเปิดรับสมาชิกได้เลย</p>
       </div>
 
       <div *ngFor="let trip of upcomingTrips; let last = last">
         <div class="dashboard-upcoming-item"
-          style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
-          <div class="dashboard-upcoming-item-left" style="display: flex; align-items: center; gap: 16px;">
+          class="db-upcoming-item-container">
+          <div class="dashboard-upcoming-item-left db-upcoming-item-left">
             <div class="dashboard-upcoming-date-box"
-              style="background: #f1f5f9; border-radius: 12px; padding: 12px; text-align: center; min-width: 60px;">
+              class="db-date-box">
               <span class="dashboard-upcoming-date-month"
-                style="display: block; font-size: 12px; color: #64748b; font-weight: 600;">{{ trip.month }}</span>
+                class="db-date-month">{{ trip.month }}</span>
               <span class="dashboard-upcoming-date-day"
-                style="display: block; font-size: 20px; font-weight: 800; color: #1e293b;">{{ trip.day }}</span>
+                class="db-date-day">{{ trip.day }}</span>
             </div>
             <div>
               <h4 class="dashboard-upcoming-item-title"
-                style="margin: 0 0 8px; font-size: 16px; font-weight: 700; color: #1e293b;">{{ trip.name }}</h4>
+                class="db-upcoming-title">{{ trip.name }}</h4>
               <p class="dashboard-upcoming-item-desc"
-                style="margin: 0; font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 8px;">
+                class="db-upcoming-desc">
                 <span>รหัสทริป: #{{ trip.id }}</span>
               </p>
             </div>
           </div>
-          <div class="dashboard-upcoming-actions" style="display: flex; gap: 8px;">
+          <div class="dashboard-upcoming-actions db-upcoming-actions-container">
             <button mat-stroked-button color="primary" [routerLink]="['/trips', trip.id, 'detail']">
               จัดการผู้สมัคร
             </button>

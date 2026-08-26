@@ -473,3 +473,73 @@
   width: 16px;
   height: 16px;
 }
+
+/* Extracted from HTML inline styles */
+.trip-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.td-title {
+  flex-grow: 0;
+}
+
+.td-detail-card-mt {
+  margin-top: 1rem;
+}
+
+.td-empty-registrations {
+  padding: 1rem;
+  text-align: center;
+  color: gray;
+}
+
+.td-more-registrations {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.td-tab-content-padded {
+  padding: 1rem;
+}
+
+.td-itinerary-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.td-empty-itinerary {
+  text-align: center;
+  padding: 2rem;
+  color: gray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.td-empty-itinerary-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+}
+
+.td-btn-outline {
+  background: white;
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.td-member-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.td-member-interest {
+  font-size: 11px;
+  color: gray;
+}

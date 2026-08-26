@@ -83,11 +83,11 @@
                 <td mat-cell *matCellDef="let element">
                     <div class="interest-cell">
                         <mat-chip-set *ngIf="element.interests && element.interests.length > 0">
-                            <mat-chip *ngFor="let interest of element.interests" color="primary" selected style="font-size: 12px; min-height: 24px;">
+                            <mat-chip *ngFor="let interest of element.interests" color="primary" selected class="rl-interest-chip">
                                 {{ interest.interestName || interest.name || interest }}
                             </mat-chip>
                         </mat-chip-set>
-                        <span *ngIf="!element.interests || element.interests.length === 0" style="color: gray;">-</span>
+                        <span *ngIf="!element.interests || element.interests.length === 0" class="rl-no-interest">-</span>
                     </div>
                 </td>
             </ng-container>

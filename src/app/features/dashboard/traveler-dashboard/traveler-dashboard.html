@@ -63,29 +63,29 @@
     </mat-card-header>
 
     <mat-card-content class="dashboard-upcoming-content">
-      <div *ngIf="upcomingTrips.length === 0" class="dashboard-empty-state" style="text-align: center; padding: 40px; color: #627d98;">
-        <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 16px;">flight_takeoff</mat-icon>
+      <div *ngIf="upcomingTrips.length === 0" class="dashboard-empty-state db-empty-state">
+        <mat-icon class="db-empty-icon">flight_takeoff</mat-icon>
         <h4>ยังไม่มีทริปที่กำลังจะเดินทาง</h4>
         <p>เริ่มต้นค้นหาทริปที่ถูกใจแล้วออกเดินทางกันเถอะ</p>
       </div>
 
       <div *ngFor="let trip of upcomingTrips; let i = index; let last = last">
         <ng-container *ngIf="i < 3">
-          <div class="dashboard-upcoming-item" style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
-            <div class="dashboard-upcoming-item-left" style="display: flex; align-items: center; gap: 16px;">
-              <div class="dashboard-upcoming-date-box" style="background: #f1f5f9; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center;">
-                <mat-icon style="color: #64748b; font-size: 32px; width: 32px; height: 32px;">landscape</mat-icon>
+          <div class="dashboard-upcoming-item db-upcoming-item-container">
+            <div class="dashboard-upcoming-item-left db-upcoming-item-left">
+              <div class="dashboard-upcoming-date-box db-icon-box">
+                <mat-icon class="db-icon-landscape">landscape</mat-icon>
               </div>
               <div>
-                <h4 class="dashboard-upcoming-item-title" style="margin: 0 0 8px; font-size: 16px; font-weight: 700; color: #1e293b;">
+                <h4 class="dashboard-upcoming-item-title db-upcoming-title">
                   {{ trip.tripName || 'รหัสทริป: ' + trip.tripId }}
                 </h4>
-                <p class="dashboard-upcoming-item-desc" style="margin: 0; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-                  <span class="status-badge status-confirmed" style="background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 6px; font-weight: 600;">วันที่: {{ trip.startDate | date:'dd/MM/yyyy' }}</span>
+                <p class="dashboard-upcoming-item-desc db-upcoming-desc">
+                  <span class="status-badge status-confirmed db-upcoming-desc-success">วันที่: {{ trip.startDate | date:'dd/MM/yyyy' }}</span>
                 </p>
               </div>
             </div>
-            <div class="dashboard-upcoming-actions" style="display: flex; gap: 8px;">
+            <div class="dashboard-upcoming-actions db-upcoming-actions-container">
               <button mat-stroked-button color="primary" routerLink="/trips/{{trip.tripId}}/detail">
                 ดูรายละเอียด
               </button>
@@ -95,7 +95,7 @@
         </ng-container>
       </div>
       
-      <div *ngIf="upcomingTrips.length > 3" style="text-align: center; margin-top: 16px;">
+      <div *ngIf="upcomingTrips.length > 3" class="db-mt-16-center">
         <button mat-button color="primary" routerLink="/registrations/my-registrations">
           ดูทริปทั้งหมด ({{ upcomingTrips.length }})
         </button>

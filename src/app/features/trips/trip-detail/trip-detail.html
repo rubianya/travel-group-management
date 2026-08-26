@@ -10,11 +10,11 @@
     <button mat-icon-button (click)="goBack()">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <div style="display: flex; flex-direction: column; flex-grow: 1; align-items: flex-start; gap: 8px;">
+    <div class="trip-title-wrapper">
       <span class="status-badge status-{{ trip.status.toLowerCase() }}">
         {{ trip.status }}
       </span>
-      <h2 class="page-title" style="flex-grow: 0;">รายละเอียดทริป: {{ trip.tripName }}</h2>
+      <h2 class="page-title td-title">รายละเอียดทริป: {{ trip.tripName }}</h2>
     </div>
     <div class="flex-spacer"></div>
     <button *ngIf="currentRole === 'Traveler' && !trip.isFull" mat-flat-button color="accent"
@@ -72,7 +72,7 @@
         </div>
 
         <!-- Participants List Card -->
-        <mat-card class="detail-card" style="margin-top: 1rem;">
+        <mat-card class="detail-card td-detail-card-mt">
           <mat-card-header>
             <mat-card-title>รายชื่อผู้สมัครเข้าร่วม</mat-card-title>
           </mat-card-header>
@@ -84,10 +84,10 @@
                 <span matListItemLine>ความสนใจ: {{ getInterestsText(reg) }}</span>
               </mat-list-item>
             </mat-list>
-            <div *ngIf="registrations.length === 0" style="padding: 1rem; text-align: center; color: gray;">
+            <div *ngIf="registrations.length === 0" class="td-empty-registrations">
               ยังไม่มีผู้สมัครเข้าร่วม
             </div>
-            <div *ngIf="registrations.length > 5" style="text-align: center; margin-top: 10px;">
+            <div *ngIf="registrations.length > 5" class="td-more-registrations">
               <button mat-button color="primary" (click)="showAllParticipants = !showAllParticipants">
                 {{ showAllParticipants ? 'แสดงน้อยลง' : 'ดูทั้งหมด (' + registrations.length + ' คน)' }}
               </button>
@@ -100,8 +100,8 @@
 
     <!-- Tab 2: กำหนดการเดินทาง -->
     <mat-tab label="กำหนดการเดินทาง">
-      <div class="tab-content" style="padding: 1rem;">
-        <div *ngIf="currentRole === 'Organizer'" style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+      <div class="tab-content td-tab-content-padded">
+        <div *ngIf="currentRole === 'Organizer'" class="td-itinerary-header">
           <button mat-flat-button color="primary" (click)="openItineraryDialog()">
             <mat-icon>add</mat-icon> เพิ่มกำหนดการ
           </button>
@@ -140,8 +140,8 @@
           </mat-expansion-panel>
         </mat-accordion>
         <ng-template #noItinerary>
-          <div class="empty-state" style="text-align: center; padding: 2rem; color: gray; display: flex; flex-direction: column; align-items: center;">
-            <mat-icon style="font-size: 48px; width: 48px; height: 48px; margin-bottom: 16px;">event_busy</mat-icon>
+          <div class="empty-state td-empty-itinerary">
+            <mat-icon class="td-empty-itinerary-icon">event_busy</mat-icon>
             <p>ยังไม่มีกำหนดการเดินทางสำหรับทริปนี้</p>
           </div>
         </ng-template>
@@ -175,7 +175,7 @@
               <mat-icon>auto_awesome</mat-icon> จัดกลุ่มอัตโนมัติ
             </button>
             <button mat-stroked-button color="primary" (click)="openCreateGroupDialog()" [disabled]="isLoading"
-              class="auto-btn" style="background: white; color: #3b82f6; border-color: #3b82f6;">
+              class="auto-btn td-btn-outline">
               <mat-icon>add</mat-icon> สร้างกลุ่มใหม่
             </button>
           </div>
@@ -203,9 +203,9 @@
               <mat-card *ngFor="let member of unassignedMembers" cdkDrag class="member-card">
                 <div class="member-header">
                   <mat-icon>person</mat-icon>
-                  <div style="display: flex; flex-direction: column;">
+                  <div class="td-member-info">
                     <span class="member-name">{{ member.userName }}</span>
-                    <span style="font-size: 11px; color: gray;">{{ getInterestsText(member) }}</span>
+                    <span class="td-member-interest">{{ getInterestsText(member) }}</span>
                   </div>
                 </div>
               </mat-card>
@@ -254,9 +254,9 @@
                   <div class="member-header">
                     <mat-icon *ngIf="group.leaderId === member.userId" class="crown-icon small">emoji_events</mat-icon>
                     <mat-icon *ngIf="group.leaderId !== member.userId">person</mat-icon>
-                    <div style="display: flex; flex-direction: column;">
+                    <div class="td-member-info">
                       <span class="member-name">{{ member.userName }}</span>
-                      <span style="font-size: 11px; color: gray;">{{ getInterestsText(member) }}</span>
+                      <span class="td-member-interest">{{ getInterestsText(member) }}</span>
                     </div>
                   </div>
                 </mat-card>

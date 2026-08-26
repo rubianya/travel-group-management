@@ -294,3 +294,13 @@
   font-weight: 500;
   color: #334155;
 }
+
+/* Extracted inline styles */
+.rl-interest-chip {
+  font-size: 12px;
+  min-height: 24px;
+}
+
+.rl-no-interest {
+  color: gray;
+}
