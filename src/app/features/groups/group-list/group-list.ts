@@ -7,8 +7,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { GroupService } from '../../../core/services/group.service';
-import { Group } from '../../../core/models/group.model';
-import { Registration } from '../../../core/models/registration.model';
+import { TripService } from '../../../core/services/trip.service';
+import { TripGroupResponseDTO } from '../../../core/models/group.model';
+import { TripRegistrationResponseDTO } from '../../../core/models/registration.model';
 import {
   CdkDragDrop,
   CdkDrag,
@@ -40,13 +41,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class GroupList implements OnInit {
 
-  groups: Group[] = [];
-  unassignedMembers: Registration[] = [];
+  groups: TripGroupResponseDTO[] = [];
+  unassignedMembers: TripRegistrationResponseDTO[] = [];
   isLoading = false;
-  currentTripId = 1; // Example tripId
+  currentTripId = 1;
   groupSizeInput = 4;
 
   private groupService = inject(GroupService);
+  private tripService = inject(TripService);
 
   ngOnInit(): void {
     this.loadData();
@@ -54,6 +56,17 @@ export class GroupList implements OnInit {
 
   loadData(): void {
     this.isLoading = true;
+    
+    this.tripService.getTripById(this.currentTripId).subscribe({
+      next: (res: any) => {
+        const trip = res?.data || res;
+        if (trip && trip.groupSize) {
+          this.groupSizeInput = trip.groupSize;
+        }
+      },
+      error: (err) => console.error('Error loading trip details:', err)
+    });
+
     this.groupService.getGroupsByTripId(this.currentTripId).subscribe({
       next: (groups) => {
         this.groups = groups;
@@ -107,7 +120,6 @@ export class GroupList implements OnInit {
         event.currentIndex,
       );
 
-      // We should use movedItem.id which maps to registrationId for GroupMember
       const registrationId = movedItem.id;
 
       if (targetGroupId !== 'unassignedList') {

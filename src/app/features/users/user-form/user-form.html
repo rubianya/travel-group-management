@@ -35,12 +35,15 @@
 
         <div class="trip-form-row" *ngIf="userId">
           <mat-form-field appearance="outline" class="trip-form-field-240">
-            <mat-label>รหัสผ่านใหม่ (ปล่อยว่างถ้าไม่ต้องการเปลี่ยน)</mat-label>
-            <input matInput type="password" formControlName="password" placeholder="ระบุรหัสผ่านใหม่">
+            <mat-label>รหัสผ่าน (Password)</mat-label>
+            <input matInput type="password" formControlName="password"
+              placeholder="ระบุรหัสผ่านปัจจุบัน หรือรหัสผ่านใหม่">
+            <mat-error *ngIf="userForm.get('password')?.hasError('required')">กรุณาระบุรหัสผ่าน</mat-error>
             <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">รหัสผ่านต้องมีความยาวอย่างน้อย 6
               ตัวอักษร</mat-error>
           </mat-form-field>
         </div>
+
 
         <div class="trip-form-row">
           <mat-form-field appearance="outline" class="trip-form-field-240">
@@ -65,13 +68,10 @@
         </div>
 
         <mat-form-field appearance="outline" class="trip-form-full-width">
-          <mat-label>ความสนใจ (Interest)</mat-label>
-          <mat-select formControlName="attention">
-            <mat-option *ngFor="let a of attentions" [value]="a.value">
-              {{ a.value }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="userForm.get('attention')?.hasError('required')">กรุณาเลือกความสนใจ</mat-error>
+          <mat-label>เบอร์โทรศัพท์ (Phone Number)</mat-label>
+          <input matInput formControlName="phone" placeholder="ระบุเบอร์โทรศัพท์ 10 หลัก">
+          <mat-error *ngIf="userForm.get('phone')?.hasError('required')">กรุณาระบุเบอร์โทรศัพท์</mat-error>
+          <mat-error *ngIf="userForm.get('phone')?.hasError('pattern')">กรุณาระบุเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก เริ่มต้นด้วย 0)</mat-error>
         </mat-form-field>
 
         <div class="trip-form-actions">

@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Registration } from '../../../core/models/registration.model';
+import { TripRegistrationResponseDTO } from '../../../core/models/registration.model';
 import { RegistrationService } from '../../../core/services/registration.service';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
@@ -30,9 +30,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 })
 export class MyRegistrations implements OnInit {
 
-  registrations: Registration[] = [];
-  activeRegistrations: Registration[] = [];
-  historyRegistrations: Registration[] = [];
+  registrations: TripRegistrationResponseDTO[] = [];
+  activeRegistrations: TripRegistrationResponseDTO[] = [];
+  historyRegistrations: TripRegistrationResponseDTO[] = [];
   isLoading = true;
 
   get upcomingCount(): number {
@@ -82,22 +82,19 @@ export class MyRegistrations implements OnInit {
     });
   }
 
-  submitPayment(registration: Registration): void {
+  submitPayment(registration: TripRegistrationResponseDTO): void {
     if (registration.id) {
-      this.registrationService.updateStatus(registration.id, 'PAID').subscribe({
-        next: () => {
-          registration.status = 'PAID';
-          alert('แจ้งชำระเงินสำเร็จ กรุณารอผู้จัดยืนยัน');
-          this.recalculateLists();
-          this.cdr.detectChanges();
-        },
-        error: (err) => console.error('Error submitting payment', err)
-      });
+      alert('กรุณาส่งหลักฐานการโอนเงิน (สลิป) ให้ผู้จัดทริปผ่านช่องทางติดต่อที่กำหนด และรอผู้จัดทริปอัปเดตสถานะเป็น "ชำระเงินเรียบร้อย" ครับ');
     }
   }
 
-  cancelParticipation(registration: Registration): void {
+  cancelParticipation(registration: TripRegistrationResponseDTO): void {
     if (registration.id) {
+      if (registration.status !== 'REGISTERED') {
+        alert('คุณสามารถยกเลิกได้เฉพาะตอนที่สถานะยังรออนุมัติ (REGISTERED) เท่านั้นครับ');
+        return;
+      }
+      
       if (confirm('คุณต้องการยกเลิกการเข้าร่วมทริปนี้ใช่หรือไม่?')) {
         this.registrationService.updateStatus(registration.id, 'CANCELLED').subscribe({
           next: () => {

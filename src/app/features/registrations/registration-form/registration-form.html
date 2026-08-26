@@ -28,13 +28,7 @@
         </mat-form-field>
 
         <div class="registration-form-row">
-          <mat-form-field appearance="outline" class="registration-form-field-200">
-            <mat-label>งบประมาณที่รับได้ (บาท)</mat-label>
-            <input matInput type="number" formControlName="budget">
-            <mat-error *ngIf="registrationForm.get('budget')?.invalid">งบประมาณต้องไม่ติดลบ</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="registration-form-field-250">
+          <mat-form-field appearance="outline" class="registration-form-full-width">
             <mat-label>ความสนใจในการท่องเที่ยว</mat-label>
             <mat-select formControlName="interests" multiple>
               <mat-option *ngFor="let interest of availableInterests" [value]="interest.id">
@@ -56,7 +50,7 @@
             ยกเลิก
           </button>
           <button mat-flat-button color="primary" type="submit">
-            <mat-icon>send</mat-icon> ส่งใบสมัคร
+            <mat-icon>send</mat-icon> ยืนยัน
           </button>
         </div>
 

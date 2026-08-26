@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { delay } from 'rxjs';
-import { Interest } from '../../../core/models/interest.model';
+import { TravelInterestResponseDTO } from '../../../core/models/interest.model';
 import { InterestService } from '../../../core/services/interest.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { InterestFormDialog } from '../interest-form-dialog/interest-form-dialog';
@@ -29,7 +29,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 export class InterestList implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'isActive', 'actions'];
-  interests: Interest[] = [];
+  interests: TravelInterestResponseDTO[] = [];
   isLoading = true;
 
   interestService = inject(InterestService);
@@ -116,7 +116,7 @@ export class InterestList implements OnInit {
     }
   }
 
-  onToggleStatus(element: Interest): void {
+  onToggleStatus(element: TravelInterestResponseDTO): void {
     const newStatus = element.active === 'A' ? 'I' : 'A';
     this.interestService.updateInterest(element.id, {
       interestName: element.interestName,

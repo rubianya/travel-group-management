@@ -47,10 +47,7 @@ export const routes: Routes = [
                 path: 'registrations/new',
                 loadComponent: () => import('./features/registrations/registration-form/registration-form').then(m => m.RegistrationForm)
             },
-            {
-                path: 'itinerary',
-                loadComponent: () => import('./features/itinerary/itinerary-list/itinerary-list').then(m => m.ItineraryList)
-            },
+
             {
                 path: 'users',
                 loadComponent: () => import('./features/users/user-list/user-list').then(m => m.UserList)

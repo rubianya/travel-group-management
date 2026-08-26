@@ -8,7 +8,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RegistrationService } from '../../../core/services/registration.service';
 import { UserService } from '../../../core/services/user.service';
-import { Registration } from '../../../core/models/registration.model';
+import { DashboardService } from '../../../core/services/dashboard.service';
+import { UpcomingTripDTO } from '../../../core/models/dashboard.model';
 
 @Component({
   selector: 'app-traveler-dashboard',
@@ -34,10 +35,11 @@ export class TravelerDashboard implements OnInit {
     pendingPayments: 0
   };
 
-  upcomingTrips: Registration[] = [];
+  upcomingTrips: UpcomingTripDTO[] = [];
 
   private registrationService = inject(RegistrationService);
   private userService = inject(UserService);
+  private dashboardService = inject(DashboardService);
   cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
@@ -57,23 +59,26 @@ export class TravelerDashboard implements OnInit {
 
   loadData(): void {
     if (!this.currentUserId) return;
+
     this.registrationService.getRegistrationsByUserId(this.currentUserId).subscribe({
       next: (data) => {
         const registrations = data || [];
-        
-        // Calculate Summary
         this.travelerSummary.registeredTrips = registrations.length;
         this.travelerSummary.confirmedTrips = registrations.filter(r => r.status === 'CONFIRMED').length;
-        this.travelerSummary.pendingPayments = registrations.filter(r => r.status === 'WAITING_PAYMENT' || r.status === 'REGISTERED').length;
+        this.travelerSummary.pendingPayments = registrations.filter(r => r.status === 'WAITING_PAYMENT').length;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Failed to load my registrations', err)
+    });
 
-        // Filter Upcoming Trips (e.g. only ACTIVE statuses)
-        this.upcomingTrips = registrations.filter(r => ['REGISTERED', 'WAITING_PAYMENT', 'PAID', 'CONFIRMED'].includes(r.status));
-        
+    this.dashboardService.getUpcomingTripsByUserId(this.currentUserId).subscribe({
+      next: (res: any) => {
+        this.upcomingTrips = res.data || res || [];
         this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Failed to load my registrations', err);
+        console.error('Failed to load upcoming trips', err);
         this.isLoading = false;
         this.cdr.detectChanges();
       }

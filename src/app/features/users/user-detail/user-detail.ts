@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { UserService } from '../../../core/services/user.service';
-import { User } from '../../../core/models/user.model';
+import { UserResponseDTO } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-user-detail',
@@ -25,7 +25,7 @@ import { User } from '../../../core/models/user.model';
 })
 export class UserDetail implements OnInit {
 
-  user?: User;
+  user?: UserResponseDTO;
   isLoading = true;
 
   private userService = inject(UserService);

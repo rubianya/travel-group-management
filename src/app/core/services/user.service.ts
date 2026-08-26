@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../../../enviroment/environment";
 import { Observable } from "rxjs";
-import { User } from "../models/user.model";
+import { UserResponseDTO, UserRequestDTO } from "../models/user.model";
 
 @Injectable({
     providedIn: 'root'
@@ -13,28 +13,28 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-    getCurrentProfile(): Observable<User> {
-        return this.http.get<User>(`${this.apiUrl}/users/profile`);
+    getCurrentProfile(): Observable<UserResponseDTO> {
+        return this.http.get<UserResponseDTO>(`${this.apiUrl}/users/profile`);
     }
 
-    getAllUsers(): Observable<User[]> {
-        return this.http.get<User[]>(`${this.apiUrl}/users`);
+    getAllUsers(): Observable<UserResponseDTO[]> {
+        return this.http.get<UserResponseDTO[]>(`${this.apiUrl}/users`);
     }
 
-    getUserById(id: number): Observable<User> {
-        return this.http.get<User>(`${this.apiUrl}/users/${id}`);
+    getUserById(id: number): Observable<UserResponseDTO> {
+        return this.http.get<UserResponseDTO>(`${this.apiUrl}/users/${id}`);
     }
 
-    getUserByRole(role: string): Observable<User[]> {
-        return this.http.get<User[]>(`${this.apiUrl}/users/role/${role}`);
+    getUserByRole(role: string): Observable<UserResponseDTO[]> {
+        return this.http.get<UserResponseDTO[]>(`${this.apiUrl}/users/role/${role}`);
     }
 
-    saveUser(user: User): Observable<User> {
-        return this.http.post<User>(`${this.apiUrl}/users`, user);
+    saveUser(user: UserRequestDTO): Observable<UserResponseDTO> {
+        return this.http.post<UserResponseDTO>(`${this.apiUrl}/users`, user);
     }
 
-    updateUser(id: number, user: User): Observable<User> {
-        return this.http.put<User>(`${this.apiUrl}/users/${id}`, user);
+    updateUser(id: number, user: UserRequestDTO): Observable<UserResponseDTO> {
+        return this.http.put<UserResponseDTO>(`${this.apiUrl}/users/${id}`, user);
     }
 
     toggleStatus(id: number, status: string): Observable<any> {

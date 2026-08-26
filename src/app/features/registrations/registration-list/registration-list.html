@@ -1,6 +1,6 @@
 <div class="registration-list-wrapper">
 
-    <div class="registration-list-header glass-card">
+    <div class="registration-list-header glass-card" *ngIf="!tripId">
         <div class="header-content">
             <div class="header-icon-wrapper">
                 <mat-icon class="header-icon">group</mat-icon>
@@ -14,14 +14,12 @@
         </div>
     </div>
 
-    <!-- Loading State -->
     <div class="loading-container glass-card" *ngIf="isLoading">
         <mat-spinner diameter="40" color="primary"></mat-spinner>
         <p>กำลังโหลดข้อมูลผู้สมัคร...</p>
     </div>
 
-    <!-- Dashboard Summary -->
-    <div class="dashboard-summary fade-in-container" *ngIf="!isLoading && currentRole === 'Organizer'">
+    <div class="dashboard-summary fade-in-container" *ngIf="!isLoading && !tripId && currentRole === 'Organizer'">
         <mat-card class="summary-card total-card">
             <mat-icon>people</mat-icon>
             <div class="summary-info">
@@ -52,7 +50,7 @@
             <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" placeholder="พิมพ์คำค้นหา...">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
-        
+
         <mat-form-field appearance="outline" class="status-filter">
             <mat-label>สถานะ</mat-label>
             <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilter()">
@@ -80,31 +78,16 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="tripId">
-                <th mat-header-cell *matHeaderCellDef> ทริปที่สมัคร </th>
+            <ng-container matColumnDef="interests">
+                <th mat-header-cell *matHeaderCellDef> ความสนใจ </th>
                 <td mat-cell *matCellDef="let element">
-                    <div class="trip-info-cell">
-                        <mat-icon class="trip-icon">flight_takeoff</mat-icon>
-                        <span>{{element.tripName || element.tripId}}</span>
-                    </div>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="budget">
-                <th mat-header-cell *matHeaderCellDef> งบประมาณ (บาท) </th>
-                <td mat-cell *matCellDef="let element">
-                    <div class="budget-cell-comparison">
-                        <mat-icon class="budget-icon">account_balance_wallet</mat-icon>
-                        <div class="budget-details">
-                            <div class="budget-item" [ngClass]="{'lower-budget': element.organizerBudget && element.budget < element.organizerBudget}">
-                                <span class="budget-label">ผู้สมัคร:</span>
-                                <span class="budget-value">{{element.budget | number}}</span>
-                            </div>
-                            <div class="budget-item organizer" *ngIf="element.organizerBudget !== undefined">
-                                <span class="budget-label">ตั้งต้น:</span>
-                                <span class="budget-value">{{element.organizerBudget | number}}</span>
-                            </div>
-                        </div>
+                    <div class="interest-cell">
+                        <mat-chip-set *ngIf="element.interests && element.interests.length > 0">
+                            <mat-chip *ngFor="let interest of element.interests" color="primary" selected style="font-size: 12px; min-height: 24px;">
+                                {{ interest.interestName || interest.name || interest }}
+                            </mat-chip>
+                        </mat-chip-set>
+                        <span *ngIf="!element.interests || element.interests.length === 0" style="color: gray;">-</span>
                     </div>
                 </td>
             </ng-container>

@@ -10,13 +10,19 @@
     <button mat-icon-button (click)="goBack()">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <h2 class="page-title">รายละเอียดทริป: {{ trip.tripName }}</h2>
-    <span class="status-badge status-{{ trip.status.toLowerCase() }}">
-      {{ trip.status }}
-    </span>
+    <div style="display: flex; flex-direction: column; flex-grow: 1; align-items: flex-start; gap: 8px;">
+      <span class="status-badge status-{{ trip.status.toLowerCase() }}">
+        {{ trip.status }}
+      </span>
+      <h2 class="page-title" style="flex-grow: 0;">รายละเอียดทริป: {{ trip.tripName }}</h2>
+    </div>
     <div class="flex-spacer"></div>
-    <button *ngIf="currentRole === 'Traveler'" mat-flat-button color="accent" routerLink="/registrations/new" [queryParams]="{ tripId: trip.id }">
+    <button *ngIf="currentRole === 'Traveler' && !trip.isFull" mat-flat-button color="accent"
+      routerLink="/registrations/new" [queryParams]="{ tripId: trip.id }">
       <mat-icon>person_add</mat-icon> สมัครเข้าร่วมทริป
+    </button>
+    <button *ngIf="currentRole === 'Traveler' && trip.isFull" mat-flat-button color="warn" disabled>
+      <mat-icon>block</mat-icon> ทริปเต็มแล้ว
     </button>
   </div>
 
@@ -27,16 +33,17 @@
         <div class="cards-grid">
           <!-- Trip Info Card -->
           <mat-card class="detail-card">
-            <img *ngIf="trip.imageUrl" mat-card-image [src]="'http://localhost:8080' + trip.imageUrl" [alt]="trip.tripName"
-              class="trip-cover-image">
+            <img *ngIf="trip.imageUrl" mat-card-image [src]="'http://localhost:8080' + trip.imageUrl"
+              [alt]="trip.tripName" class="trip-cover-image">
             <mat-card-header>
               <mat-card-title>ข้อมูลทั่วไป</mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <p><strong>สถานที่:</strong> {{ trip.location }}</p>
-              <p><strong>ประเภททริป:</strong> {{ trip.tripType }}</p>
               <p><strong>วันที่:</strong> {{ trip.startDate }} - {{ trip.endDate }}</p>
-              <p><strong>งบประมาณโดยประมาณ:</strong> {{ trip.budget | number }} บาท</p>
+              <p><strong>ประเภททริป:</strong> {{ trip.tripType }}</p>
+              <p><strong>งบประมาณ:</strong> {{ trip.budget | number }} บาท</p>
+              <p><strong>รายละเอียดทริป:</strong> {{ trip.description }}</p>
             </mat-card-content>
           </mat-card>
 
@@ -63,30 +70,119 @@
             </mat-card-content>
           </mat-card>
         </div>
+
+        <!-- Participants List Card -->
+        <mat-card class="detail-card" style="margin-top: 1rem;">
+          <mat-card-header>
+            <mat-card-title>รายชื่อผู้สมัครเข้าร่วม</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list>
+              <mat-list-item *ngFor="let reg of (showAllParticipants ? registrations : (registrations | slice:0:5))">
+                <mat-icon matListItemIcon>person</mat-icon>
+                <span matListItemTitle>{{ reg.userName }}</span>
+                <span matListItemLine>ความสนใจ: {{ getInterestsText(reg) }}</span>
+              </mat-list-item>
+            </mat-list>
+            <div *ngIf="registrations.length === 0" style="padding: 1rem; text-align: center; color: gray;">
+              ยังไม่มีผู้สมัครเข้าร่วม
+            </div>
+            <div *ngIf="registrations.length > 5" style="text-align: center; margin-top: 10px;">
+              <button mat-button color="primary" (click)="showAllParticipants = !showAllParticipants">
+                {{ showAllParticipants ? 'แสดงน้อยลง' : 'ดูทั้งหมด (' + registrations.length + ' คน)' }}
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <ng-container *ngIf="currentRole !== 'Organizer'" [ngTemplateOutlet]="kanbanBoard"></ng-container>
       </div>
     </mat-tab>
 
-    <!-- Tab 2: จัดการกลุ่ม (For Organizer) -->
-    <mat-tab label="จัดการกลุ่ม" *ngIf="currentRole !== 'Traveler'">
-      <div class="tab-content group-management-container">
-        
-        <div class="board-header">
+    <!-- Tab 2: กำหนดการเดินทาง -->
+    <mat-tab label="กำหนดการเดินทาง">
+      <div class="tab-content" style="padding: 1rem;">
+        <div *ngIf="currentRole === 'Organizer'" style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+          <button mat-flat-button color="primary" (click)="openItineraryDialog()">
+            <mat-icon>add</mat-icon> เพิ่มกำหนดการ
+          </button>
+        </div>
+        <mat-accordion *ngIf="itinerariesByDay.length > 0; else noItinerary">
+          <mat-expansion-panel *ngFor="let day of itinerariesByDay; let first = first" [expanded]="first">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <strong>วันที่ {{ day.dayNo }}</strong>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <div class="itinerary-timeline">
+              <div class="timeline-item" *ngFor="let item of day.items">
+                <div class="timeline-time">{{ item.time | slice:0:5 }}</div>
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <h4 class="timeline-title">{{ item.title }}</h4>
+                    <div class="timeline-actions" *ngIf="currentRole === 'Organizer'">
+                      <button mat-icon-button class="small-icon-btn" color="primary" (click)="openItineraryDialog(item)" matTooltip="แก้ไข">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button class="small-icon-btn" color="warn" (click)="deleteItinerary(item.id!)" matTooltip="ลบ">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="timeline-location" *ngIf="item.location">
+                    <mat-icon>location_on</mat-icon>
+                    <span>{{ item.location }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <ng-template #noItinerary>
+          <div class="empty-state" style="text-align: center; padding: 2rem; color: gray; display: flex; flex-direction: column; align-items: center;">
+            <mat-icon style="font-size: 48px; width: 48px; height: 48px; margin-bottom: 16px;">event_busy</mat-icon>
+            <p>ยังไม่มีกำหนดการเดินทางสำหรับทริปนี้</p>
+          </div>
+        </ng-template>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 3: จัดการผู้สมัคร (For Organizer) -->
+    <mat-tab label="จัดการผู้สมัคร" *ngIf="currentRole === 'Organizer'">
+      <div class="tab-content">
+        <app-registration-list [tripId]="trip.id"></app-registration-list>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 4: จัดการกลุ่ม (For Organizer) -->
+    <mat-tab label="จัดการกลุ่ม" *ngIf="currentRole === 'Organizer'">
+      <ng-container [ngTemplateOutlet]="kanbanBoard"></ng-container>
+    </mat-tab>
+
+  </mat-tab-group>
+
+  <ng-template #kanbanBoard>
+    <div class="tab-content group-management-container">
+
+        <div class="board-header" *ngIf="currentRole === 'Organizer'">
           <div class="auto-group-control">
             <mat-form-field appearance="outline" class="size-input">
               <mat-label>ขนาดกลุ่ม</mat-label>
-              <input matInput type="number" [(ngModel)]="groupSizeInput" min="2" max="20">
+              <input matInput type="number" [(ngModel)]="groupSizeInput" [readonly]="true" min="2" max="20">
             </mat-form-field>
             <button mat-flat-button color="primary" (click)="autoGroup()" [disabled]="isLoading" class="auto-btn">
               <mat-icon>auto_awesome</mat-icon> จัดกลุ่มอัตโนมัติ
             </button>
-            <button mat-stroked-button color="primary" (click)="openCreateGroupDialog()" [disabled]="isLoading" class="auto-btn" style="background: white; color: #3b82f6; border-color: #3b82f6;">
+            <button mat-stroked-button color="primary" (click)="openCreateGroupDialog()" [disabled]="isLoading"
+              class="auto-btn" style="background: white; color: #3b82f6; border-color: #3b82f6;">
               <mat-icon>add</mat-icon> สร้างกลุ่มใหม่
             </button>
           </div>
         </div>
 
         <div class="kanban-board" cdkDropListGroup>
-          
+
           <!-- Unassigned Members Column -->
           <div class="kanban-column unassigned-column">
             <div class="column-header unassigned-header">
@@ -94,14 +190,11 @@
               <h3>รอจัดกลุ่ม</h3>
               <span class="badge">{{unassignedMembers.length}}</span>
             </div>
-            
-            <div
-              cdkDropList
-              id="unassignedList"
-              [cdkDropListData]="unassignedMembers"
-              class="member-list"
+
+            <div cdkDropList id="unassignedList" [cdkDropListData]="unassignedMembers" class="member-list"
+              [cdkDropListDisabled]="currentRole === 'Admin' || currentRole === 'Traveler'"
               (cdkDropListDropped)="drop($event)">
-              
+
               <div *ngIf="unassignedMembers.length === 0" class="empty-state">
                 <mat-icon>done_all</mat-icon>
                 <p>ไม่มีสมาชิกที่รอจัดกลุ่ม</p>
@@ -110,7 +203,10 @@
               <mat-card *ngFor="let member of unassignedMembers" cdkDrag class="member-card">
                 <div class="member-header">
                   <mat-icon>person</mat-icon>
-                  <span class="member-name">{{ member.userName }}</span>
+                  <div style="display: flex; flex-direction: column;">
+                    <span class="member-name">{{ member.userName }}</span>
+                    <span style="font-size: 11px; color: gray;">{{ getInterestsText(member) }}</span>
+                  </div>
                 </div>
               </mat-card>
             </div>
@@ -118,15 +214,18 @@
 
           <!-- Group Columns Wrapper -->
           <div class="kanban-column-wrapper">
-            <div *ngFor="let group of groups" class="kanban-column group-column" [class.confirmed]="group.status === 'CONFIRMED'">
+            <div *ngFor="let group of groups" class="kanban-column group-column"
+              [class.confirmed]="group.status === 'CONFIRMED'">
               <div class="column-header group-header">
                 <div class="group-title-row">
                   <div class="title-and-actions">
                     <h3>{{ group.groupName }}</h3>
-                    <button mat-icon-button class="small-icon-btn" (click)="openEditGroupDialog(group)" matTooltip="แก้ไขกลุ่ม">
+                    <button *ngIf="currentRole === 'Organizer'" mat-icon-button class="small-icon-btn" (click)="openEditGroupDialog(group)"
+                      matTooltip="แก้ไขกลุ่ม">
                       <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button class="small-icon-btn" color="warn" (click)="deleteGroup(group.id)" matTooltip="ลบกลุ่ม">
+                    <button *ngIf="currentRole === 'Organizer'" mat-icon-button class="small-icon-btn" color="warn" (click)="deleteGroup(group.id)"
+                      matTooltip="ลบกลุ่ม">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>
@@ -136,19 +235,16 @@
                 </div>
                 <div class="group-meta">
                   <span class="member-count"><mat-icon>group</mat-icon> {{ group.members.length }} คน</span>
-                  <span class="leader-info" *ngIf="group.leader">
-                    <mat-icon class="crown-icon">emoji_events</mat-icon> {{ group.leader.fullName }}
+                  <span class="leader-info" *ngIf="group.leaderName">
+                    <mat-icon class="crown-icon">emoji_events</mat-icon> {{ group.leaderName }}
                   </span>
                 </div>
               </div>
-              
-              <div
-                cdkDropList
-                [id]="'groupList-' + group.id"
-                [cdkDropListData]="group.members"
-                class="member-list"
+
+              <div cdkDropList [id]="'groupList-' + group.id" [cdkDropListData]="group.members" class="member-list"
+                [cdkDropListDisabled]="currentRole === 'Admin' || currentRole === 'Traveler'"
                 (cdkDropListDropped)="drop($event)">
-                
+
                 <div *ngIf="group.members.length === 0" class="empty-state">
                   <mat-icon>move_to_inbox</mat-icon>
                   <p>ลากสมาชิกมาวางที่นี่</p>
@@ -156,25 +252,27 @@
 
                 <mat-card *ngFor="let member of group.members" cdkDrag class="member-card">
                   <div class="member-header">
-                    <mat-icon *ngIf="group.leader?.id === member.userId" class="crown-icon small">emoji_events</mat-icon>
-                    <mat-icon *ngIf="group.leader?.id !== member.userId">person</mat-icon>
-                    <span class="member-name">{{ member.userName || member.travelerName }}</span>
+                    <mat-icon *ngIf="group.leaderId === member.userId" class="crown-icon small">emoji_events</mat-icon>
+                    <mat-icon *ngIf="group.leaderId !== member.userId">person</mat-icon>
+                    <div style="display: flex; flex-direction: column;">
+                      <span class="member-name">{{ member.userName }}</span>
+                      <span style="font-size: 11px; color: gray;">{{ getInterestsText(member) }}</span>
+                    </div>
                   </div>
                 </mat-card>
               </div>
 
-              <div class="group-actions">
-                <button mat-stroked-button color="primary" class="full-width" (click)="confirmGroup(group.id)" 
-                        [disabled]="group.status === 'CONFIRMED' || group.members.length === 0">
+              <div class="group-actions" *ngIf="currentRole === 'Organizer'">
+                <button mat-stroked-button color="primary" class="full-width" (click)="confirmGroup(group.id)"
+                  [disabled]="group.status === 'CONFIRMED' || group.members.length === 0">
                   <mat-icon>check_circle</mat-icon> ยืนยันกลุ่ม
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+    </div>
+  </ng-template>
 </div>
 
 

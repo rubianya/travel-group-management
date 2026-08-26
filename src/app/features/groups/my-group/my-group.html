@@ -1,5 +1,5 @@
 <div class="traveler-group-container">
-  
+
   <div class="header-banner">
     <h1 class="page-title">กลุ่มท่องเที่ยวของฉัน</h1>
     <p class="page-subtitle">เตรียมพร้อมสำหรับทริปที่กำลังจะมาถึง</p>
@@ -15,11 +15,12 @@
       <mat-icon>hourglass_empty</mat-icon>
     </div>
     <h2>ยังไม่มีกลุ่มในขณะนี้</h2>
-    <p>โปรดรอผู้จัดกลุ่ม (Organizer) ทำการจัดกลุ่มให้คุณ<br>คุณจะเห็นข้อมูลเพื่อนร่วมทริปที่นี่เมื่อการจัดกลุ่มเสร็จสิ้น</p>
+    <p>โปรดรอผู้จัดกลุ่ม (Organizer) ทำการจัดกลุ่มให้คุณ<br>คุณจะเห็นข้อมูลเพื่อนร่วมทริปที่นี่เมื่อการจัดกลุ่มเสร็จสิ้น
+    </p>
   </div>
 
   <div *ngIf="!isLoading && myGroup" class="group-details-card">
-    
+
     <div class="card-header" [class.confirmed]="myGroup.status === 'CONFIRMED'">
       <div class="title-row">
         <h2>{{ myGroup.groupName }}</h2>
@@ -34,32 +35,33 @@
       <h3 class="section-title">
         <mat-icon>people</mat-icon> สมาชิกในกลุ่ม ({{ myGroup.members.length }} คน)
       </h3>
-      
+
       <div class="members-grid">
-        <div class="member-box" *ngFor="let member of myGroup.members" 
-             [class.is-me]="member.userId === currentUserId"
-             [class.is-leader]="myGroup.leader?.id === member.userId">
-          
+        <div class="member-box" *ngFor="let member of myGroup.members" [class.is-me]="member.userId === currentUserId"
+          [class.is-leader]="myGroup.leaderId === member.userId">
+
           <div class="avatar-placeholder">
-            {{ (member.userName || member.travelerName || 'U').charAt(0).toUpperCase() }}
+            {{ (member.userName || 'U').charAt(0).toUpperCase() }}
           </div>
-          
+
           <div class="member-info">
             <div class="name-row">
-              <span class="name">{{ member.userName || member.travelerName }}</span>
+              <span class="name">{{ member.userName }}</span>
               <span class="you-badge" *ngIf="member.userId === currentUserId">คุณ</span>
-              <mat-icon class="crown-icon" *ngIf="myGroup.leader?.id === member.userId" matTooltip="หัวหน้ากลุ่ม">emoji_events</mat-icon>
+              <mat-icon class="crown-icon" *ngIf="myGroup.leaderId === member.userId"
+                matTooltip="หัวหน้ากลุ่ม">emoji_events</mat-icon>
             </div>
-            
+
             <div class="interests" *ngIf="member.interests && member.interests.length > 0">
               <span class="interest-tag" *ngFor="let interest of member.interests | slice:0:3">{{ interest }}</span>
-              <span class="interest-tag more" *ngIf="member.interests.length > 3">+{{member.interests.length - 3}}</span>
+              <span class="interest-tag more" *ngIf="member.interests.length > 3">+{{member.interests.length -
+                3}}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
   </div>
 
 </div>

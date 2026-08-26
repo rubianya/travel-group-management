@@ -18,7 +18,7 @@
       <mat-label>เลือกหัวหน้ากลุ่ม</mat-label>
       <mat-select formControlName="leaderId">
         <mat-option *ngFor="let member of data.members" [value]="member.userId">
-          {{ member.userName || member.travelerName }}
+          {{ member.userName }}
         </mat-option>
       </mat-select>
       <mat-error *ngIf="form.get('leaderId')?.hasError('required')">

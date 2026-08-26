@@ -6,9 +6,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { forkJoin, delay, catchError, of } from 'rxjs';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { forkJoin, catchError, of } from 'rxjs';
 import { TripService } from '../../../core/services/trip.service';
-import { RegistrationService } from '../../../core/services/registration.service';
+import { DashboardService } from '../../../core/services/dashboard.service';
+import { ApplicantStatDTO } from '../../../core/models/dashboard.model';
 
 @Component({
   selector: 'app-organizer-dashboard',
@@ -20,76 +24,64 @@ import { RegistrationService } from '../../../core/services/registration.service
     MatIconModule,
     MatButtonModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    FormsModule
   ],
   templateUrl: './organizer-dashboard.html',
 })
 export class OrganizerDashboard implements OnInit {
   isLoading = true;
 
-  summary = {
-    totalTrips: 0,
-    openTrips: 0,
-    totalRegistrations: 0,
-    confirmedRegistrations: 0,
-    pendingRegistrations: 0,
-    totalGroups: 0,
-    ungroupedMembers: 0
-  };
-
+  myTrips: any[] = [];
+  selectedTripId: number | null = null;
   upcomingTrips: any[] = [];
+
+  applicantStats: ApplicantStatDTO = {
+    totalApplicants: 0,
+    confirmedApplicants: 0,
+    cancelledApplicants: 0
+  };
+  groupCount = 0;
+  unassignedMembersCount = 0;
 
   cdr = inject(ChangeDetectorRef);
   tripService = inject(TripService);
-  registrationService = inject(RegistrationService);
+  dashboardService = inject(DashboardService);
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadInitialData();
   }
 
-  loadData(): void {
-    forkJoin({
-      trips: this.tripService.getMyTrips().pipe(catchError(() => of([]))),
-      registrations: this.registrationService.getAllRegistrations().pipe(catchError(() => of([])))
-    }).pipe(delay(300)).subscribe({
+  loadInitialData(): void {
+    this.tripService.getMyTrips().pipe(catchError(() => of([]))).subscribe({
       next: (res: any) => {
-        const trips = res.trips?.data || res.trips || [];
-        const registrations = res.registrations?.data || res.registrations || [];
-        this.calculateOrganizerStats(trips, registrations);
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.myTrips = res.data || res || [];
+        this.generateUpcomingTrips();
+        if (this.myTrips.length > 0) {
+          this.selectedTripId = this.myTrips[0].id;
+          this.loadTripStats();
+        } else {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
       },
       error: (err) => {
-        console.error('Error loading organizer dashboard data', err);
+        console.error('Error loading trips', err);
         this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
   }
 
-  calculateOrganizerStats(trips: any[], registrations: any[]): void {
-    this.summary.totalTrips = trips.length;
-    this.summary.openTrips = trips.filter(t => t.status === 'OPEN' || t.status === 'Open').length;
-
-    // Calculate total and confirmed registrations specifically for these trips
-    const tripIds = trips.map(t => t.id);
-    const orgRegistrations = registrations.filter(r => tripIds.includes(r.trip));
-
-    this.summary.totalRegistrations = orgRegistrations.length;
-    this.summary.confirmedRegistrations = orgRegistrations.filter(r => r.status === 'CONFIRMED' || r.status === 'APPROVED' || r.status === 'Confirmed').length;
-    this.summary.pendingRegistrations = orgRegistrations.filter(r => r.status === 'REGISTERED' || r.status === 'WAITING_PAYMENT' || r.status === 'PAID').length;
-
-    // For now we mock the groups count, or set to 0 if not calculated
-    this.summary.totalGroups = 0;
-    this.summary.ungroupedMembers = 0;
-
+  generateUpcomingTrips(): void {
     const thaiMonths = [
       'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
       'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
     ];
 
-    // Upcoming Trips
-    const upcoming = trips
+    const upcoming = this.myTrips
       .filter(t => t.status === 'OPEN' || t.status === 'Open' || t.status === 'CONFIRMED')
       .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
       .slice(0, 3);
@@ -106,10 +98,42 @@ export class OrganizerDashboard implements OnInit {
         startDate: t.startDate,
         day: day,
         month: month,
-        participants: orgRegistrations.filter(r => r.trip === t.id).length,
-        pending: orgRegistrations.filter(r => r.trip === t.id && (r.status === 'REGISTERED' || r.status === 'PAID')).length,
         status: t.status
       };
     });
   }
+
+  onTripChange(): void {
+    if (this.selectedTripId) {
+      this.loadTripStats();
+    }
+  }
+
+  loadTripStats(): void {
+    if (!this.selectedTripId) return;
+    this.isLoading = true;
+
+    forkJoin({
+      applicants: this.dashboardService.getApplicantStatsByTripId(this.selectedTripId).pipe(catchError(() => of({ data: null }))),
+      groups: this.dashboardService.getGroupCountByTripId(this.selectedTripId).pipe(catchError(() => of({ data: 0 }))),
+      unassigned: this.dashboardService.getUnassignedMembersCountByTripId(this.selectedTripId).pipe(catchError(() => of({ data: 0 })))
+    }).subscribe({
+      next: (res: any) => {
+        if (res.applicants.data) {
+          this.applicantStats = res.applicants.data;
+        }
+        this.groupCount = res.groups.data || 0;
+        this.unassignedMembersCount = res.unassigned.data || 0;
+        
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading trip stats', err);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 }
+

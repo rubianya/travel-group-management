@@ -1,53 +1,46 @@
 <div class="sidebar" [class.mini]="!layoutService.isSidebarOpen()">
 
         @if(role === 'Admin') {
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-menu" matTooltip="Dashboard">
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active" matTooltip="Dashboard">
                 <mat-icon matListItemIcon>dashboard</mat-icon>
                 <span matListItemTitle class="sidebar-text">Dashboard</span>
         </a>
-        <a mat-list-item routerLink="/users" routerLinkActive="active-menu" matTooltip="Users">
+        <a mat-list-item routerLink="/users" routerLinkActive="active" matTooltip="Users">
                 <mat-icon matListItemIcon>people</mat-icon>
                 <span matListItemTitle class="sidebar-text">User Management</span>
         </a>
-        <a mat-list-item routerLink="/interests" routerLinkActive="active-menu" matTooltip="Categories">
+        <a mat-list-item routerLink="/interests" routerLinkActive="active" matTooltip="Categories">
                 <mat-icon matListItemIcon>category</mat-icon>
                 <span matListItemTitle class="sidebar-text">Category Management</span>
         </a>
-        <a mat-list-item routerLink="/trips" routerLinkActive="active-menu" matTooltip="Trips">
+        <a mat-list-item routerLink="/trips" routerLinkActive="active" matTooltip="Trips">
                 <mat-icon matListItemIcon>flight</mat-icon>
                 <span matListItemTitle class="sidebar-text">Trip</span>
         </a>
         }
 
         @if(role === 'Organizer') {
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-menu" matTooltip="Dashboard">
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active" matTooltip="Dashboard">
                 <mat-icon matListItemIcon>dashboard</mat-icon>
                 <span matListItemTitle class="sidebar-text">Dashboard</span>
         </a>
-        <a mat-list-item routerLink="/trips" routerLinkActive="active-menu" matTooltip="Trips">
+        <a mat-list-item routerLink="/trips" routerLinkActive="active" matTooltip="Trips">
                 <mat-icon matListItemIcon>flight</mat-icon>
                 <span matListItemTitle class="sidebar-text">Trip Management</span>
         </a>
-        <a mat-list-item routerLink="/registrations" routerLinkActive="active-menu" matTooltip="Registrations">
-                <mat-icon matListItemIcon>person_add</mat-icon>
-                <span matListItemTitle class="sidebar-text">Registration</span>
-        </a>
-        <a mat-list-item routerLink="/itinerary" routerLinkActive="active-menu" matTooltip="Itinerary">
-                <mat-icon matListItemIcon>map</mat-icon>
-                <span matListItemTitle class="sidebar-text">Itinerary</span>
-        </a>
+
         }
 
         @if(role === 'Traveler') {
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-menu" matTooltip="Dashboard">
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active" matTooltip="Dashboard">
                 <mat-icon matListItemIcon>dashboard</mat-icon>
                 <span matListItemTitle class="sidebar-text">Dashboard</span>
         </a>
-        <a mat-list-item routerLink="/trips" routerLinkActive="active-menu" matTooltip="Trips">
+        <a mat-list-item routerLink="/trips" routerLinkActive="active" matTooltip="Trips">
                 <mat-icon matListItemIcon>flight</mat-icon>
                 <span matListItemTitle class="sidebar-text">Trip</span>
         </a>
-        <a mat-list-item routerLink="/my-registrations" routerLinkActive="active-menu" matTooltip="Registrations">
+        <a mat-list-item routerLink="/my-registrations" routerLinkActive="active" matTooltip="Registrations">
                 <mat-icon matListItemIcon>person_add</mat-icon>
                 <span matListItemTitle class="sidebar-text">My Registration</span>
         </a>

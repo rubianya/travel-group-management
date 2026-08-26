@@ -64,8 +64,11 @@
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef> สถานะ </th>
           <td mat-cell *matCellDef="let element">
-            <span class="status-badge status-{{ element.status.toLowerCase() }}">
+            <span *ngIf="currentRole !== 'Traveler' || !element.isFull" class="status-badge status-{{ element.status.toLowerCase() }}">
               {{element.status}}
+            </span>
+            <span *ngIf="currentRole === 'Traveler' && element.isFull" class="status-badge status-cancelled">
+              เต็ม
             </span>
           </td>
         </ng-container>

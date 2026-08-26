@@ -1,11 +1,10 @@
-export interface Interest {
+export interface TravelInterestResponseDTO {
     id: number;
     interestName: string;
     active: string;
-    createdById: number;
 }
 
-export interface InterestRequest {
+export interface TravelInterestRequestDTO {
     interestName: string;
     active: string;
 }

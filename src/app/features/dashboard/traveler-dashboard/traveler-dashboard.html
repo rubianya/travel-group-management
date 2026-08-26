@@ -55,7 +55,7 @@
     <mat-card-header class="dashboard-upcoming-header">
       <div class="dashboard-upcoming-title-container">
         <mat-icon class="dashboard-upcoming-icon">explore</mat-icon>
-        <h3 class="dashboard-upcoming-title">ทริปของคุณที่กำลังจะมาถึง</h3>
+        <h3 class="dashboard-upcoming-title">ทริปของคุณที่กำลังจะมาถึง (เร็วๆ นี้)</h3>
       </div>
       <button mat-flat-button color="primary" routerLink="/trips">
         <mat-icon>search</mat-icon> ค้นหาทริปใหม่
@@ -81,18 +81,11 @@
                   {{ trip.tripName || 'รหัสทริป: ' + trip.tripId }}
                 </h4>
                 <p class="dashboard-upcoming-item-desc" style="margin: 0; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-                  <!-- Status Badges -->
-                  <span *ngIf="trip.status === 'CONFIRMED'" class="status-badge status-confirmed" style="background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 6px; font-weight: 600;">ยืนยันแล้ว</span>
-                  <span *ngIf="trip.status === 'WAITING_PAYMENT'" class="status-badge" style="background: #fef3c7; color: #d97706; padding: 4px 8px; border-radius: 6px; font-weight: 600;">รอชำระเงิน</span>
-                  <span *ngIf="trip.status === 'REGISTERED'" class="status-badge" style="background: #e0f2fe; color: #0284c7; padding: 4px 8px; border-radius: 6px; font-weight: 600;">รออนุมัติ</span>
-                  <span *ngIf="trip.status === 'PAID'" class="status-badge" style="background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 6px; font-weight: 600;">รอตรวจสอบชำระเงิน</span>
+                  <span class="status-badge status-confirmed" style="background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 6px; font-weight: 600;">วันที่: {{ trip.startDate | date:'dd/MM/yyyy' }}</span>
                 </p>
               </div>
             </div>
             <div class="dashboard-upcoming-actions" style="display: flex; gap: 8px;">
-              <button mat-flat-button *ngIf="trip.status === 'WAITING_PAYMENT'" color="warn" style="background: #f59e0b; color: white;" routerLink="/registrations/my-registrations">
-                แจ้งชำระเงิน
-              </button>
               <button mat-stroked-button color="primary" routerLink="/trips/{{trip.tripId}}/detail">
                 ดูรายละเอียด
               </button>
@@ -110,3 +103,4 @@
     </mat-card-content>
   </mat-card>
 </div>
+

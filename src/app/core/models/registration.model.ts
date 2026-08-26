@@ -1,22 +1,17 @@
-export interface Registration {
+export interface TripRegistrationResponseDTO {
   id?: number;
   tripId: number;
   tripName?: string;
   userId: number;
   userEmail: string;
   userName: string;
-  travelerName?: string;
-  budget: number;
-  organizerBudget?: number;
+  phone?: string;
   status: string;
   remark?: string;
-  interests?: string[];
+  interests?: any[];
 }
 
-export interface RegistrationRequest {
-  tripId: number;
-  userId: number;
-  budget: number;
+export interface TripRegistrationRequestDTO {
   status: string;
   remark: string;
   interestIds: Array<number>;

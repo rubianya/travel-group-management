@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { Interest, InterestRequest } from '../models/interest.model';
+import { Observable } from 'rxjs';
+import { TravelInterestResponseDTO, TravelInterestRequestDTO } from '../models/interest.model';
 import { environment } from '../../../enviroment/environment';
 
 @Injectable({
@@ -12,24 +12,24 @@ export class InterestService {
 
   constructor(private http: HttpClient) { }
 
-  getAllInterests(): Observable<Interest[]> {
-    return this.http.get<Interest[]>(this.apiUrl);
+  getAllInterests(): Observable<TravelInterestResponseDTO[]> {
+    return this.http.get<TravelInterestResponseDTO[]>(this.apiUrl);
   }
 
-  createInterest(interest: InterestRequest): Observable<Interest> {
-    return this.http.post<Interest>(this.apiUrl, interest);
+  createInterest(interest: TravelInterestRequestDTO): Observable<TravelInterestResponseDTO> {
+    return this.http.post<TravelInterestResponseDTO>(this.apiUrl, interest);
   }
 
-  getInterestById(id: number): Observable<Interest> {
-    return this.http.get<Interest>(`${this.apiUrl}/${id}`);
+  getInterestById(id: number): Observable<TravelInterestResponseDTO> {
+    return this.http.get<TravelInterestResponseDTO>(`${this.apiUrl}/${id}`);
   }
 
-  updateInterest(id: number, interest: InterestRequest): Observable<Interest> {
-    return this.http.put<Interest>(`${this.apiUrl}/${id}`, interest);
+  updateInterest(id: number, interest: TravelInterestRequestDTO): Observable<TravelInterestResponseDTO> {
+    return this.http.put<TravelInterestResponseDTO>(`${this.apiUrl}/${id}`, interest);
   }
 
-  deleteInterest(id: number): Observable<Interest> {
-    return this.http.delete<Interest>(`${this.apiUrl}/${id}`);
+  deleteInterest(id: number): Observable<TravelInterestResponseDTO> {
+    return this.http.delete<TravelInterestResponseDTO>(`${this.apiUrl}/${id}`);
   }
 
 }

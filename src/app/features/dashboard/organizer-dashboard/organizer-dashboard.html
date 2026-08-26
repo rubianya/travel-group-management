@@ -5,37 +5,58 @@
 </div>
 
 <div *ngIf="!isLoading">
-  <!-- ส่วนที่ 1: การ์ดสรุปตัวเลข (Summary Cards) -->
-  <div class="dashboard-grid">
 
-    <!-- การ์ด 1: ข้อมูลทริป -->
+  <div style="margin-bottom: 24px;" *ngIf="myTrips.length > 0">
+    <mat-form-field appearance="outline" style="width: 100%; max-width: 400px;">
+      <mat-label>เลือกทริปที่ต้องการดูข้อมูล</mat-label>
+      <mat-select [(ngModel)]="selectedTripId" (selectionChange)="onTripChange()">
+        <mat-option *ngFor="let trip of myTrips" [value]="trip.id">
+          {{ trip.tripName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="myTrips.length === 0" class="dashboard-empty-state"
+    style="text-align: center; padding: 40px; color: #627d98;">
+    <mat-icon
+      style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 16px;">flight_takeoff</mat-icon>
+    <h4>คุณยังไม่ได้สร้างทริปใดๆ</h4>
+    <p>กดสร้างทริปใหม่เพื่อเริ่มต้นเป็นผู้จัดทริป</p>
+  </div>
+
+  <!-- ส่วนที่ 1: การ์ดสรุปตัวเลข (Summary Cards) -->
+  <div class="dashboard-grid" *ngIf="selectedTripId">
+
+    <!-- การ์ด 1: ข้อมูลผู้สมัครทั้งหมด -->
     <mat-card class="dashboard-card-primary">
       <mat-card-content class="dashboard-card-content">
         <div>
-          <p class="dashboard-card-label">ทริปที่เปิดรับสมัคร / ทั้งหมด (ของคุณ)</p>
+          <p class="dashboard-card-label">ผู้สมัครทั้งหมด</p>
           <h3 class="dashboard-card-value-container">
-            <span class="dashboard-card-value-primary">{{ summary.openTrips }}</span> <span
-              class="dashboard-card-value-sub">/ {{ summary.totalTrips }}</span>
+            <span class="dashboard-card-value-primary">{{ applicantStats.totalApplicants }}</span>
+            <span class="dashboard-card-value-sub" style="font-size: 14px;"> คน</span>
           </h3>
         </div>
         <div class="dashboard-icon-bg-primary">
-          <mat-icon class="dashboard-icon-primary">flight_takeoff</mat-icon>
+          <mat-icon class="dashboard-icon-primary">group_add</mat-icon>
         </div>
       </mat-card-content>
     </mat-card>
 
-    <!-- การ์ด 2: ข้อมูลผู้สมัคร (Action Driven) -->
-    <mat-card class="dashboard-card-success" style="border-left-color: #f59e0b;">
+    <!-- การ์ด 2: ข้อมูลผู้สมัคร (ยืนยัน/ยกเลิก) -->
+    <mat-card class="dashboard-card-success" style="border-left-color: #10b981;">
       <mat-card-content class="dashboard-card-content">
         <div>
-          <p class="dashboard-card-label">ผู้สมัครรอตรวจสอบ / ยืนยันแล้ว</p>
+          <p class="dashboard-card-label">ยืนยันแล้ว / ยกเลิก</p>
           <h3 class="dashboard-card-value-container">
-            <span class="dashboard-card-value-success" style="color: #f59e0b;">{{ summary.pendingRegistrations }}</span> <span
-              class="dashboard-card-value-sub" style="color: #10b981;">/ {{ summary.confirmedRegistrations }}</span>
+            <span class="dashboard-card-value-success" style="color: #10b981;">{{ applicantStats.confirmedApplicants
+              }}</span> <span class="dashboard-card-value-sub" style="color: #ef4444;">/ {{
+              applicantStats.cancelledApplicants }}</span>
           </h3>
         </div>
-        <div class="dashboard-icon-bg-success" style="background: #fffbeb;">
-          <mat-icon class="dashboard-icon-success" style="color: #f59e0b;">how_to_reg</mat-icon>
+        <div class="dashboard-icon-bg-success" style="background: #ecfdf5;">
+          <mat-icon class="dashboard-icon-success" style="color: #10b981;">how_to_reg</mat-icon>
         </div>
       </mat-card-content>
     </mat-card>
@@ -46,8 +67,8 @@
         <div>
           <p class="dashboard-card-label">กลุ่มที่จัดแล้ว (รอจัดกลุ่ม)</p>
           <h3 class="dashboard-card-value-container">
-            <span class="dashboard-card-value-warning">{{ summary.totalGroups }}</span> <span
-              class="dashboard-card-value-sub-warning">({{ summary.ungroupedMembers }} คน)</span>
+            <span class="dashboard-card-value-warning">{{ groupCount }}</span> <span
+              class="dashboard-card-value-sub-warning">({{ unassignedMembersCount }} คน)</span>
           </h3>
         </div>
         <div class="dashboard-icon-bg-warning">
@@ -59,11 +80,11 @@
   </div>
 
   <!-- ส่วนที่ 2: ทริปที่ใกล้ถึงวันเดินทาง (Upcoming Trips) -->
-  <mat-card class="dashboard-upcoming-card">
+  <mat-card class="dashboard-upcoming-card" *ngIf="myTrips.length > 0">
     <mat-card-header class="dashboard-upcoming-header">
       <div class="dashboard-upcoming-title-container">
         <mat-icon class="dashboard-upcoming-icon">event</mat-icon>
-        <h3 class="dashboard-upcoming-title">ทริปที่ใกล้ถึงวันเดินทาง (ของคุณ)</h3>
+        <h3 class="dashboard-upcoming-title">ทริปที่ใกล้ถึงวันเดินทาง</h3>
       </div>
       <button mat-flat-button color="primary" routerLink="/trips/new">
         <mat-icon>add</mat-icon> สร้างทริปใหม่
@@ -71,33 +92,40 @@
     </mat-card-header>
 
     <mat-card-content class="dashboard-upcoming-content">
-      
-      <div *ngIf="upcomingTrips.length === 0" class="dashboard-empty-state" style="text-align: center; padding: 40px; color: #627d98;">
-        <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 16px;">add_location</mat-icon>
+
+      <div *ngIf="upcomingTrips.length === 0" class="dashboard-empty-state"
+        style="text-align: center; padding: 40px; color: #627d98;">
+        <mat-icon
+          style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 16px;">add_location</mat-icon>
         <h4>คุณยังไม่มีทริปที่กำลังจะเดินทาง</h4>
         <p>เริ่มต้นสร้างทริปแรกของคุณ เพื่อเปิดรับสมาชิกได้เลย</p>
       </div>
 
       <div *ngFor="let trip of upcomingTrips; let last = last">
-        <div class="dashboard-upcoming-item" style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
+        <div class="dashboard-upcoming-item"
+          style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
           <div class="dashboard-upcoming-item-left" style="display: flex; align-items: center; gap: 16px;">
-            <div class="dashboard-upcoming-date-box" style="background: #f1f5f9; border-radius: 12px; padding: 12px; text-align: center; min-width: 60px;">
-              <span class="dashboard-upcoming-date-month" style="display: block; font-size: 12px; color: #64748b; font-weight: 600;">{{ trip.month }}</span>
-              <span class="dashboard-upcoming-date-day" style="display: block; font-size: 20px; font-weight: 800; color: #1e293b;">{{ trip.day }}</span>
+            <div class="dashboard-upcoming-date-box"
+              style="background: #f1f5f9; border-radius: 12px; padding: 12px; text-align: center; min-width: 60px;">
+              <span class="dashboard-upcoming-date-month"
+                style="display: block; font-size: 12px; color: #64748b; font-weight: 600;">{{ trip.month }}</span>
+              <span class="dashboard-upcoming-date-day"
+                style="display: block; font-size: 20px; font-weight: 800; color: #1e293b;">{{ trip.day }}</span>
             </div>
             <div>
-              <h4 class="dashboard-upcoming-item-title" style="margin: 0 0 8px; font-size: 16px; font-weight: 700; color: #1e293b;">{{ trip.name }}</h4>
-              <p class="dashboard-upcoming-item-desc" style="margin: 0; font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 8px;">
-                <span *ngIf="trip.pending > 0" class="status-badge" style="background: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 11px;">รอจัดการ: {{ trip.pending }}</span>
-                <span>สมาชิก: {{ trip.participants }} คน | รหัสทริป: #{{ trip.id }}</span>
+              <h4 class="dashboard-upcoming-item-title"
+                style="margin: 0 0 8px; font-size: 16px; font-weight: 700; color: #1e293b;">{{ trip.name }}</h4>
+              <p class="dashboard-upcoming-item-desc"
+                style="margin: 0; font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 8px;">
+                <span>รหัสทริป: #{{ trip.id }}</span>
               </p>
             </div>
           </div>
           <div class="dashboard-upcoming-actions" style="display: flex; gap: 8px;">
-            <button mat-stroked-button color="primary" routerLink="/registrations">
+            <button mat-stroked-button color="primary" [routerLink]="['/trips', trip.id, 'detail']">
               จัดการผู้สมัคร
             </button>
-            <button mat-button color="primary" routerLink="/groups">
+            <button mat-button color="primary" [routerLink]="['/trips', trip.id, 'detail']">
               จัดการกลุ่ม
             </button>
           </div>

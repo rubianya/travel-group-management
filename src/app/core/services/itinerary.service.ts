@@ -1,21 +1,31 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Itinerary } from '../models/itinerary.model';
+import { environment } from '../../../enviroment/environment';
+import { ApiResponse } from '../models/api_response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItineraryService {
-  // จำลองข้อมูลกำหนดการเดินทางของ ทริป ID = 1
-  private mockItineraries: Itinerary[] = [
-    { id: 1, tripId: 1, dayNo: 1, time: '08:00', title: 'รวมตัวที่จุดนัดพบ', location: 'สนามบินดอนเมือง' },
-    { id: 2, tripId: 1, dayNo: 1, time: '10:30', title: 'เดินทางถึงเชียงใหม่ & แวะคาเฟ่สไตล์มินิมอล', location: 'ตัวเมืองเชียงใหม่' },
-    { id: 3, tripId: 1, dayNo: 2, time: '09:00', title: 'เดินชมธรรมชาติและถ่ายรูป', location: 'ม่อนแจ่ม' },
-    { id: 4, tripId: 1, dayNo: 2, time: '18:00', title: 'รับประทานอาหารเย็น (อาหารท้องถิ่น)', location: 'ร้านอาหารพื้นเมือง' }
-  ];
+  private apiUrl = environment.apiUrl;
 
-  getItinerariesByTripId(tripId: number): Observable<Itinerary[]> {
-    const data = this.mockItineraries.filter(item => item.tripId === tripId);
-    return of(data);
+  constructor(private http: HttpClient) { }
+
+  getItinerariesByTripId(tripId: number): Observable<ApiResponse<Itinerary[]>> {
+    return this.http.get<ApiResponse<Itinerary[]>>(`${this.apiUrl}/trips/${tripId}/itineraries`);
+  }
+
+  createItinerary(tripId: number, dto: Itinerary): Observable<ApiResponse<Itinerary>> {
+    return this.http.post<ApiResponse<Itinerary>>(`${this.apiUrl}/trips/${tripId}/itineraries`, dto);
+  }
+
+  updateItinerary(id: number, dto: Itinerary): Observable<ApiResponse<Itinerary>> {
+    return this.http.put<ApiResponse<Itinerary>>(`${this.apiUrl}/itineraries/${id}`, dto);
+  }
+
+  deleteItinerary(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/itineraries/${id}`);
   }
 }

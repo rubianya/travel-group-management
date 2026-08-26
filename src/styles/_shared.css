@@ -41,9 +41,19 @@
   color: var(--status-red-text);
 }
 
-.status-completed {
+.status-completed, .status-paid {
   background-color: var(--status-green-bg);
   color: var(--status-green-text);
+}
+
+.status-registered {
+  background-color: var(--status-blue-bg);
+  color: var(--status-blue-text);
+}
+
+.status-waiting_payment {
+  background-color: var(--status-yellow-bg);
+  color: var(--status-yellow-text);
 }
 
 /* User Role Classes */

@@ -10,7 +10,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../../../core/services/user.service';
-import { InterestService } from '../../../core/services/interest.service';
 
 @Component({
   selector: 'app-user-form',
@@ -45,26 +44,13 @@ export class UserForm implements OnInit {
     { value: 'I', label: 'Inactive' },
   ];
 
-  attentions: { value: string, label: string }[] = [];
-
   private fb = inject(FormBuilder)
   private router = inject(Router)
   private route = inject(ActivatedRoute)
   private userService = inject(UserService)
   private cdr = inject(ChangeDetectorRef)
-  private interestService = inject(InterestService)
 
   ngOnInit(): void {
-    this.interestService.getAllInterests().subscribe({
-      next: (res: any) => {
-        const interests = res?.data || res || [];
-        this.attentions = interests
-          .filter((i: any) => i.active === 'A')
-          .map((i: any) => ({ value: i.interestName, label: i.interestName }));
-        this.cdr.detectChanges();
-      }
-    });
-
     this.initForm();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
@@ -93,7 +79,7 @@ export class UserForm implements OnInit {
             password: '',
             role: user.role,
             status: user.status,
-            attention: user.attention
+            phone: user.phone
           });
           this.userForm.get('password')?.clearValidators();
           this.userForm.get('password')?.updateValueAndValidity();
@@ -116,7 +102,7 @@ export class UserForm implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       role: ['', Validators.required],
       status: ['', Validators.required],
-      attention: ['']
+      phone: ['', [Validators.required, Validators.pattern('^0[0-9]{9}$')]]
     });
   }
 
@@ -150,7 +136,11 @@ export class UserForm implements OnInit {
           error: (err) => {
             console.error('Save failed:', err);
             const backendError = err.error?.message || err.error?.error || err.message;
-            alert(`ไม่สามารถบันทึกข้อมูลได้\nสาเหตุ: ${backendError}`);
+            let validationErrors = '';
+            if (err.error?.errors) {
+              validationErrors = '\n' + JSON.stringify(err.error.errors, null, 2);
+            }
+            alert(`ไม่สามารถบันทึกข้อมูลได้\nสาเหตุ: ${backendError}${validationErrors}`);
           }
         });
       }

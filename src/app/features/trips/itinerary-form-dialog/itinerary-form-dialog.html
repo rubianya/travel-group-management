@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content class="itinerary-form-content">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>วันที่ (Day No)</mat-label>
+    <input matInput type="number" [(ngModel)]="itinerary.dayNo" required min="1">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>เวลา (Time)</mat-label>
+    <input matInput type="time" [(ngModel)]="itinerary.time" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>กิจกรรม (Title)</mat-label>
+    <input matInput [(ngModel)]="itinerary.title" required placeholder="เช่น ทานอาหารเย็น">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>สถานที่ (Location)</mat-label>
+    <input matInput [(ngModel)]="itinerary.location" required placeholder="เช่น ร้านอาหารพื้นเมือง">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">ยกเลิก</button>
+  <button mat-flat-button color="primary" (click)="onSave()">บันทึก</button>
+</mat-dialog-actions>

@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { Registration, RegistrationRequest } from "../models/registration.model";
+import { TripRegistrationResponseDTO, TripRegistrationRequestDTO } from "../models/registration.model";
 import { ApiResponse } from "../models/api_response.model";
 import { Observable, map } from "rxjs";
 import { HttpClient } from '@angular/common/http';
@@ -14,44 +14,44 @@ export class RegistrationService {
     private http = inject(HttpClient);
 
     // สร้างใบลงทะเบียนเข้าร่วมทริป
-    registerTrip(dto: RegistrationRequest): Observable<Registration> {
-        return this.http.post<ApiResponse<Registration>>(this.apiUrl, dto)
+    registerTrip(tripId: number, dto: TripRegistrationRequestDTO): Observable<TripRegistrationResponseDTO> {
+        return this.http.post<ApiResponse<TripRegistrationResponseDTO>>(`${this.apiUrl}/${tripId}`, dto)
             .pipe(map(res => res.data));
     }
 
     // ดึงรายการลงทะเบียนทั้งหมด
-    getAllRegistrations(): Observable<Registration[]> {
-        return this.http.get<ApiResponse<Registration[]>>(this.apiUrl)
+    getAllRegistrations(): Observable<TripRegistrationResponseDTO[]> {
+        return this.http.get<ApiResponse<TripRegistrationResponseDTO[]>>(this.apiUrl)
             .pipe(map(res => res.data));
     }
 
     // ดึงรายการลงทะเบียนตาม Registration ID
-    getRegistrationById(id: number): Observable<Registration> {
-        return this.http.get<ApiResponse<Registration>>(this.apiUrl + "/" + id)
+    getRegistrationById(id: number): Observable<TripRegistrationResponseDTO> {
+        return this.http.get<ApiResponse<TripRegistrationResponseDTO>>(this.apiUrl + "/" + id)
             .pipe(map(res => res.data));
     }
 
     // ดึงรายการลงทะเบียนตาม Trip ID สำหรับ Organizer
-    getRegistrationsByTripId(tripId: number): Observable<Registration[]> {
-        return this.http.get<ApiResponse<Registration[]>>(this.apiUrl + "/trip/" + tripId)
+    getRegistrationsByTripId(tripId: number): Observable<TripRegistrationResponseDTO[]> {
+        return this.http.get<ApiResponse<TripRegistrationResponseDTO[]>>(this.apiUrl + "/trip/" + tripId)
             .pipe(map(res => res.data));
     }
 
     // ดึงรายการลงทะเบียนตาม User ID สำหรับ Traveler
-    getRegistrationsByUserId(userId: number): Observable<Registration[]> {
-        return this.http.get<ApiResponse<Registration[]>>(this.apiUrl + "/user/" + userId)
+    getRegistrationsByUserId(userId: number): Observable<TripRegistrationResponseDTO[]> {
+        return this.http.get<ApiResponse<TripRegistrationResponseDTO[]>>(this.apiUrl + "/user/" + userId)
             .pipe(map(res => res.data));
     }
 
     // อัปเดตใบสมัครลงทะเบียน
-    updateRegistration(id: number, dto: RegistrationRequest): Observable<Registration> {
-        return this.http.put<ApiResponse<Registration>>(`${this.apiUrl}/${id}`, dto)
+    updateRegistration(id: number, dto: TripRegistrationRequestDTO): Observable<TripRegistrationResponseDTO> {
+        return this.http.put<ApiResponse<TripRegistrationResponseDTO>>(`${this.apiUrl}/${id}`, dto)
             .pipe(map(res => res.data));
     }
 
     // อัปเดตสถานะ
-    updateStatus(id: number, status: string): Observable<Registration> {
-        return this.http.patch<ApiResponse<Registration>>(`${this.apiUrl}/${id}/status`, { status })
+    updateStatus(id: number, status: string): Observable<TripRegistrationResponseDTO> {
+        return this.http.patch<ApiResponse<TripRegistrationResponseDTO>>(`${this.apiUrl}/${id}/status`, { status })
             .pipe(map(res => res.data));
     }
 

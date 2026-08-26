@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GroupService } from '../../../core/services/group.service';
-import { Group } from '../../../core/models/group.model';
+import { TripGroupResponseDTO } from '../../../core/models/group.model';
 
 @Component({
   selector: 'app-my-group',
@@ -22,10 +22,9 @@ import { Group } from '../../../core/models/group.model';
 })
 export class MyGroup implements OnInit {
 
-  myGroup: Group | null = null;
+  myGroup: TripGroupResponseDTO | null = null;
   isLoading = true;
 
-  // Mock current user ID and Trip ID for now
   currentUserId = 1;
   currentTripId = 1;
 
@@ -39,10 +38,9 @@ export class MyGroup implements OnInit {
     this.isLoading = true;
     this.groupService.getGroupsByTripId(this.currentTripId).subscribe({
       next: (groups) => {
-        // Find the group that contains this user
-        this.myGroup = groups.find(g => 
+        this.myGroup = groups.find(g =>
           g.members.some(m => m.userId === this.currentUserId) ||
-          g.leader?.id === this.currentUserId
+          g.leaderId === this.currentUserId
         ) || null;
         this.isLoading = false;
       },

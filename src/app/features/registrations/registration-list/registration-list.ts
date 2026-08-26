@@ -1,12 +1,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, inject, OnInit, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, PLATFORM_ID, Input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
-import { Registration } from '../../../core/models/registration.model';
+import { TripRegistrationResponseDTO } from '../../../core/models/registration.model';
 import { RegistrationService } from '../../../core/services/registration.service';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
@@ -40,9 +40,11 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class RegistrationList implements OnInit {
 
-  displayedColumns: string[] = ['userName', 'tripId', 'budget', 'status', 'actions'];
-  dataSource: Registration[] = [];
-  filteredData: Registration[] = [];
+  @Input() tripId?: number;
+
+  displayedColumns: string[] = ['userName', 'interests', 'status', 'actions'];
+  dataSource: TripRegistrationResponseDTO[] = [];
+  filteredData: TripRegistrationResponseDTO[] = [];
   isLoading = true;
   availableStatuses = ['REGISTERED', 'WAITING_PAYMENT', 'PAID', 'CONFIRMED', 'CANCELLED'];
   currentRole = '';
@@ -50,7 +52,7 @@ export class RegistrationList implements OnInit {
 
   searchTerm: string = '';
   selectedStatus: string = '';
-  
+
   currentPage: number = 1;
   itemsPerPage: number = 10;
 
@@ -61,6 +63,10 @@ export class RegistrationList implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
+    if (this.tripId) {
+      this.displayedColumns = ['userName', 'interests', 'status', 'actions'];
+    }
+
     if (isPlatformBrowser(this.platformId)) {
       this.userService.getCurrentProfile().subscribe({
         next: (response: any) => {
@@ -82,19 +88,46 @@ export class RegistrationList implements OnInit {
   loadRegistrations(): void {
     this.isLoading = true;
 
+    if (this.tripId) {
+      forkJoin({
+        trip: this.tripService.getTripById(this.tripId),
+        regs: this.registrationService.getRegistrationsByTripId(this.tripId),
+        users: this.userService.getAllUsers()
+      }).subscribe({
+        next: (res) => {
+          const tripData = (res.trip as any).data || res.trip;
+          const regsData = (res.regs as any).data || res.regs;
+          const usersData = (res.users as any).data || res.users;
+          const mappedRegs = (regsData || []).map((r: TripRegistrationResponseDTO) => {
+            const user = (usersData || []).find((u: any) => u.id === r.userId);
+            return {
+              ...r,
+              phone: user ? user.phone : undefined,
+              organizerBudget: tripData ? tripData.budget : undefined
+            };
+          });
+          this.handleData(mappedRegs);
+        },
+        error: (err) => this.handleError(err)
+      });
+      return;
+    }
+
     if (this.currentRole === 'Organizer') {
       forkJoin({
         myTrips: this.tripService.getMyTrips(),
-        allRegs: this.registrationService.getAllRegistrations()
+        allRegs: this.registrationService.getAllRegistrations(),
+        users: this.userService.getAllUsers()
       }).subscribe({
         next: (res) => {
-          // Compatibility check for ApiResponse vs direct Array
           const tripsArray = (res.myTrips as any).data ? (res.myTrips as any).data : res.myTrips;
+          const usersData = (res.users as any).data || res.users;
           const myTripIds = (tripsArray || []).map((t: any) => t.id);
-          
-          const filteredRegs = (res.allRegs || []).filter((r: Registration) => myTripIds.includes(r.tripId)).map((r: Registration) => {
-             const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
-             return { ...r, organizerBudget: trip ? trip.budget : undefined };
+
+          const filteredRegs = (res.allRegs || []).filter((r: TripRegistrationResponseDTO) => myTripIds.includes(r.tripId)).map((r: TripRegistrationResponseDTO) => {
+            const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
+            const user = (usersData || []).find((u: any) => u.id === r.userId);
+            return { ...r, phone: user ? user.phone : undefined, organizerBudget: trip ? trip.budget : undefined };
           });
           this.handleData(filteredRegs);
         },
@@ -103,14 +136,17 @@ export class RegistrationList implements OnInit {
     } else {
       forkJoin({
         allTrips: this.tripService.getAllTrips(),
-        allRegs: this.registrationService.getAllRegistrations()
+        allRegs: this.registrationService.getAllRegistrations(),
+        users: this.userService.getAllUsers()
       }).subscribe({
         next: (res) => {
           const tripsArray = (res.allTrips as any).data ? (res.allTrips as any).data : res.allTrips;
           const allRegs = (res.allRegs as any).data ? (res.allRegs as any).data : res.allRegs;
-          const mappedRegs = (allRegs || []).map((r: Registration) => {
-             const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
-             return { ...r, organizerBudget: trip ? trip.budget : undefined };
+          const usersData = (res.users as any).data || res.users;
+          const mappedRegs = (allRegs || []).map((r: TripRegistrationResponseDTO) => {
+            const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
+            const user = (usersData || []).find((u: any) => u.id === r.userId);
+            return { ...r, phone: user ? user.phone : undefined, organizerBudget: trip ? trip.budget : undefined };
           });
           this.handleData(mappedRegs);
         },
@@ -119,7 +155,7 @@ export class RegistrationList implements OnInit {
     }
   }
 
-  private handleData(data: Registration[] | any): void {
+  private handleData(data: TripRegistrationResponseDTO[] | any): void {
     this.dataSource = data || [];
     this.applyFilter();
     setTimeout(() => {
@@ -136,7 +172,14 @@ export class RegistrationList implements OnInit {
     }, 300);
   }
 
-  changeStatus(registration: Registration, newStatus: string): void {
+  changeStatus(registration: TripRegistrationResponseDTO, newStatus: string): void {
+    if (newStatus === 'CANCELLED') {
+      const confirmCancel = window.confirm(`คุณต้องการยกเลิกการสมัครของคุณ ${registration.userName} ใช่หรือไม่?`);
+      if (!confirmCancel) {
+        return;
+      }
+    }
+
     if (registration.id) {
       this.registrationService.updateStatus(registration.id, newStatus).subscribe({
         next: () => {
@@ -152,21 +195,17 @@ export class RegistrationList implements OnInit {
 
   getAvailableStatuses(currentStatus: string): string[] {
     if (this.currentRole === 'Traveler') {
-      // Traveler should manage status via MyRegistrations page, 
-      // but if they are here, they can only cancel if not already cancelled.
-      if (currentStatus === 'REGISTERED' || currentStatus === 'WAITING_PAYMENT' || currentStatus === 'PAID') {
-         return ['CANCELLED'];
+      if (currentStatus !== 'CANCELLED') {
+        return ['CANCELLED'];
       }
       return [];
     }
 
-    // Organizer logic based on State Machine plan
-    switch(currentStatus) {
+    switch (currentStatus) {
       case 'REGISTERED':
         return ['WAITING_PAYMENT', 'CANCELLED'];
       case 'WAITING_PAYMENT':
-        // Organizer can skip PAID to CONFIRMED, or move to CANCELLED
-        return ['CONFIRMED', 'CANCELLED'];
+        return ['PAID', 'CANCELLED'];
       case 'PAID':
         return ['CONFIRMED', 'CANCELLED'];
       case 'CONFIRMED':
@@ -197,7 +236,7 @@ export class RegistrationList implements OnInit {
     this.applyFilter();
   }
 
-  get paginatedData(): Registration[] {
+  get paginatedData(): TripRegistrationResponseDTO[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return this.filteredData.slice(startIndex, startIndex + this.itemsPerPage);
   }

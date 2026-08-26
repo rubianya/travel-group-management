@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { UserService } from '../../../core/services/user.service';
-import { User } from '../../../core/models/user.model';
+import { UserResponseDTO } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-user-list',
@@ -36,8 +36,8 @@ import { User } from '../../../core/models/user.model';
 export class UserList implements OnInit {
 
   displayedColumns: string[] = ['id', 'fullName', 'email', 'role', 'status', 'actions'];
-  users: User[] = [];
-  filteredUsers: User[] = [];
+  users: UserResponseDTO[] = [];
+  filteredUsers: UserResponseDTO[] = [];
   isLoading = true;
 
   searchTerm: string = '';
@@ -146,7 +146,7 @@ export class UserList implements OnInit {
     this.getAllUsers();
   }
 
-  get paginatedUsers(): User[] {
+  get paginatedUsers(): UserResponseDTO[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return this.filteredUsers.slice(startIndex, startIndex + this.itemsPerPage);
   }

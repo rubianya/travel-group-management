@@ -6,13 +6,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { Registration } from '../../../core/models/registration.model';
-import { Group, TripGroupRequestDTO } from '../../../core/models/group.model';
+import { TripRegistrationResponseDTO } from '../../../core/models/registration.model';
+import { TripGroupResponseDTO, TripGroupRequestDTO } from '../../../core/models/group.model';
 
 export interface GroupDialogData {
   title: string;
-  group?: Group;
-  members?: Registration[];
+  group?: TripGroupResponseDTO;
+  members?: TripRegistrationResponseDTO[];
 }
 
 @Component({
@@ -43,7 +43,7 @@ export class GroupFormDialog {
     this.form = this.fb.group({
       groupName: [data.group?.groupName || '', Validators.required],
       note: [data.group?.note || ''],
-      leaderId: [data.group?.leader?.id || null, Validators.required]
+      leaderId: [data.group?.leaderId || null, Validators.required]
     });
   }
 
@@ -51,7 +51,8 @@ export class GroupFormDialog {
     if (this.form.valid) {
       const result: TripGroupRequestDTO = {
         groupName: this.form.value.groupName,
-        note: this.form.value.note
+        note: this.form.value.note,
+        status: 'DRAFT'
       };
       if (this.form.value.leaderId) {
         result.leaderId = this.form.value.leaderId;

@@ -68,23 +68,20 @@
             </mat-card-header>
 
             <mat-card-content class="custom-card-content">
-              <div class="info-row">
-                <mat-icon class="info-icon">account_balance_wallet</mat-icon>
-                <div class="info-text">
-                  <span class="info-label">งบประมาณ</span>
-                  <span class="info-value">{{ reg.budget | number }} บาท</span>
-                </div>
-              </div>
+
               
               <!-- Status Hint Messages -->
               <div class="status-message info-msg" *ngIf="reg.status === 'REGISTERED'">
-                <mat-icon>hourglass_empty</mat-icon> กำลังรอผู้จัดอนุมัติการสมัคร
+                <mat-icon>hourglass_empty</mat-icon> กำลังรอผู้จัดยืนยันสิทธิ์เข้าร่วมทริป
+              </div>
+              <div class="status-message success-msg" *ngIf="reg.status === 'CONFIRMED'">
+                <mat-icon>check_circle_outline</mat-icon> ผู้จัดยืนยันสิทธิ์แล้ว รอเปิดให้ชำระเงิน
               </div>
               <div class="status-message warn-msg" *ngIf="reg.status === 'WAITING_PAYMENT'">
                 <mat-icon>error_outline</mat-icon> กรุณาชำระเงินเพื่อยืนยันสิทธิ์ของคุณ
               </div>
               <div class="status-message success-msg" *ngIf="reg.status === 'PAID'">
-                <mat-icon>check_circle_outline</mat-icon> รอผู้จัดตรวจสอบการชำระเงิน
+                <mat-icon>verified</mat-icon> ผู้จัดตรวจสอบการชำระเงินเสร็จสมบูรณ์แล้ว
               </div>
             </mat-card-content>
 
@@ -92,7 +89,10 @@
               <button mat-flat-button class="action-btn confirm-btn pay-btn" *ngIf="reg.status === 'WAITING_PAYMENT'" (click)="submitPayment(reg)">
                 <mat-icon>payment</mat-icon> แจ้งชำระเงิน
               </button>
-              <button mat-stroked-button color="warn" class="action-btn cancel-btn" *ngIf="reg.status !== 'CONFIRMED'" (click)="cancelParticipation(reg)">
+              <button mat-stroked-button color="primary" class="action-btn edit-btn" *ngIf="reg.status === 'REGISTERED'" routerLink="/registrations/new" [queryParams]="{regId: reg.id}">
+                <mat-icon>edit</mat-icon> แก้ไข
+              </button>
+              <button mat-stroked-button color="warn" class="action-btn cancel-btn" *ngIf="reg.status === 'REGISTERED'" (click)="cancelParticipation(reg)">
                 <mat-icon>cancel</mat-icon> ยกเลิก
               </button>
               <button mat-button class="action-btn detail-btn" routerLink="/trips/{{ reg.tripId }}/detail">
@@ -121,13 +121,7 @@
             </mat-card-header>
 
             <mat-card-content class="custom-card-content">
-              <div class="info-row">
-                <mat-icon class="info-icon">account_balance_wallet</mat-icon>
-                <div class="info-text">
-                  <span class="info-label">งบประมาณที่เคยระบุไว้</span>
-                  <span class="info-value">{{ reg.budget | number }} บาท</span>
-                </div>
-              </div>
+
             </mat-card-content>
 
             <mat-card-actions class="registration-actions">

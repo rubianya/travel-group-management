@@ -12,8 +12,8 @@ import { InterestService } from '../../../core/services/interest.service';
 import { TripService } from '../../../core/services/trip.service';
 import { RegistrationService } from '../../../core/services/registration.service';
 import { UserService } from '../../../core/services/user.service';
-import { Trip } from '../../../core/models/trip.model';
-import { RegistrationRequest } from '../../../core/models/registration.model';
+import { TripResponseDTO } from '../../../core/models/trip.model';
+import { TripRegistrationRequestDTO } from '../../../core/models/registration.model';
 
 @Component({
   selector: 'app-registrations-form',
@@ -33,7 +33,8 @@ import { RegistrationRequest } from '../../../core/models/registration.model';
 export class RegistrationForm implements OnInit {
   registrationForm!: FormGroup;
   availableInterests: any[] = [];
-  availableTrips: Trip[] = [];
+  availableTrips: TripResponseDTO[] = [];
+  registrationId?: number;
 
   // Current user
   currentUserId = 2;
@@ -52,8 +53,7 @@ export class RegistrationForm implements OnInit {
     this.registrationForm = this.fb.group({
       tripId: [{ value: '', disabled: true }, Validators.required],
       travelerName: [{ value: '', disabled: true }],
-      budget: [0, [Validators.min(0)]],
-      interests: [[]],
+      interests: [[], Validators.required],
       remark: ['']
     });
 
@@ -69,7 +69,10 @@ export class RegistrationForm implements OnInit {
     }
 
     this.route.queryParams.subscribe(params => {
-      if (params['tripId']) {
+      if (params['regId']) {
+        this.registrationId = Number(params['regId']);
+        this.loadRegistrationData(this.registrationId);
+      } else if (params['tripId']) {
         this.registrationForm.patchValue({ tripId: Number(params['tripId']) });
       } else {
         this.registrationForm.get('tripId')?.enable();
@@ -87,6 +90,20 @@ export class RegistrationForm implements OnInit {
     });
   }
 
+  loadRegistrationData(id: number): void {
+    this.registrationService.getRegistrationById(id).subscribe({
+      next: (res: any) => {
+        const reg = res.data ? res.data : res;
+        this.registrationForm.patchValue({
+          tripId: reg.tripId,
+          remark: reg.remark,
+          interests: reg.interests ? reg.interests.map((i: any) => i.id || i.interestId || i) : []
+        });
+      },
+      error: (err) => console.error('Failed to load registration', err)
+    });
+  }
+
   loadTrips(): void {
     this.tripService.getAllTrips().subscribe({
       next: (res: any) => {
@@ -101,25 +118,35 @@ export class RegistrationForm implements OnInit {
     if (this.registrationForm.valid) {
       const formValue = this.registrationForm.getRawValue();
 
-      const requestPayload: RegistrationRequest = {
-        tripId: formValue.tripId,
-        userId: this.currentUserId,
-        budget: formValue.budget,
-        status: 'REGISTERED',
+      const requestPayload: TripRegistrationRequestDTO = {
         remark: formValue.remark,
-        interestIds: formValue.interests || []
+        interestIds: formValue.interests || [],
+        status: 'REGISTERED'
       };
 
-      this.registrationService.registerTrip(requestPayload).subscribe({
-        next: () => {
-          alert('ส่งใบสมัครสำเร็จ');
-          this.router.navigate(['/my-registrations']);
-        },
-        error: (err) => {
-          console.error('Registration failed', err);
-          alert('เกิดข้อผิดพลาดในการสมัคร');
-        }
-      });
+      if (this.registrationId) {
+        this.registrationService.updateRegistration(this.registrationId, requestPayload).subscribe({
+          next: () => {
+            alert('แก้ไขใบสมัครสำเร็จ');
+            this.router.navigate(['/my-registrations']);
+          },
+          error: (err) => {
+            console.error('Update failed', err);
+            alert('เกิดข้อผิดพลาดในการแก้ไขใบสมัคร');
+          }
+        });
+      } else {
+        this.registrationService.registerTrip(formValue.tripId, requestPayload).subscribe({
+          next: () => {
+            alert('ส่งใบสมัครสำเร็จ');
+            this.router.navigate(['/my-registrations']);
+          },
+          error: (err) => {
+            console.error('Registration failed', err);
+            alert('เกิดข้อผิดพลาดในการสมัคร');
+          }
+        });
+      }
     } else {
       this.registrationForm.markAllAsTouched();
     }
