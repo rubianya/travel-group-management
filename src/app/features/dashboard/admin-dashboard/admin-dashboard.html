@@ -5,136 +5,195 @@
 </div>
 
 <div *ngIf="!isLoading">
-  <!-- ส่วนที่ 1: การ์ดสรุปตัวเลข (Summary Cards) -->
-  <div class="dashboard-grid">
-    <!-- การ์ด: ข้อมูลทริป -->
-    <mat-card class="dashboard-card-success">
-      <mat-card-content class="dashboard-card-content">
+  
+  <!-- Section 1: User Management -->
+  <div style="display: flex; align-items: center; margin-bottom: 24px;">
+    <mat-icon style="color: #3b82f6; margin-right: 8px;">manage_accounts</mat-icon>
+    <h2 style="margin: 0; color: #1e293b; font-size: 20px; font-weight: 700;">ภาพรวมผู้ใช้งาน (User Management)</h2>
+  </div>
+  
+  <div class="admin-dashboard-grid">
+    <!-- Featured Card (Left side) -->
+    <mat-card class="dashboard-card-featured">
+      <mat-card-content class="dashboard-card-content-featured">
+        <div class="dashboard-icon-bg-primary" style="margin-bottom: 24px; width: 56px; height: 56px; border-radius: 16px;">
+          <mat-icon class="dashboard-icon-primary" style="font-size: 32px; width: 32px; height: 32px;">group</mat-icon>
+        </div>
         <div>
-          <p class="dashboard-card-label">ทริปเปิดรับสมัคร / ทั้งหมด (ระบบ)</p>
-          <h3 class="dashboard-card-value-container">
-            <span class="dashboard-card-value-success">{{ tripStats.openTrips }}</span> <span
-              class="dashboard-card-value-sub">/ {{ tripStats.totalTrips }}</span>
-          </h3>
+          <p class="dashboard-card-label">ผู้ใช้งานทั้งหมดในระบบ</p>
+          <h3 class="dashboard-card-value-container">{{ userStats.totalUsers }}</h3>
         </div>
-        <div class="dashboard-icon-bg-success">
-          <mat-icon class="dashboard-icon-success">flight_takeoff</mat-icon>
-        </div>
+        <a href="/admin/users" class="dashboard-card-action-link">
+          ดูรายชื่อทั้งหมด <mat-icon>arrow_forward</mat-icon>
+        </a>
       </mat-card-content>
     </mat-card>
 
-    <!-- การ์ด: ผู้ใช้งานทั้งหมด -->
-    <mat-card class="dashboard-card-primary">
-      <mat-card-content class="dashboard-card-content">
-        <div>
-          <p class="dashboard-card-label">ผู้ใช้งานทั้งหมด</p>
-          <h3 class="dashboard-card-value-container">
-            <span class="dashboard-card-value-primary">{{ userStats.totalUsers }}</span>
-            <span class="dashboard-card-value-sub" style="font-size: 14px;"> คน</span>
-          </h3>
-        </div>
-        <div class="dashboard-icon-bg-primary">
-          <mat-icon class="dashboard-icon-primary">group</mat-icon>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- การ์ด: ผู้ใช้งานแยกตามบทบาท -->
-    <mat-card class="dashboard-card-warning" style="border-left-color: #8b5cf6;">
-      <mat-card-content class="dashboard-card-content" style="align-items: flex-start;">
-        <div style="flex: 1;">
-          <p class="dashboard-card-label">ผู้ใช้แยกตามบทบาท</p>
-          <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 13px; color: #64748b;">แอดมิน (Admin)</span>
-              <span style="font-weight: 700; color: #1e293b;">{{ userStats.adminCount }}</span>
+    <!-- Small Cards Grid (Right side) -->
+    <div class="dashboard-small-cards-grid">
+      <!-- Role: Admin -->
+      <mat-card class="dashboard-card-small">
+        <mat-card-content class="dashboard-card-content">
+          <div class="dashboard-card-header">
+            <div class="dashboard-icon-bg-pink">
+              <mat-icon class="dashboard-icon-pink">admin_panel_settings</mat-icon>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 13px; color: #64748b;">ผู้จัดทริป (Organizer)</span>
-              <span style="font-weight: 700; color: #1e293b;">{{ userStats.organizerCount }}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 13px; color: #64748b;">ผู้เดินทาง (Traveler)</span>
-              <span style="font-weight: 700; color: #1e293b;">{{ userStats.travelerCount }}</span>
+            <div style="background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #475569;">
+              {{ userStats.adminCount }}
             </div>
           </div>
-        </div>
-        <div class="dashboard-icon-bg-warning" style="background: #f5f3ff;">
-          <mat-icon class="dashboard-icon-warning" style="color: #8b5cf6;">manage_accounts</mat-icon>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- การ์ด: สถานะผู้ใช้งาน -->
-    <mat-card class="dashboard-card-primary" style="border-left-color: #0ea5e9;">
-      <mat-card-content class="dashboard-card-content" style="align-items: flex-start;">
-        <div style="flex: 1;">
-          <p class="dashboard-card-label">สถานะบัญชีผู้ใช้</p>
-          <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 4px;">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #10b981;"></span> ใช้งาน (Active)
-              </span>
-              <span style="font-weight: 700; color: #10b981;">{{ userStats.activeUsers }}</span>
+          <div class="dashboard-card-title-middle">
+            <p class="dashboard-card-label" style="color: #1e293b; font-weight: 700;">Administrators</p>
+          </div>
+          <div class="dashboard-stats-bottom">
+            <div class="dashboard-stat-item">
+              <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-success"></div> Active</span>
+              <span class="dashboard-stat-value dashboard-stat-value-success">{{ userStats.adminActive }}</span>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 4px;">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444;"></span> ปิดใช้งาน (Inactive)
-              </span>
-              <span style="font-weight: 700; color: #ef4444;">{{ userStats.inactiveUsers }}</span>
+            <div class="dashboard-stat-item">
+              <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-danger"></div> Inactive</span>
+              <span class="dashboard-stat-value dashboard-stat-value-danger">{{ userStats.adminInactive }}</span>
             </div>
           </div>
-        </div>
-        <div class="dashboard-icon-bg-primary" style="background: #f0f9ff;">
-          <mat-icon class="dashboard-icon-primary" style="color: #0ea5e9;">insights</mat-icon>
-        </div>
-      </mat-card-content>
-    </mat-card>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Role: Organizer -->
+      <mat-card class="dashboard-card-small">
+        <mat-card-content class="dashboard-card-content">
+          <div class="dashboard-card-header">
+            <div class="dashboard-icon-bg-warning">
+              <mat-icon class="dashboard-icon-warning">co_present</mat-icon>
+            </div>
+            <div style="background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #475569;">
+              {{ userStats.organizerCount }}
+            </div>
+          </div>
+          <div class="dashboard-card-title-middle">
+            <p class="dashboard-card-label" style="color: #1e293b; font-weight: 700;">Organizers</p>
+          </div>
+          <div class="dashboard-stats-bottom">
+            <div class="dashboard-stat-item">
+              <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-success"></div> Active</span>
+              <span class="dashboard-stat-value dashboard-stat-value-success">{{ userStats.organizerActive }}</span>
+            </div>
+            <div class="dashboard-stat-item">
+              <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-danger"></div> Inactive</span>
+              <span class="dashboard-stat-value dashboard-stat-value-danger">{{ userStats.organizerInactive }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Role: Traveler -->
+      <mat-card class="dashboard-card-small">
+        <mat-card-content class="dashboard-card-content">
+          <div class="dashboard-card-header">
+            <div class="dashboard-icon-bg-success">
+              <mat-icon class="dashboard-icon-success">school</mat-icon>
+            </div>
+            <div style="background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #475569;">
+              {{ userStats.travelerCount }}
+            </div>
+          </div>
+          <div class="dashboard-card-title-middle">
+            <p class="dashboard-card-label" style="color: #1e293b; font-weight: 700;">Travelers</p>
+          </div>
+          <div class="dashboard-stats-bottom">
+            <div class="dashboard-stat-item">
+              <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-success"></div> Active</span>
+              <span class="dashboard-stat-value dashboard-stat-value-success">{{ userStats.travelerActive }}</span>
+            </div>
+            <div class="dashboard-stat-item">
+              <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-danger"></div> Inactive</span>
+              <span class="dashboard-stat-value dashboard-stat-value-danger">{{ userStats.travelerInactive }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 
-  <div class="dashboard-grid dashboard-grid-mt-24">
-    <!-- การ์ด: ผู้สมัครทั้งหมด (Registrations) -->
-    <mat-card class="dashboard-card-success" style="border-left-color: #f59e0b;">
-      <mat-card-content class="dashboard-card-content" style="align-items: flex-start;">
-        <div style="flex: 1;">
-          <p class="dashboard-card-label">ผู้สมัครทริปทั้งหมด</p>
-          <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 13px; color: #64748b; font-weight: 600;">รวมทั้งหมด</span>
-              <span style="font-weight: 700; color: #1e293b; font-size: 16px;">{{ registrationStats.total }}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 13px; color: #10b981; display: flex; align-items: center; gap: 4px;">
-                <mat-icon style="font-size: 14px; width: 14px; height: 14px;">check_circle</mat-icon> ยืนยันแล้ว
-              </span>
-              <span style="font-weight: 700; color: #10b981;">{{ registrationStats.confirmed }}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 13px; color: #ef4444; display: flex; align-items: center; gap: 4px;">
-                <mat-icon style="font-size: 14px; width: 14px; height: 14px;">cancel</mat-icon> ยกเลิก
-              </span>
-              <span style="font-weight: 700; color: #ef4444;">{{ registrationStats.cancelled }}</span>
-            </div>
+  <!-- Section 2: Trip Information -->
+  <div style="display: flex; align-items: center; margin-top: 40px; margin-bottom: 24px;">
+    <mat-icon style="color: #10b981; margin-right: 8px;">flight_takeoff</mat-icon>
+    <h2 style="margin: 0; color: #1e293b; font-size: 20px; font-weight: 700;">ข้อมูลทริปและการจัดกลุ่ม (Trip Information)</h2>
+  </div>
+
+  <div class="dashboard-small-cards-grid">
+    <!-- Total Trips -->
+    <mat-card class="dashboard-card-small">
+      <mat-card-content class="dashboard-card-content">
+        <div class="dashboard-card-header">
+          <div class="dashboard-icon-bg-primary">
+            <mat-icon class="dashboard-icon-primary">tour</mat-icon>
+          </div>
+          <div style="background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #475569;">
+            {{ tripStats.totalTrips }}
           </div>
         </div>
-        <div class="dashboard-icon-bg-warning" style="background: #fffbeb;">
-          <mat-icon class="dashboard-icon-warning" style="color: #f59e0b;">how_to_reg</mat-icon>
+        <div class="dashboard-card-title-middle">
+          <p class="dashboard-card-label" style="color: #1e293b; font-weight: 700;">Total Trips</p>
+        </div>
+        <div class="dashboard-stats-bottom">
+           <div class="dashboard-stat-item">
+            <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-success"></div> Open</span>
+            <span class="dashboard-stat-value dashboard-stat-value-success">{{ tripStats.openTrips }}</span>
+          </div>
+          <div class="dashboard-stat-item">
+            <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-danger"></div> Others</span>
+            <span class="dashboard-stat-value dashboard-stat-value-danger">{{ tripStats.totalTrips - tripStats.openTrips }}</span>
+          </div>
         </div>
       </mat-card-content>
     </mat-card>
 
-    <!-- การ์ด: กลุ่มที่จัดแล้ว (Groups) -->
-    <mat-card class="dashboard-card-primary" style="border-left-color: #ec4899;">
+    <!-- Groups -->
+    <mat-card class="dashboard-card-small">
       <mat-card-content class="dashboard-card-content">
-        <div>
-          <p class="dashboard-card-label">กลุ่มทริปที่จัดแล้ว</p>
-          <h3 class="dashboard-card-value-container">
-            <span class="dashboard-card-value-primary" style="color: #ec4899;">{{ totalGroups }}</span>
-            <span class="dashboard-card-value-sub" style="font-size: 14px;"> กลุ่ม</span>
-          </h3>
+        <div class="dashboard-card-header">
+          <div class="dashboard-icon-bg-pink">
+            <mat-icon class="dashboard-icon-pink">diversity_3</mat-icon>
+          </div>
+          <div style="background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #475569;">
+            {{ totalGroups }}
+          </div>
         </div>
-        <div class="dashboard-icon-bg-primary" style="background: #fdf2f8;">
-          <mat-icon class="dashboard-icon-primary" style="color: #ec4899;">diversity_3</mat-icon>
+        <div class="dashboard-card-title-middle">
+          <p class="dashboard-card-label" style="color: #1e293b; font-weight: 700;">Total Groups</p>
+        </div>
+        <div class="dashboard-stats-bottom">
+           <div class="dashboard-stat-item">
+            <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-success" style="background-color: #ec4899;"></div> Total</span>
+            <span class="dashboard-stat-value" style="color: #ec4899;">{{ totalGroups }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Registrations -->
+    <mat-card class="dashboard-card-small">
+      <mat-card-content class="dashboard-card-content">
+        <div class="dashboard-card-header">
+          <div class="dashboard-icon-bg-warning">
+            <mat-icon class="dashboard-icon-warning">how_to_reg</mat-icon>
+          </div>
+          <div style="background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #475569;">
+            {{ registrationStats.total }}
+          </div>
+        </div>
+        <div class="dashboard-card-title-middle">
+          <p class="dashboard-card-label" style="color: #1e293b; font-weight: 700;">Registrations</p>
+        </div>
+        <div class="dashboard-stats-bottom">
+          <div class="dashboard-stat-item">
+            <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-success"></div> Confirmed</span>
+            <span class="dashboard-stat-value dashboard-stat-value-success">{{ registrationStats.confirmed }}</span>
+          </div>
+          <div class="dashboard-stat-item">
+            <span class="dashboard-stat-label"><div class="dashboard-stat-dot dashboard-stat-dot-danger"></div> Cancelled</span>
+            <span class="dashboard-stat-value dashboard-stat-value-danger">{{ registrationStats.cancelled }}</span>
+          </div>
         </div>
       </mat-card-content>
     </mat-card>

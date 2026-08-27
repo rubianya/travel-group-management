@@ -40,69 +40,144 @@
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  gap: 24px;
   margin-bottom: 32px;
+}
+
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+@media screen and (min-width: 992px) {
+  .admin-dashboard-grid {
+    grid-template-columns: 350px 1fr;
+  }
+}
+
+.dashboard-small-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
 }
 
 .dashboard-grid-mt-24 {
   margin-top: 24px;
 }
 
-
-/* Cards */
-.dashboard-card-primary {
-  border-left: 5px solid #1f6feb;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(16, 42, 67, 0.05);
+/* Cards - New Layout Design */
+.dashboard-card-featured {
+  background: linear-gradient(135deg, #1f6feb 0%, #3b82f6 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(31, 111, 235, 0.2);
+  color: white;
+  height: 100%;
 }
 
-.dashboard-card-success {
-  border-left: 5px solid #0f766e;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(16, 42, 67, 0.05);
+.dashboard-card-small {
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+  background-color: #ffffff;
 }
 
-.dashboard-card-warning {
-  border-left: 5px solid #b45309;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(16, 42, 67, 0.05);
+/* For legacy compatibility or general usage */
+.dashboard-card-primary,
+.dashboard-card-success,
+.dashboard-card-warning,
+.dashboard-card-indigo,
+.dashboard-card-cyan,
+.dashboard-card-pink,
+.dashboard-card-amber {
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+  background-color: #ffffff;
 }
 
 .dashboard-card-content {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 24px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-card-content-featured {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 24px;
+  height: 100%;
+  box-sizing: border-box;
+  justify-content: center;
 }
 
 .dashboard-card-content-pt-16 {
   padding-top: 16px;
 }
 
-.dashboard-stat-row {
+.dashboard-card-header {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+  align-items: flex-start;
+  margin-bottom: 16px;
 }
 
+.dashboard-card-title-middle {
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
 
 .dashboard-card-label {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
-  color: #627d98;
-  text-transform: uppercase;
+  color: #475569;
+}
+
+.dashboard-card-featured .dashboard-card-label {
+  color: #e0e7ff;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 .dashboard-card-value-container {
-  margin: 8px 0 0;
+  margin: 0;
   font-size: 28px;
-  color: #102a43;
-  font-weight: 800;
+  color: #1e293b;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-.dashboard-card-value-primary {
+.dashboard-card-featured .dashboard-card-value-container {
+  color: #ffffff;
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.dashboard-card-action-link {
+  color: #ffffff;
+  font-size: 14px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+  font-weight: 500;
+}
+.dashboard-card-action-link mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.dashboard-card-value-primary,
+.dashboard-card-value-indigo,
+.dashboard-card-value-cyan,
+.dashboard-card-value-pink {
   color: #1f6feb;
 }
 
@@ -110,58 +185,127 @@
   color: #0f766e;
 }
 
-.dashboard-card-value-warning {
+.dashboard-card-value-warning,
+.dashboard-card-value-amber {
   color: #b45309;
 }
 
 .dashboard-card-value-sub {
-  font-size: 18px;
-  color: #a9bccc;
+  font-size: 16px;
+  color: #94a3b8;
+  font-weight: 500;
 }
 
 .dashboard-card-value-sub-warning {
-  font-size: 18px;
-  color: #e2a061;
+  font-size: 16px;
+  color: #b45309;
 }
 
-.dashboard-icon-bg-primary {
-  background: #eaf4ff;
-  padding: 12px;
-  border-radius: 50%;
+/* Icon Backgrounds - Simple */
+.dashboard-icon-bg-primary,
+.dashboard-icon-bg-indigo,
+.dashboard-icon-bg-cyan,
+.dashboard-icon-bg-pink,
+.dashboard-icon-bg-success,
+.dashboard-icon-bg-warning,
+.dashboard-icon-bg-amber {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 12px;
 }
 
-.dashboard-icon-bg-success {
-  background: #edfdf3;
-  padding: 12px;
-  border-radius: 50%;
+.dashboard-icon-bg-primary { background: #eff6ff; }
+.dashboard-icon-bg-success { background: #f0fdf4; }
+.dashboard-icon-bg-warning { background: #fffbeb; }
+.dashboard-icon-bg-pink { background: #fdf2f8; }
+
+.dashboard-card-featured .dashboard-icon-bg-primary {
+  background: rgba(255, 255, 255, 0.2);
+  margin-bottom: 24px;
+}
+.dashboard-card-featured .dashboard-icon-primary {
+  color: #ffffff;
 }
 
-.dashboard-icon-bg-warning {
-  background: #fff8e8;
-  padding: 12px;
-  border-radius: 50%;
+/* Icon Colors */
+.dashboard-icon-primary,
+.dashboard-icon-indigo,
+.dashboard-icon-cyan {
+  color: #3b82f6;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
-.dashboard-icon-primary {
-  color: #1f6feb;
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
+.dashboard-icon-pink {
+  color: #ec4899;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .dashboard-icon-success {
-  color: #0f766e;
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
+  color: #10b981;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
-.dashboard-icon-warning {
-  color: #b45309;
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
+.dashboard-icon-warning,
+.dashboard-icon-amber {
+  color: #f59e0b;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
+
+.dashboard-stats-bottom {
+  display: flex;
+  border-top: 1px solid #f1f5f9;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.dashboard-stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dashboard-stat-item:first-child {
+  border-right: 1px solid #f1f5f9;
+}
+
+.dashboard-stat-label {
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.dashboard-stat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dashboard-stat-dot-success { background-color: #10b981; }
+.dashboard-stat-dot-danger { background-color: #ef4444; }
+
+.dashboard-stat-value {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dashboard-stat-value-success { color: #10b981; }
+.dashboard-stat-value-danger { color: #ef4444; }
 
 /* Upcoming Trips */
 .dashboard-upcoming-card {

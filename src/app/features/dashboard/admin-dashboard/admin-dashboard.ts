@@ -15,8 +15,14 @@ export interface UserStats {
   activeUsers: number;
   inactiveUsers: number;
   adminCount: number;
+  adminActive: number;
+  adminInactive: number;
   organizerCount: number;
+  organizerActive: number;
+  organizerInactive: number;
   travelerCount: number;
+  travelerActive: number;
+  travelerInactive: number;
 }
 
 @Component({
@@ -43,8 +49,14 @@ export class AdminDashboard implements OnInit {
     activeUsers: 0,
     inactiveUsers: 0,
     adminCount: 0,
+    adminActive: 0,
+    adminInactive: 0,
     organizerCount: 0,
-    travelerCount: 0
+    organizerActive: 0,
+    organizerInactive: 0,
+    travelerCount: 0,
+    travelerActive: 0,
+    travelerInactive: 0
   };
 
   registrationStats = {
@@ -106,15 +118,29 @@ export class AdminDashboard implements OnInit {
         this.userStats.totalUsers = users.length;
         
         users.forEach((user: any) => {
-          if (user.status === 'ACTIVE') {
+          const isActive = user.status === 'A';
+          
+          if (isActive) {
             this.userStats.activeUsers++;
           } else {
             this.userStats.inactiveUsers++;
           }
 
-          if (user.role === 'Admin') this.userStats.adminCount++;
-          if (user.role === 'Organizer') this.userStats.organizerCount++;
-          if (user.role === 'Traveler') this.userStats.travelerCount++;
+          if (user.role === 'Admin') {
+            this.userStats.adminCount++;
+            if (isActive) this.userStats.adminActive++;
+            else this.userStats.adminInactive++;
+          }
+          if (user.role === 'Organizer') {
+            this.userStats.organizerCount++;
+            if (isActive) this.userStats.organizerActive++;
+            else this.userStats.organizerInactive++;
+          }
+          if (user.role === 'Traveler') {
+            this.userStats.travelerCount++;
+            if (isActive) this.userStats.travelerActive++;
+            else this.userStats.travelerInactive++;
+          }
         });
 
         // Registration Stats
