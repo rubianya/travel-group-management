@@ -22,5 +22,121 @@
         </div>
       </mat-card-content>
     </mat-card>
+
+    <!-- การ์ด: ผู้ใช้งานทั้งหมด -->
+    <mat-card class="dashboard-card-primary">
+      <mat-card-content class="dashboard-card-content">
+        <div>
+          <p class="dashboard-card-label">ผู้ใช้งานทั้งหมด</p>
+          <h3 class="dashboard-card-value-container">
+            <span class="dashboard-card-value-primary">{{ userStats.totalUsers }}</span>
+            <span class="dashboard-card-value-sub" style="font-size: 14px;"> คน</span>
+          </h3>
+        </div>
+        <div class="dashboard-icon-bg-primary">
+          <mat-icon class="dashboard-icon-primary">group</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- การ์ด: ผู้ใช้งานแยกตามบทบาท -->
+    <mat-card class="dashboard-card-warning" style="border-left-color: #8b5cf6;">
+      <mat-card-content class="dashboard-card-content" style="align-items: flex-start;">
+        <div style="flex: 1;">
+          <p class="dashboard-card-label">ผู้ใช้แยกตามบทบาท</p>
+          <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #64748b;">แอดมิน (Admin)</span>
+              <span style="font-weight: 700; color: #1e293b;">{{ userStats.adminCount }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #64748b;">ผู้จัดทริป (Organizer)</span>
+              <span style="font-weight: 700; color: #1e293b;">{{ userStats.organizerCount }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #64748b;">ผู้เดินทาง (Traveler)</span>
+              <span style="font-weight: 700; color: #1e293b;">{{ userStats.travelerCount }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-icon-bg-warning" style="background: #f5f3ff;">
+          <mat-icon class="dashboard-icon-warning" style="color: #8b5cf6;">manage_accounts</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- การ์ด: สถานะผู้ใช้งาน -->
+    <mat-card class="dashboard-card-primary" style="border-left-color: #0ea5e9;">
+      <mat-card-content class="dashboard-card-content" style="align-items: flex-start;">
+        <div style="flex: 1;">
+          <p class="dashboard-card-label">สถานะบัญชีผู้ใช้</p>
+          <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 4px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #10b981;"></span> ใช้งาน (Active)
+              </span>
+              <span style="font-weight: 700; color: #10b981;">{{ userStats.activeUsers }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 4px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444;"></span> ปิดใช้งาน (Inactive)
+              </span>
+              <span style="font-weight: 700; color: #ef4444;">{{ userStats.inactiveUsers }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-icon-bg-primary" style="background: #f0f9ff;">
+          <mat-icon class="dashboard-icon-primary" style="color: #0ea5e9;">insights</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="dashboard-grid dashboard-grid-mt-24">
+    <!-- การ์ด: ผู้สมัครทั้งหมด (Registrations) -->
+    <mat-card class="dashboard-card-success" style="border-left-color: #f59e0b;">
+      <mat-card-content class="dashboard-card-content" style="align-items: flex-start;">
+        <div style="flex: 1;">
+          <p class="dashboard-card-label">ผู้สมัครทริปทั้งหมด</p>
+          <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #64748b; font-weight: 600;">รวมทั้งหมด</span>
+              <span style="font-weight: 700; color: #1e293b; font-size: 16px;">{{ registrationStats.total }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #10b981; display: flex; align-items: center; gap: 4px;">
+                <mat-icon style="font-size: 14px; width: 14px; height: 14px;">check_circle</mat-icon> ยืนยันแล้ว
+              </span>
+              <span style="font-weight: 700; color: #10b981;">{{ registrationStats.confirmed }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #ef4444; display: flex; align-items: center; gap: 4px;">
+                <mat-icon style="font-size: 14px; width: 14px; height: 14px;">cancel</mat-icon> ยกเลิก
+              </span>
+              <span style="font-weight: 700; color: #ef4444;">{{ registrationStats.cancelled }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-icon-bg-warning" style="background: #fffbeb;">
+          <mat-icon class="dashboard-icon-warning" style="color: #f59e0b;">how_to_reg</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- การ์ด: กลุ่มที่จัดแล้ว (Groups) -->
+    <mat-card class="dashboard-card-primary" style="border-left-color: #ec4899;">
+      <mat-card-content class="dashboard-card-content">
+        <div>
+          <p class="dashboard-card-label">กลุ่มทริปที่จัดแล้ว</p>
+          <h3 class="dashboard-card-value-container">
+            <span class="dashboard-card-value-primary" style="color: #ec4899;">{{ totalGroups }}</span>
+            <span class="dashboard-card-value-sub" style="font-size: 14px;"> กลุ่ม</span>
+          </h3>
+        </div>
+        <div class="dashboard-icon-bg-primary" style="background: #fdf2f8;">
+          <mat-icon class="dashboard-icon-primary" style="color: #ec4899;">diversity_3</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
