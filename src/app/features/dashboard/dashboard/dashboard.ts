@@ -20,7 +20,7 @@ import { TravelerDashboard } from '../traveler-dashboard/traveler-dashboard';
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {
-  currentRole: string = 'ADMIN';
+  currentRole: string = 'Admin';
   isLoading = true;
 
   cdr = inject(ChangeDetectorRef);
@@ -29,15 +29,21 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      let savedRole = localStorage.getItem('role');
+      if (!savedRole || savedRole === 'undefined' || savedRole === 'null') {
+        savedRole = 'Admin';
+      }
+
       this.userService.getCurrentProfile().subscribe({
         next: (response: any) => {
           const user = response.data ? response.data : response;
-          this.currentRole = user?.role ? user.role.toUpperCase() : 'ADMIN';
+          this.currentRole = user?.role ? user.role : savedRole;
           this.isLoading = false;
           this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Error loading role', err);
+          this.currentRole = savedRole;
           this.isLoading = false;
           this.cdr.detectChanges();
         }

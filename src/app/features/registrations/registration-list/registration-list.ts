@@ -91,18 +91,14 @@ export class RegistrationList implements OnInit {
     if (this.tripId) {
       forkJoin({
         trip: this.tripService.getTripById(this.tripId),
-        regs: this.registrationService.getRegistrationsByTripId(this.tripId),
-        users: this.userService.getAllUsers()
+        regs: this.registrationService.getRegistrationsByTripId(this.tripId)
       }).subscribe({
         next: (res) => {
           const tripData = (res.trip as any).data || res.trip;
           const regsData = (res.regs as any).data || res.regs;
-          const usersData = (res.users as any).data || res.users;
           const mappedRegs = (regsData || []).map((r: TripRegistrationResponseDTO) => {
-            const user = (usersData || []).find((u: any) => u.id === r.userId);
             return {
               ...r,
-              phone: user ? user.phone : undefined,
               organizerBudget: tripData ? tripData.budget : undefined
             };
           });
@@ -114,39 +110,50 @@ export class RegistrationList implements OnInit {
     }
 
     if (this.currentRole === 'Organizer') {
-      forkJoin({
-        myTrips: this.tripService.getMyTrips(),
-        allRegs: this.registrationService.getAllRegistrations(),
-        users: this.userService.getAllUsers()
-      }).subscribe({
-        next: (res) => {
-          const tripsArray = (res.myTrips as any).data ? (res.myTrips as any).data : res.myTrips;
-          const usersData = (res.users as any).data || res.users;
+      this.tripService.getMyTrips().subscribe({
+        next: (myTripsRes) => {
+          const tripsArray = (myTripsRes as any).data ? (myTripsRes as any).data : myTripsRes;
           const myTripIds = (tripsArray || []).map((t: any) => t.id);
 
-          const filteredRegs = (res.allRegs || []).filter((r: TripRegistrationResponseDTO) => myTripIds.includes(r.tripId)).map((r: TripRegistrationResponseDTO) => {
-            const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
-            const user = (usersData || []).find((u: any) => u.id === r.userId);
-            return { ...r, phone: user ? user.phone : undefined, organizerBudget: trip ? trip.budget : undefined };
+          if (myTripIds.length === 0) {
+             this.handleData([]);
+             return;
+          }
+
+          // Fetch registrations for all Organizer's trips since Organizer can't call getAllRegistrations()
+          const reqs = myTripIds.map((id: number) => this.registrationService.getRegistrationsByTripId(id));
+          forkJoin(reqs).subscribe({
+            next: (regsArray: any) => {
+              let allRegs: any[] = [];
+              regsArray.forEach((res: any) => {
+                 const regs = res.data ? res.data : res;
+                 if (Array.isArray(regs)) {
+                   allRegs = allRegs.concat(regs);
+                 }
+              });
+
+              const filteredRegs = allRegs.map((r: TripRegistrationResponseDTO) => {
+                const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
+                return { ...r, organizerBudget: trip ? trip.budget : undefined };
+              });
+              this.handleData(filteredRegs);
+            },
+            error: (err) => this.handleError(err)
           });
-          this.handleData(filteredRegs);
         },
         error: (err) => this.handleError(err)
       });
     } else {
       forkJoin({
         allTrips: this.tripService.getAllTrips(),
-        allRegs: this.registrationService.getAllRegistrations(),
-        users: this.userService.getAllUsers()
+        allRegs: this.registrationService.getAllRegistrations()
       }).subscribe({
         next: (res) => {
           const tripsArray = (res.allTrips as any).data ? (res.allTrips as any).data : res.allTrips;
           const allRegs = (res.allRegs as any).data ? (res.allRegs as any).data : res.allRegs;
-          const usersData = (res.users as any).data || res.users;
           const mappedRegs = (allRegs || []).map((r: TripRegistrationResponseDTO) => {
             const trip = (tripsArray || []).find((t: any) => t.id === r.tripId);
-            const user = (usersData || []).find((u: any) => u.id === r.userId);
-            return { ...r, phone: user ? user.phone : undefined, organizerBudget: trip ? trip.budget : undefined };
+            return { ...r, organizerBudget: trip ? trip.budget : undefined };
           });
           this.handleData(mappedRegs);
         },

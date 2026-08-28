@@ -55,7 +55,7 @@ export class RegistrationService {
             .pipe(map(res => res.data));
     }
 
-    // ลบใบสมัคร
+    // ลบใบสมัคร ลบจริงอันตราย
     deleteRegistration(id: number): Observable<void> {
         return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`)
             .pipe(map(res => res.data));
